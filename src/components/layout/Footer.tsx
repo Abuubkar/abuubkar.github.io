@@ -17,7 +17,7 @@ export function Footer() {
           <p className="text-code-sm text-on-surface-variant">
             {footer.copyright}
           </p>
-          <p className="text-code-sm text-on-surface-variant/70">
+          <p className="text-code-sm text-on-surface-variant">
             press{" "}
             <kbd className="rounded border border-outline-variant bg-surface-container px-1.5 py-0.5 text-on-surface">
               ?

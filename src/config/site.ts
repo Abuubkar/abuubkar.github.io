@@ -54,7 +54,7 @@ export const siteConfig = {
     location: "Lahore, Pakistan",
     availability: "Available for work",
     // Single source of truth: pulled from the resume repo (raw GitHub URL).
-    avatar: "/profile-picture.jpg",
+    avatar: "/abubakar-theme.png",
     greeting: "Hi, I'm",
     experience: "5+ years",
     // Mono stat line shown under the greeting in the hero.
