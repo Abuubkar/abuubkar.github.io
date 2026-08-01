@@ -27,7 +27,7 @@ Python Developer with 4+ years of experience building scalable backend systems u
 ## Experience
 
 ### Senior Python Developer | Arbisoft
-*July 2021 – Apr 2026*
+*2021 – 2026*
 
 - Designed and maintained scalable Django applications serving production workloads across multiple business domains.
 - Improved API response times by 30–70% through ORM optimization, PostgreSQL indexing, query tuning, and caching strategies.

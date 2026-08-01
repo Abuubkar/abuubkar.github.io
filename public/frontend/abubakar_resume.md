@@ -40,7 +40,7 @@ Frontend Engineer with 5+ years of experience architecting and shipping responsi
 
 ## Selected Projects
 
-**Landit, Career-Pathing Platform** · *React + Next.js + TypeScript*
+**Landit, Career Platform** · *React + Next.js + TypeScript*
 - Executed zero-downtime frontend framework migrations (Material UI v4 to v5, React Router v4 to v5).
 - Managed Storybook components and developed custom Looker BI visualizations for end-users.
 *Tech: undefined*
@@ -70,4 +70,4 @@ Frontend Engineer with 5+ years of experience architecting and shipping responsi
 **B.S. Software Engineering** Punjab University College of Information & Technology (PUCIT)  ·  GPA: 3.08
 
 ## Certifications
-- The AI Engineer Path & Prompt Engineering for Web Developers | Scrimba (July 2026) — Scrimba (July 2026)
+- The AI Engineer Path & Prompt Engineering for Web Developers — Scrimba (July 2026)

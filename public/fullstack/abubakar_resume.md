@@ -46,7 +46,7 @@ Full-Stack Engineer with 5+ years of experience architecting and shipping produc
 - Smoothed asynchronous workflows with Celery for bulk PDF generation and wired up Stripe payments.
 *Tech: undefined*
 
-**Landit, Career-Pathing Platform** · *React + Next.js*
+**Landit, Career Platform** · *React + Next.js*
 - Executed zero-downtime frontend framework migrations (Material UI v4 to v5, React Router v4 to v5).
 - Developed custom Looker BI visualizations and scalable SendGrid email templates.
 *Tech: undefined*
