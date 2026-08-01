@@ -43,26 +43,21 @@ Frontend Engineer with 5+ years of experience architecting and shipping responsi
 **Landit, Career Platform** · *React + Next.js + TypeScript*
 - Executed zero-downtime frontend framework migrations (Material UI v4 to v5, React Router v4 to v5).
 - Managed Storybook components and developed custom Looker BI visualizations for end-users.
-*Tech: undefined*
 
 **FixAlert, Maintenance Platform** · *React + Typescript*
 - Revamped the UI of a computerized maintenance-management system in an Agile environment.
 - Built reporting metric views and optimized frontend data fetching with React Query.
-*Tech: undefined*
 
 **AskImam, Q&A Platform** · *React + Vite*
 - Added user-facing features to a high-traffic Q&A platform and integrated Google Analytics.
 - Upgraded the frontend build stack to Vite, resolving major UI bugs and improving client stability.
-*Tech: undefined*
 
 **Taiga — Arbisoft** · *AngularJS + CoffeeScript*
 - Designed and shipped the Requestor module (dynamic assignment, permission controls) and Feedback module (ratings, role-based access) within the ticket detail UI.
-*Tech: undefined*
 
 **Convo, Real-Time Chat Platform** · *React + WebSockets + TypeScript · Personal Project*
 - Built a real-time chat single-page application using React, TypeScript, and Tailwind CSS.
 - Integrated live messaging via WebSockets and implemented secure JWT authentication workflows.
-*Tech: undefined*
 
 ---
 

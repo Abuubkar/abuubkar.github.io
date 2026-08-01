@@ -43,22 +43,18 @@ Python Developer with 4+ years of experience building scalable backend systems u
 **FixAlert, Maintenance Platform** · *Django + PostgreSQL*
 - Optimized backend performance by eliminating N+1 queries and improving database access patterns.
 - Implemented Celery-based background processing, Stripe payment integration, and scalable reporting services.
-*Tech: undefined*
 
 **AskImam, Q&A Platform** · *Django + DRF*
 - Led migration from Django 2.x to Django 5.1 with minimal downtime and improved application stability.
 - Implemented secure authentication, REST APIs, and administrative tools for content management.
-*Tech: undefined*
 
 **Landit, Career Platform** · *Django + React*
 - Developed backend APIs and integrated business intelligence dashboards using Looker.
 - Built transactional email workflows with SendGrid and optimized backend services.
-*Tech: undefined*
 
 **Convo, Real-Time Chat Platform** · *Django Channels + Redis · Personal Project*
 - Built real-time messaging using Django Channels and Redis.
 - Implemented JWT authentication, WebSocket communication, Docker deployment, and CI/CD automation.
-*Tech: undefined*
 
 ---
 

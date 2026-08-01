@@ -44,22 +44,18 @@ Full-Stack Engineer with 5+ years of experience architecting and shipping produc
 **FixAlert, Maintenance Platform** · *React + Django*
 - Resolved redundant database lookups to maintain API responsiveness under heavy load.
 - Smoothed asynchronous workflows with Celery for bulk PDF generation and wired up Stripe payments.
-*Tech: undefined*
 
 **Landit, Career Platform** · *React + Next.js*
 - Executed zero-downtime frontend framework migrations (Material UI v4 to v5, React Router v4 to v5).
 - Developed custom Looker BI visualizations and scalable SendGrid email templates.
-*Tech: undefined*
 
 **AskImam, Q&A Platform** · *React + Django*
 - Led backend migration from Django 2.x to 5.1, significantly improving runtime stability.
 - Hardened authentication security and built full-stack features including an enhanced admin dashboard.
-*Tech: undefined*
 
 **Convo, Real-Time Chat Platform** · *React + Django · Personal Project*
 - Implemented live messaging over WebSockets using Django Channels and Redis.
 - Configured JWT authentication, user profiles, and a complete CI/CD pipeline.
-*Tech: undefined*
 
 ---
 
