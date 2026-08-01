@@ -1,7 +1,7 @@
 # Abubakar Khawaja
 ## Senior Python Developer | Django | REST APIs | PostgreSQL
 
-abuubkar.dev@gmail.com  ·  +92-334-9858841
+abubakar-dev@hotmail.com  ·  +92-334-9858841
 linkedin.com/in/abubakar-khawaja-008483183  ·  github.com/Abuubkar  ·  abuubkar.github.io
 
 ---
