@@ -15,6 +15,7 @@ Python Developer with 4+ years of experience building scalable backend systems u
 **Languages:** Python, SQL, JavaScript, TypeScript
 **Frameworks:** Django, Django REST Framework, FastAPI, Flask, Scrapy
 **Backend:** REST API Design, Celery, Django Channels, JWT Authentication, WebSockets
+**Backend Integration:** REST APIs, GraphQL, API Design Collaboration
 **Databases:** PostgreSQL, Redis, MySQL, MongoDB, Database Indexing, Query Optimization, Caching
 **Cloud & DevOps:** AWS (RDS, S3, EC2), Docker, GitHub Actions, GitLab CI/CD, Jenkins, Nginx, Linux, Git
 **Testing:** Pytest, Django Test Framework, Unit Testing, API Testing
@@ -35,6 +36,8 @@ Python Developer with 4+ years of experience building scalable backend systems u
 - Designed secure REST APIs with Django REST Framework, implementing JWT authentication, authorization, and third-party integrations.
 - Built and maintained CI/CD pipelines using GitLab CI and GitHub Actions while containerizing applications with Docker for reliable deployments.
 - Improved code quality through automated testing, code reviews, and development best practices, increasing automated test coverage beyond 60%.
+- Volunteered in Arbisoft's graduate hiring process by designing and reviewing technical assessments used to evaluate entry-level software engineering candidates.
+- Built GitHub Actions automation to validate documentation integrity and prevent inconsistent generated documentation from reaching production.
 
 ---
 
@@ -43,6 +46,7 @@ Python Developer with 4+ years of experience building scalable backend systems u
 **FixAlert, Maintenance Platform** · *Django + PostgreSQL*
 - Optimized backend performance by eliminating N+1 queries and improving database access patterns.
 - Implemented Celery-based background processing, Stripe payment integration, and scalable reporting services.
+- Designed asynchronous Celery workflows for QR generation, bulk PDF exports, and automated report generation.
 
 **AskImam, Q&A Platform** · *Django + DRF*
 - Led migration from Django 2.x to Django 5.1 with minimal downtime and improved application stability.

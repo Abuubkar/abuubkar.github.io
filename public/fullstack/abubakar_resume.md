@@ -15,12 +15,15 @@ Full-Stack Engineer with 5+ years of experience architecting and shipping produc
 **Languages:** JavaScript (ES6+), TypeScript, Python, SQL, HTML5, CSS3/SCSS
 **Frontend:** React.js, Next.js, Redux Toolkit, TanStack Query, React Hook Form, Tailwind CSS, Material UI, SCSS
 **Backend:** Django, Django REST Framework, REST API design, Celery (async/task queues), Django Channels
+**Backend Integration:** REST APIs, GraphQL, API Design Collaboration
 **Databases:** PostgreSQL, Redis, Query Optimization, Database Indexing, Caching Strategies
 **Integrations:** Stripe (payments), SendGrid (email), WebSockets, JWT auth, Google Looker (BI), Google Analytics
 **Testing:** Jest, Cypress, Vitest, React Testing Library, Django Test Framework
 **DevOps:** GitLab CI/CD, GitHub Actions, Jenkins, Docker, Nginx, Git, ESLint, Prettier, Husky, AWS, Vercel
 **Foundations:** Data Structures & Algorithms, System Design, Performance Optimization, Agile/Scrum, Code Review, Mentoring
 **Frontend Engineering:** Performance Profiling, Code Splitting, Lazy Loading, Accessibility (WCAG), Responsive Design, Component Architecture
+**Data Visualization:** Chart.js, Google Looker, Analytics Dashboards, Interactive Charts
+**AI Development:** ChatGPT, GitHub Copilot, Prompt Engineering, AI-Assisted Development
 **AI/ML:** Prompt Engineering, Context Engineering, Embeddings, Vector Databases, RAG, Vercel AI SDK
 
 ---
@@ -36,6 +39,11 @@ Full-Stack Engineer with 5+ years of experience architecting and shipping produc
 - Elevated automated test coverage from 10% to over 60% (Jest, Cypress, Vitest) and integrated quality gates (ESLint, Husky), reducing production bugs by 25%.
 - Redesigned React frontend architecture, reducing unnecessary re-renders by 30% and improving page load times by 20-30% via memoization, code-splitting, and optimized state management.
 - Owned end-to-end third-party integrations across multiple production platforms, including Stripe for payments, SendGrid for transactional emails, and Looker for BI analytics.
+- Implemented SSR, Static Site Generation, and modern frontend optimization techniques using Next.js to improve SEO and Core Web Vitals.
+- Developed interactive analytics dashboards using Chart.js and Google Looker to visualize business KPIs and operational insights.
+- Leveraged AI development tools including ChatGPT and GitHub Copilot to accelerate development, improve code quality, and streamline debugging and implementation workflows.
+- Volunteered in Arbisoft's graduate hiring process by designing and reviewing technical assessments used to evaluate entry-level software engineering candidates.
+- Built GitHub Actions automation to validate documentation integrity and prevent inconsistent generated documentation from reaching production.
 
 ---
 
@@ -44,6 +52,7 @@ Full-Stack Engineer with 5+ years of experience architecting and shipping produc
 **FixAlert, Maintenance Platform** · *React + Django*
 - Resolved redundant database lookups to maintain API responsiveness under heavy load.
 - Smoothed asynchronous workflows with Celery for bulk PDF generation and wired up Stripe payments.
+- Designed asynchronous Celery workflows for QR generation, bulk PDF exports, and automated report generation.
 
 **Landit, Career Platform** · *React + Next.js*
 - Executed zero-downtime frontend framework migrations (Material UI v4 to v5, React Router v4 to v5).

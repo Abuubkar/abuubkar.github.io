@@ -18,8 +18,11 @@ Frontend Engineer with 5+ years of experience architecting and shipping responsi
 **Testing & Quality:** Jest, Cypress, Vitest, Storybook, ESLint, Prettier, Husky (pre-commit hooks)
 **Build & Tooling:** Vite, Git, GitLab CI/CD, GitHub Actions, Docker
 **Integrations:** Google Looker, SendGrid, Google Analytics
+**Backend Integration:** REST APIs, GraphQL, API Design Collaboration
 **Practices:** UI architecture, performance optimization, component design systems, responsive design, accessibility, code review, mentoring, Agile/Scrum, cross-functional collaboration
 **Frontend Engineering:** Performance Profiling, Code Splitting, Lazy Loading, Accessibility (WCAG), Responsive Design, Component Architecture
+**Data Visualization:** Chart.js, Google Looker, Analytics Dashboards, Interactive Charts
+**AI Development:** ChatGPT, GitHub Copilot, Prompt Engineering, AI-Assisted Development
 **AI/ML:** Prompt Engineering, Context Engineering, Embeddings, Vector Databases, RAG, Vercel AI SDK
 
 ---
@@ -35,6 +38,10 @@ Frontend Engineer with 5+ years of experience architecting and shipping responsi
 - Optimized developer workflows by streamlining GitLab CI/CD pipelines, significantly reducing frontend build failures and deployment times.
 - Built custom data visualizations with Google Looker and designed scalable transactional email templates with SendGrid.
 - Mentored junior engineers through regular code reviews and drove Agile feature delivery in tight collaboration with UX/UI designers and backend teams.
+- Implemented SSR, SSG, and ISR using Next.js while improving Core Web Vitals, accessibility, SEO, and overall application responsiveness.
+- Developed interactive analytics dashboards using Chart.js and Google Looker to visualize business KPIs and operational insights.
+- Leveraged AI development tools including ChatGPT and GitHub Copilot to accelerate development, improve code quality, and streamline debugging and implementation workflows.
+- Volunteered in Arbisoft's graduate hiring process by designing and reviewing technical assessments used to evaluate entry-level software engineering candidates.
 
 ---
 
@@ -43,10 +50,12 @@ Frontend Engineer with 5+ years of experience architecting and shipping responsi
 **Landit, Career Platform** · *React + Next.js + TypeScript*
 - Executed zero-downtime frontend framework migrations (Material UI v4 to v5, React Router v4 to v5).
 - Managed Storybook components and developed custom Looker BI visualizations for end-users.
+- Migrated Formik to React Hook Form, improving performance and maintainability.
 
 **FixAlert, Maintenance Platform** · *React + Typescript*
 - Revamped the UI of a computerized maintenance-management system in an Agile environment.
 - Built reporting metric views and optimized frontend data fetching with React Query.
+- Implemented reporting interfaces supporting PDF generation, QR code workflows, and operational analytics.
 
 **AskImam, Q&A Platform** · *React + Vite*
 - Added user-facing features to a high-traffic Q&A platform and integrated Google Analytics.
