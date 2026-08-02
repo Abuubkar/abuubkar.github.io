@@ -50,14 +50,21 @@ export type Project = {
 export type ContactDetail = { label: string; value: string; icon: string; href: string };
 export type Certification = { name: string; issuer: string; date: string };
 
+/** Canonical production origin — used for metadataBase, sitemap, robots, and JSON-LD. */
+export const siteUrl = "https://abuubkar.github.io";
+
 export const siteConfig = {
   /* ---------------- Profile / hero ---------------- */
   profile: {
     name: "Abubakar Khawaja",
     firstName: "Abubakar",
+    lastName: "Khawaja",
     brand: "Abubakar.dev",
     role: "Senior Full-Stack Engineer",
     location: "Lahore, Pakistan",
+    // Structured variant of `location`, for JSON-LD.
+    addressLocality: "Lahore",
+    addressCountry: "PK",
     availability: "Available for work",
     // Bundled from src/assets — must NOT live in /public: the resume repo's
     // sync workflow replaces the whole public/ directory on every push.
@@ -71,7 +78,10 @@ export const siteConfig = {
       "Most codebases don't break overnight — they slow down, sprout edge cases, and turn shipping into guesswork.",
     pitchHighlight:
       "I trace the real bottlenecks, harden the foundations, and make releases boring again.",
-    // Long-form summary, used for SEO/meta description.
+    // Meta/OG description — search engines truncate around 160 characters.
+    metaDescription:
+      "Senior Full-Stack Engineer with 5+ years shipping production software — React and Next.js frontends, Django/PostgreSQL backends, fast APIs, reliable CI/CD.",
+    // Long-form summary shown on the page itself.
     intro:
       "Full-Stack Engineer with 5+ years building and shipping production software across React and Next.js frontends and Django/PostgreSQL backends. I take features from idea to deployment and focus on fast queries, clean APIs, and reliable CI/CD. I cut API response times 30–70% through query tuning and indexing, scaled Celery pipelines for heavy workloads, raised automated test coverage 10%→60%+, and reduced deployment time by ~40% through CI optimization.",
     email: "abuubkar.dev@gmail.com",
@@ -81,7 +91,7 @@ export const siteConfig = {
     socials: {
       github: "https://github.com/Abuubkar",
       linkedin: "https://linkedin.com/in/abubakar-khawaja-008483183",
-      website: "https://abuubkar.github.io",
+      website: siteUrl,
     },
   },
 

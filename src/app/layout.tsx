@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Hanken_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
-import { siteConfig } from "@/config/site";
+import { siteConfig, siteUrl } from "@/config/site";
 import "./globals.css";
 
 const hanken = Hanken_Grotesk({
@@ -21,12 +21,31 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const { profile } = siteConfig;
+const title = `${profile.name} — ${profile.role}`;
+
 export const metadata: Metadata = {
-  title: `${siteConfig.profile.name} — ${siteConfig.profile.role}`,
-  description: siteConfig.profile.intro,
-  icons: {
-    icon: "/favicon.svg",
+  metadataBase: new URL(siteUrl),
+  title,
+  description: profile.metaDescription,
+  alternates: { canonical: "/" },
+  authors: [{ name: profile.name, url: siteUrl }],
+  creator: profile.name,
+  openGraph: {
+    type: "profile",
+    firstName: profile.firstName,
+    lastName: profile.lastName,
+    url: "/",
+    siteName: profile.brand,
+    locale: "en_US",
   },
+  twitter: {
+    card: "summary_large_image",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f1f0ed",
 };
 
 export default function RootLayout({
