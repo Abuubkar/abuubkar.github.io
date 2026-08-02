@@ -9,6 +9,10 @@
  */
 
 import avatar from "@/assets/abubakar-theme.png";
+import askimamShot from "@/assets/projects/askimam.png";
+import convoShot from "@/assets/projects/convo.png";
+import fixalertShot from "@/assets/projects/fixalert.png";
+import landitShot from "@/assets/projects/landit.png";
 
 export type NavItem = { id: string; label: string };
 export type Tech = { name: string; icon: string };
@@ -40,7 +44,7 @@ export type Project = {
   href: string;
   /** Public source repo — adds a "Source" link. */
   repo?: string;
-  /** Screenshot path in /public (e.g. "/convo.png"); falls back to an initial. */
+  /** Screenshot URL (bundled from src/assets/projects); falls back to an initial. */
   image?: string;
 };
 export type ContactDetail = { label: string; value: string; icon: string; href: string };
@@ -174,7 +178,7 @@ export const siteConfig = {
           "A maintenance-management platform. Optimized APIs by eliminating N+1 queries, streamlined async workflows with Celery and email, added bulk PDF generation, integrated Stripe payments, and revamped the UI.",
         tags: ["React", "Django", "Material UI", "Celery", "Stripe", "PostgreSQL", "React Query", "Redux Toolkit"],
         href: "https://fixalert.io",
-        image: "/projects/fixalert.png",
+        image: fixalertShot.src,
       },
       {
         title: "Landit",
@@ -183,7 +187,7 @@ export const siteConfig = {
           "A career-pathing platform. Built responsive UIs, led library migrations (MUI v4→v5, React Router v4→v5), managed Storybook + testing, and built Looker BI visualizations with SendGrid email templates.",
         tags: ["React", "Next.js", "Material UI", "Jest", "Cypress", "Storybook", "Looker", "SendGrid"],
         href: "https://landit.com",
-        image: "/projects/landit.png",
+        image: landitShot.src,
       },
       {
         title: "AskImam",
@@ -192,7 +196,7 @@ export const siteConfig = {
           "Built features across the React frontend and Django backend, enhanced the admin dashboard, integrated Google Analytics, hardened auth security, and led the Django 2.x → 5.1 migration.",
         tags: ["React", "Django", "Material UI", "Redux", "Vite", "SQL"],
         href: "https://www.askimam.org/",
-        image: "/projects/askimam.png"
+        image: askimamShot.src
       },
       {
         title: "Rumi",
@@ -239,7 +243,7 @@ export const siteConfig = {
         live: true,
         href: "https://convo-arc.vercel.app/chat",
         repo: "https://github.com/hedonarc/convo",
-        image: "/projects/convo.png",
+        image: convoShot.src,
       },
     ] as Project[],
   },
