@@ -66,8 +66,9 @@ export const siteConfig = {
     addressLocality: "Lahore",
     addressCountry: "PK",
     availability: "Available for work",
-    // Bundled from src/assets — must NOT live in /public: the resume repo's
-    // sync workflow replaces the whole public/ directory on every push.
+    // Bundled from src/assets. The resume repo's sync workflow owns
+    // public/cv/ (and wipes it on every resume push); the rest of public/
+    // belongs to this repo.
     avatar: avatar.src,
     greeting: "Hi, I'm",
     experience: "5+ years",
@@ -90,7 +91,9 @@ export const siteConfig = {
     email: "abuubkar.dev@gmail.com",
     phone: "+92-334-9858841",
     resumeLabel: "CV",
-    resumeUrl: "/resume.pdf",
+    // public/cv/ is written by the resume repo's sync workflow on every
+    // resume push — always the freshest build, never edited by hand here.
+    resumeUrl: "/cv/resume.pdf",
     socials: {
       github: "https://github.com/Abuubkar",
       linkedin: "https://linkedin.com/in/abubakar-khawaja-008483183",
