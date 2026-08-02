@@ -37,10 +37,12 @@ export const metadata: Metadata = {
     lastName: profile.lastName,
     url: "/",
     siteName: profile.brand,
+    description: profile.socialDescription,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
+    description: profile.socialDescription,
   },
 };
 

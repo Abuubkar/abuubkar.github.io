@@ -78,9 +78,12 @@ export const siteConfig = {
       "Most codebases don't break overnight — they slow down, sprout edge cases, and turn shipping into guesswork.",
     pitchHighlight:
       "I trace the real bottlenecks, harden the foundations, and make releases boring again.",
-    // Meta/OG description — search engines truncate around 160 characters.
+    // Meta description — search engines truncate around 160 characters.
     metaDescription:
       "Senior Full-Stack Engineer with 5+ years shipping production software — React and Next.js frontends, Django/PostgreSQL backends, fast APIs, reliable CI/CD.",
+    // OG/Twitter description — social previews truncate around 125 characters.
+    socialDescription:
+      "Senior Full-Stack Engineer — 5+ years shipping React/Next.js and Django/PostgreSQL products end to end.",
     // Long-form summary shown on the page itself.
     intro:
       "Full-Stack Engineer with 5+ years building and shipping production software across React and Next.js frontends and Django/PostgreSQL backends. I take features from idea to deployment and focus on fast queries, clean APIs, and reliable CI/CD. I cut API response times 30–70% through query tuning and indexing, scaled Celery pipelines for heavy workloads, raised automated test coverage 10%→60%+, and reduced deployment time by ~40% through CI optimization.",
