@@ -29,6 +29,11 @@ export const metadata: Metadata = {
   title,
   description: profile.metaDescription,
   alternates: { canonical: "/" },
+  // Google Search Console ownership — the meta-tag method, because the HTML
+  // file method would need public/, which the resume sync wipes.
+  verification: {
+    google: "hBIqxivVE3TUIMIt2N2rNkPhChFsZVUAUUCtsFVFuU8",
+  },
   authors: [{ name: profile.name, url: siteUrl }],
   creator: profile.name,
   openGraph: {
