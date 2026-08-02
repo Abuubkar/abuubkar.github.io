@@ -8,6 +8,8 @@
  * ============================================================
  */
 
+import avatar from "@/assets/abubakar-theme.png";
+
 export type NavItem = { id: string; label: string };
 export type Tech = { name: string; icon: string };
 export type Experience = {
@@ -53,8 +55,9 @@ export const siteConfig = {
     role: "Senior Full-Stack Engineer",
     location: "Lahore, Pakistan",
     availability: "Available for work",
-    // Single source of truth: pulled from the resume repo (raw GitHub URL).
-    avatar: "/abubakar-theme.png",
+    // Bundled from src/assets — must NOT live in /public: the resume repo's
+    // sync workflow replaces the whole public/ directory on every push.
+    avatar: avatar.src,
     greeting: "Hi, I'm",
     experience: "5+ years",
     // Mono stat line shown under the greeting in the hero.
