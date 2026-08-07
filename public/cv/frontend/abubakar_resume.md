@@ -61,7 +61,7 @@ Frontend Engineer with 5+ years of experience architecting and shipping responsi
 - Added user-facing features to a high-traffic Q&A platform and integrated Google Analytics.
 - Upgraded the frontend build stack to Vite, resolving major UI bugs and improving client stability.
 
-**Taiga — Arbisoft** · *AngularJS + CoffeeScript*
+**Taiga - Arbisoft** · *AngularJS + CoffeeScript*
 - Designed and shipped the Requestor module (dynamic assignment, permission controls) and Feedback module (ratings, role-based access) within the ticket detail UI.
 
 **Convo, Real-Time Chat Platform** · *React + WebSockets + TypeScript · Personal Project*
