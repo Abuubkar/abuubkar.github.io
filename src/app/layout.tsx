@@ -70,9 +70,13 @@ export default function RootLayout({
         <div className="top-hairline" aria-hidden="true" />
         {children}
       </body>
-      {/* Umami analytics — privacy-friendly page stats. */}
+      {/* Umami analytics — privacy-friendly page stats. Self-hosted copy of
+          https://cloud.umami.is/script.js (public/stats.js): loading it from
+          our origin avoids the third-party __cf_bm cookie Chrome flags in the
+          Issues panel. Events still post to gateway.umami.is (baked into the
+          script). Re-download occasionally to pick up tracker updates. */}
       <Script
-        src="https://cloud.umami.is/script.js"
+        src="/stats.js"
         data-website-id="12727c17-8ba3-4052-b694-c0f578e27f45"
         strategy="afterInteractive"
       />

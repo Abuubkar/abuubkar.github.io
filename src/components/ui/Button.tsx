@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { ComponentProps } from "react";
 
 type Variant = "primary" | "secondary" | "ghost";
@@ -31,10 +30,13 @@ export function Button({
 }: ButtonProps) {
   const cls = `${base} ${variants[variant]} ${className}`;
   if (href) {
+    // Plain anchor on purpose: every link here is a hash, a file (the CV
+    // PDF), or external. next/link would prefetch file hrefs as routes,
+    // causing 404s for their __next tree payloads in the console.
     return (
-      <Link href={href} className={cls} {...props}>
+      <a href={href} className={cls} {...props}>
         {children}
-      </Link>
+      </a>
     );
   }
   return (
