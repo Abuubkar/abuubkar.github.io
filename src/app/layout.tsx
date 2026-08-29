@@ -70,21 +70,12 @@ export default function RootLayout({
         <div className="top-hairline" aria-hidden="true" />
         {children}
       </body>
-      {/* Plerdy heatmap/UX analytics — verbatim vendor snippet. */}
-      <Script id="plerdy-code" data-plerdy_code="1">
-        {`(function(w,d){
-  if(w.__plerdyCode)return;
-  w.__plerdyCode=1;
-  w._protocol=w.location.protocol=="https:"?"https://":"http://";
-  w._site_hash_code="31f1e288e041d61de3a24017b3d21abb";
-  w._suid=80031;
-  var s=d.createElement("script");
-  s.async=true;
-  s.referrerPolicy="strict-origin-when-cross-origin";
-  s.src="https://a.plerdy.com/public/js/click/main.js?v="+Math.random();
-  d.head.appendChild(s);
-})(window,document);`}
-      </Script>
+      {/* Umami analytics — privacy-friendly page stats. */}
+      <Script
+        src="https://cloud.umami.is/script.js"
+        data-website-id="12727c17-8ba3-4052-b694-c0f578e27f45"
+        strategy="afterInteractive"
+      />
     </html>
   );
 }
