@@ -68,6 +68,7 @@ export function Hero() {
           <img
             src={profile.avatar}
             alt={`${profile.name}, ${profile.role}`}
+            fetchPriority="high"
             className="absolute inset-0 h-full w-full object-cover"
           />
         </div>

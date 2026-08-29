@@ -8,11 +8,11 @@
  * ============================================================
  */
 
-import avatar from "@/assets/abubakar-theme.png";
-import askimamShot from "@/assets/projects/askimam.png";
-import convoShot from "@/assets/projects/convo.png";
-import fixalertShot from "@/assets/projects/fixalert.png";
-import landitShot from "@/assets/projects/landit.png";
+import avatar from "@/assets/abubakar-theme.webp";
+import askimamShot from "@/assets/projects/askimam.webp";
+import convoShot from "@/assets/projects/convo.webp";
+import fixalertShot from "@/assets/projects/fixalert.webp";
+import landitShot from "@/assets/projects/landit.webp";
 
 export type NavItem = { id: string; label: string };
 export type Tech = { name: string; icon: string };
