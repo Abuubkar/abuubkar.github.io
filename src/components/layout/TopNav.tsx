@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChevronRight, Menu, X } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import { track } from "@/lib/track";
 import { useActiveSection } from "@/lib/useActiveSection";
 
 const { nav, profile } = siteConfig;
@@ -60,6 +61,8 @@ export function TopNav() {
                 <li key={item.id}>
                   <a
                     href={`#${item.id}`}
+                    data-umami-event="nav-click"
+                    data-umami-event-section={item.id}
                     aria-current={isActive ? "page" : undefined}
                     className={`relative block whitespace-nowrap text-label-caps lowercase transition-colors ${
                       isActive
@@ -119,7 +122,12 @@ export function TopNav() {
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => {
+                    // track() here, not data-umami-event — the attribute
+                    // path would suppress this menu-closing handler.
+                    track("nav-click", { section: item.id });
+                    setMenuOpen(false);
+                  }}
                   aria-current={isActive ? "page" : undefined}
                   className={`text-headline-lg lowercase transition-colors ${
                     isActive

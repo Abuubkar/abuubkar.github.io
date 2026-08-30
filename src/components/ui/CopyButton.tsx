@@ -2,12 +2,15 @@
 
 import { Copy, Check } from "lucide-react";
 import { useState } from "react";
+import { track } from "@/lib/track";
 
 /** Copies `value` to the clipboard, with a brief check-mark confirmation. */
 export function CopyButton({ value, label }: { value: string; label: string }) {
   const [copied, setCopied] = useState(false);
 
   const onCopy = async () => {
+    // track() here, not data-umami-event — that would suppress this handler.
+    track("contact-copy", { channel: label.toLowerCase() });
     try {
       await navigator.clipboard.writeText(value);
       setCopied(true);

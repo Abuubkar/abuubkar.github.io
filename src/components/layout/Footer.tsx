@@ -35,6 +35,8 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
+                  data-umami-event="social-click"
+                  data-umami-event-network={label.toLowerCase()}
                   className="grid size-10 place-items-center rounded-md border border-outline-variant text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
                 >
                   <Icon className="size-4" />

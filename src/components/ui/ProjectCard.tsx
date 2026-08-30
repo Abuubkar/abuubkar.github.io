@@ -86,6 +86,8 @@ export function ProjectCard({ project }: { project: Project }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Visit ${project.title}`}
+                data-umami-event="project-visit"
+                data-umami-event-project={project.title}
                 className="text-label-caps inline-flex items-center gap-1.5 text-primary transition-opacity hover:opacity-70"
               >
                 <ExternalLink className="size-3.5" /> Visit
@@ -97,6 +99,8 @@ export function ProjectCard({ project }: { project: Project }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${project.title} source on GitHub`}
+                data-umami-event="project-source"
+                data-umami-event-project={project.title}
                 className="text-label-caps inline-flex items-center gap-1.5 text-on-surface-variant transition-colors hover:text-on-surface"
               >
                 <Code2 className="size-3.5" /> Source

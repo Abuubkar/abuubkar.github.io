@@ -2,6 +2,7 @@
 
 import { ArrowUpRight, ExternalLink, Copy, Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { track } from "@/lib/track";
 
 const btnCls =
   "grid size-10 place-items-center rounded-md border border-outline-variant text-on-surface-variant transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary";
@@ -47,6 +48,8 @@ export function MailtoButton({
   // Let the native mailto proceed; if the page never loses focus/visibility,
   // assume no mail app handled it and offer fallbacks.
   const handleClick = () => {
+    // track() here, not data-umami-event — that would suppress this handler.
+    track("contact-open", { channel: "email" });
     let switched = false;
     const onHide = () => {
       if (document.hidden) switched = true;
@@ -66,6 +69,7 @@ export function MailtoButton({
   };
 
   const copyEmail = async () => {
+    track("email-client", { client: "copy" });
     try {
       await navigator.clipboard.writeText(email);
       setCopied(true);
@@ -102,7 +106,10 @@ export function MailtoButton({
             target="_blank"
             rel="noopener noreferrer"
             role="menuitem"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              track("email-client", { client: "gmail" });
+              setOpen(false);
+            }}
             className={itemCls}
           >
             <ExternalLink className="size-4 shrink-0 text-on-surface-variant" />
@@ -113,7 +120,10 @@ export function MailtoButton({
             target="_blank"
             rel="noopener noreferrer"
             role="menuitem"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              track("email-client", { client: "outlook" });
+              setOpen(false);
+            }}
             className={itemCls}
           >
             <ExternalLink className="size-4 shrink-0 text-on-surface-variant" />

@@ -43,10 +43,19 @@ export function Hero() {
 
         <Reveal delay={0.2}>
           <div className="mt-9 flex flex-wrap items-center gap-4">
-            <Button href="#featured">
+            <Button
+              href="#featured"
+              data-umami-event="hero-cta"
+              data-umami-event-cta="view-projects"
+            >
               View Projects <ArrowRight className="size-4" />
             </Button>
-            <Button href="#contact" variant="secondary">
+            <Button
+              href="#contact"
+              variant="secondary"
+              data-umami-event="hero-cta"
+              data-umami-event-cta="get-in-touch"
+            >
               <Mail className="size-4" /> Get in Touch
             </Button>
             <Button
@@ -54,6 +63,7 @@ export function Hero() {
               variant="ghost"
               target="_blank"
               rel="noopener noreferrer"
+              data-umami-event="cv-download"
             >
               <Download className="size-4" /> {profile.resumeLabel}
             </Button>
