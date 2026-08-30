@@ -84,8 +84,7 @@ export function InitiateConnection() {
                           : {})}
                         title={title}
                         aria-label={title}
-                        data-umami-event="contact-open"
-                        data-umami-event-channel={d.label.toLowerCase()}
+                        data-umami-event={`contact-open-${d.label.toLowerCase()}`}
                         className="grid size-10 place-items-center rounded-md border border-outline-variant text-on-surface-variant transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary"
                       >
                         <ArrowUpRight className="size-4" />

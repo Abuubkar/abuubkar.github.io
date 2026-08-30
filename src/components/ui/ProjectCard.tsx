@@ -10,6 +10,8 @@ const MAX_TAGS = 8;
 export function ProjectCard({ project }: { project: Project }) {
   const live = project.href.startsWith("http");
   const hasLinks = live || !!project.repo;
+  // Event names carry the project so the Umami events list is self-explaining.
+  const slug = project.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
   const shownTags = project.tags.slice(0, MAX_TAGS);
   const hiddenTags = project.tags.slice(MAX_TAGS);
@@ -86,8 +88,7 @@ export function ProjectCard({ project }: { project: Project }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Visit ${project.title}`}
-                data-umami-event="project-visit"
-                data-umami-event-project={project.title}
+                data-umami-event={`project-visit-${slug}`}
                 className="text-label-caps inline-flex items-center gap-1.5 text-primary transition-opacity hover:opacity-70"
               >
                 <ExternalLink className="size-3.5" /> Visit
@@ -99,8 +100,7 @@ export function ProjectCard({ project }: { project: Project }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${project.title} source on GitHub`}
-                data-umami-event="project-source"
-                data-umami-event-project={project.title}
+                data-umami-event={`project-source-${slug}`}
                 className="text-label-caps inline-flex items-center gap-1.5 text-on-surface-variant transition-colors hover:text-on-surface"
               >
                 <Code2 className="size-3.5" /> Source

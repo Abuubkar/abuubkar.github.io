@@ -49,7 +49,7 @@ export function MailtoButton({
   // assume no mail app handled it and offer fallbacks.
   const handleClick = () => {
     // track() here, not data-umami-event — that would suppress this handler.
-    track("contact-open", { channel: "email" });
+    track("contact-open-email");
     let switched = false;
     const onHide = () => {
       if (document.hidden) switched = true;
@@ -69,7 +69,7 @@ export function MailtoButton({
   };
 
   const copyEmail = async () => {
-    track("email-client", { client: "copy" });
+    track("email-client-copy");
     try {
       await navigator.clipboard.writeText(email);
       setCopied(true);
@@ -107,7 +107,7 @@ export function MailtoButton({
             rel="noopener noreferrer"
             role="menuitem"
             onClick={() => {
-              track("email-client", { client: "gmail" });
+              track("email-client-gmail");
               setOpen(false);
             }}
             className={itemCls}
@@ -121,7 +121,7 @@ export function MailtoButton({
             rel="noopener noreferrer"
             role="menuitem"
             onClick={() => {
-              track("email-client", { client: "outlook" });
+              track("email-client-outlook");
               setOpen(false);
             }}
             className={itemCls}

@@ -10,7 +10,7 @@ export function CopyButton({ value, label }: { value: string; label: string }) {
 
   const onCopy = async () => {
     // track() here, not data-umami-event — that would suppress this handler.
-    track("contact-copy", { channel: label.toLowerCase() });
+    track(`contact-copy-${label.toLowerCase()}`);
     try {
       await navigator.clipboard.writeText(value);
       setCopied(true);

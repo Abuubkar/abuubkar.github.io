@@ -45,16 +45,14 @@ export function Hero() {
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Button
               href="#featured"
-              data-umami-event="hero-cta"
-              data-umami-event-cta="view-projects"
+              data-umami-event="hero-cta-view-projects"
             >
               View Projects <ArrowRight className="size-4" />
             </Button>
             <Button
               href="#contact"
               variant="secondary"
-              data-umami-event="hero-cta"
-              data-umami-event-cta="get-in-touch"
+              data-umami-event="hero-cta-get-in-touch"
             >
               <Mail className="size-4" /> Get in Touch
             </Button>

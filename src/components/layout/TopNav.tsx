@@ -61,8 +61,7 @@ export function TopNav() {
                 <li key={item.id}>
                   <a
                     href={`#${item.id}`}
-                    data-umami-event="nav-click"
-                    data-umami-event-section={item.id}
+                    data-umami-event={`nav-click-${item.id}`}
                     aria-current={isActive ? "page" : undefined}
                     className={`relative block whitespace-nowrap text-label-caps lowercase transition-colors ${
                       isActive
@@ -125,7 +124,7 @@ export function TopNav() {
                   onClick={() => {
                     // track() here, not data-umami-event — the attribute
                     // path would suppress this menu-closing handler.
-                    track("nav-click", { section: item.id });
+                    track(`nav-click-${item.id}`);
                     setMenuOpen(false);
                   }}
                   aria-current={isActive ? "page" : undefined}
