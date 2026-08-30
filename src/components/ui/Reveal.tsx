@@ -11,16 +11,20 @@ export function Reveal({
   children,
   delay = 0,
   className = "",
+  slideOnly = false,
 }: {
   children: ReactNode;
   delay?: number;
   className?: string;
+  /** Rise without fading — for LCP elements, which must paint at full
+   *  opacity immediately or LCP stalls until hydration + animation. */
+  slideOnly?: boolean;
 }) {
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={slideOnly ? { y: 24 } : { opacity: 0, y: 24 }}
+      whileInView={slideOnly ? { y: 0 } : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
     >

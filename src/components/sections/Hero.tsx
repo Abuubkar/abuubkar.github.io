@@ -62,7 +62,7 @@ export function Hero() {
       </div>
 
       {/* Portrait column — squared, bracket-cornered frame */}
-      <Reveal delay={0.15} className="order-1 lg:order-2">
+      <Reveal delay={0.15} slideOnly className="order-1 lg:order-2">
         <div className="bracket-corners relative mx-auto aspect-4/5 w-56 shrink-0 overflow-hidden rounded-xl border border-outline/60 shadow-xl sm:w-64 lg:w-80">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
