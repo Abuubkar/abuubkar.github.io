@@ -7,7 +7,7 @@ linkedin.com/in/abubakar-khawaja-008483183  ·  github.com/Abuubkar  ·  abuubka
 ---
 
 ## Professional Summary
-Python Developer with 4+ years of experience building scalable backend systems using Django, Django REST Framework, PostgreSQL, Redis, and Celery. Experienced in designing REST APIs, optimizing database performance, implementing asynchronous processing, and deploying production applications with Docker and CI/CD. Strong understanding of software architecture, API security, cloud deployments, and writing clean, maintainable Python code.
+Python Developer with 5+ years of experience building scalable backend systems using Django, Django REST Framework, PostgreSQL, Redis, and Celery. Experienced in designing REST APIs, optimizing database performance, implementing asynchronous processing, and deploying production applications with Docker and CI/CD. Strong understanding of software architecture, API security, cloud deployments, and writing clean, maintainable Python code.
 
 ---
 
