@@ -52,7 +52,7 @@ Frontend Engineer with 5+ years of experience architecting and shipping responsi
 - Managed Storybook components and developed custom Looker BI visualizations for end-users.
 - Migrated Formik to React Hook Form, improving performance and maintainability.
 
-**FixAlert, Maintenance Platform** · *React + Typescript*
+**FixAlert, Maintenance Platform** · *React + TypeScript*
 - Revamped the UI of a computerized maintenance-management system in an Agile environment.
 - Built reporting metric views and optimized frontend data fetching with React Query.
 - Implemented reporting interfaces supporting PDF generation, QR code workflows, and operational analytics.
