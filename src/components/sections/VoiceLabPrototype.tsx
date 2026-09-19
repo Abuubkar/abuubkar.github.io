@@ -3,8 +3,10 @@
 /**
  * ============================================================
  *  PROTOTYPE — throwaway, do not ship.
- *  Three variants of the VoiceLab section on the real page,
- *  switchable via ?variant=A|B|C (floating bar, dev-only).
+ *  Round 2: four experiments on the "Console split" (B) theme,
+ *  switchable via ?variant=B1|B2|B3|B4 (floating bar, dev-only).
+ *  Round 1 (Terminal / Console split / Player pill) lives in
+ *  git history at ac7b57a.
  *  State is FAKED (timed transitions + the browser's own voice)
  *  so the design can be judged without the 92 MB model.
  *  The winner gets rewritten properly as VoiceLab.tsx.
@@ -12,7 +14,13 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Loader2, Play, Square } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Play,
+  Square,
+} from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import {
@@ -60,8 +68,7 @@ function useFakeTts(failLoad: boolean) {
     }));
     if (window.speechSynthesis) {
       const u = new SpeechSynthesisUtterance(text);
-      u.onend = u.onerror = () =>
-        setState((s) => ({ ...s, phase: "ready" }));
+      u.onend = u.onerror = () => setState((s) => ({ ...s, phase: "ready" }));
       window.speechSynthesis.speak(u);
     } else {
       timers.current.push(
@@ -126,131 +133,32 @@ function useFakeTts(failLoad: boolean) {
 
 type Driver = ReturnType<typeof useFakeTts>;
 
-const busy = (p: TtsState["phase"]) =>
-  p === "loading" || p === "synthesizing";
+const busy = (p: TtsState["phase"]) => p === "loading" || p === "synthesizing";
 
-/* ----------------------- Variant A — terminal ----------------------- */
+const HEADING = {
+  id: "voice-lab",
+  num: "0x07",
+  slug: "voice-lab",
+  title: "Voice Lab",
+  subtitle:
+    "An 82M-parameter speech model, downloaded to this tab on demand and run on your hardware. Type anything — nothing is sent anywhere.",
+};
 
-function statusLinesA(s: TtsState): string[] {
-  const lines = [`▸ model: ${MODEL_LABEL} · q8 · ${MODEL_SIZE_MB} MB`];
-  if (s.phase === "idle")
-    lines.push("▸ nothing downloaded yet — synth to begin");
-  if (s.phase === "loading")
-    lines.push(
-      `▸ downloading weights … ${Math.round(s.progress)}%  [${"█".repeat(Math.round(s.progress / 10)).padEnd(10, "░")}]`,
-    );
-  if (s.tier)
-    lines.push(
-      s.tier === "web-speech"
-        ? "▸ backend: web-speech (fallback — browser voice, not the model)"
-        : `▸ backend: ${s.tier} · on-device`,
-    );
-  if (s.phase === "synthesizing") lines.push("▸ running inference …");
-  if (s.phase === "speaking") lines.push("▸ playing ▶");
-  if (s.timing)
-    lines.push(`✓ ${s.timing.audioSecs}s of audio in ${s.timing.genSecs}s`);
-  return lines;
-}
+const backendLabel = (s: TtsState) =>
+  s.tier === "web-speech"
+    ? "browser voice (fallback)"
+    : s.tier
+      ? `${s.tier} · on-device`
+      : "— not loaded";
 
-function VariantA({ state, speak, stop, setVoice }: Driver) {
-  const [text, setText] = useState(SAMPLE_TEXT);
-  return (
-    <section className="scroll-mt-24 py-20">
-      <SectionHeading
-        id="voice-lab"
-        num="0x07"
-        slug="voice-lab"
-        title="Voice Lab"
-        subtitle="A neural text-to-speech model, running in your browser. No server, no API — your text never leaves this tab."
-      />
-      <div className="overflow-hidden rounded-lg border border-outline">
-        {/* Title bar */}
-        <div className="flex items-center gap-2 border-b border-outline bg-surface-container-high px-4 py-2.5">
-          <span className="size-2.5 rounded-full bg-error/60" aria-hidden />
-          <span className="size-2.5 rounded-full bg-warning/60" aria-hidden />
-          <span className="size-2.5 rounded-full bg-success/60" aria-hidden />
-          <span className="text-code-sm ml-2 text-on-surface-variant">
-            abubakar@portfolio:~/voice-lab
-          </span>
-        </div>
-        {/* Dark terminal body */}
-        <div className="bg-inverse-surface p-5 font-mono">
-          <div aria-live="polite" className="text-code-sm flex min-h-28 flex-col gap-1.5 text-inverse-on-surface/80">
-            {statusLinesA(state).map((line) => (
-              <span key={line}>{line}</span>
-            ))}
-          </div>
-          {/* Voice flags */}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {VOICES.map((v) => (
-              <button
-                key={v.id}
-                type="button"
-                onClick={() => setVoice(v.id)}
-                className={`text-code-sm rounded border px-2 py-1 transition-colors ${
-                  state.voice === v.id
-                    ? "border-inverse-primary text-inverse-primary"
-                    : "border-inverse-on-surface/20 text-inverse-on-surface/60 hover:text-inverse-on-surface"
-                }`}
-              >
-                --voice {v.id}
-              </button>
-            ))}
-          </div>
-          {/* Prompt row */}
-          <div className="mt-4 flex items-center gap-2 border-t border-inverse-on-surface/15 pt-4">
-            <span className="text-inverse-primary" aria-hidden>
-              $
-            </span>
-            <input
-              value={text}
-              maxLength={MAX_TEXT_LENGTH}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && speak(text)}
-              aria-label="Text to speak"
-              className="text-code-sm min-w-0 flex-1 bg-transparent text-inverse-on-surface outline-none placeholder:text-inverse-on-surface/40"
-              placeholder="type something for the model to say…"
-            />
-            {state.phase === "speaking" ? (
-              <button
-                type="button"
-                onClick={stop}
-                className="text-code-sm rounded border border-inverse-on-surface/30 px-3 py-1 text-inverse-on-surface hover:border-inverse-primary hover:text-inverse-primary"
-              >
-                stop
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => speak(text)}
-                disabled={busy(state.phase)}
-                className="text-code-sm rounded border border-inverse-primary px-3 py-1 text-inverse-primary transition-opacity disabled:opacity-40"
-              >
-                {busy(state.phase) ? "…" : "synth ⏎"}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+/* ------------- B1 — console split (round-1 baseline) ------------- */
 
-/* -------------------- Variant B — console split -------------------- */
-
-function VariantB({ state, speak, stop, setVoice }: Driver) {
+function VariantB1({ state, speak, stop, setVoice }: Driver) {
   const [text, setText] = useState(SAMPLE_TEXT);
   const rows: [string, string][] = [
     ["model", `${MODEL_LABEL} · Apache-2.0`],
     ["weights", `${MODEL_SIZE_MB} MB · q8 quantized`],
-    [
-      "backend",
-      state.tier === "web-speech"
-        ? "browser voice (fallback)"
-        : state.tier
-          ? `${state.tier} · on-device`
-          : "— not loaded",
-    ],
+    ["backend", backendLabel(state)],
     ["status", state.phase],
     [
       "last run",
@@ -261,15 +169,8 @@ function VariantB({ state, speak, stop, setVoice }: Driver) {
   ];
   return (
     <section className="scroll-mt-24 py-20">
-      <SectionHeading
-        id="voice-lab"
-        num="0x07"
-        slug="voice-lab"
-        title="Voice Lab"
-        subtitle="An 82M-parameter speech model, downloaded to this tab on demand and run on your hardware. Type anything — nothing is sent anywhere."
-      />
+      <SectionHeading {...HEADING} />
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        {/* Input panel */}
         <div className="flex flex-col gap-4 rounded-lg border border-outline-variant bg-surface-container p-5">
           <label
             htmlFor="voicelab-text"
@@ -322,7 +223,6 @@ function VariantB({ state, speak, stop, setVoice }: Driver) {
             )}
           </div>
         </div>
-        {/* Telemetry panel */}
         <div
           aria-live="polite"
           className="bracket-corners flex flex-col gap-3 rounded-lg border border-outline bg-surface-container-lowest p-5"
@@ -372,39 +272,276 @@ function VariantB({ state, speak, stop, setVoice }: Driver) {
   );
 }
 
-/* --------------------- Variant C — player pill --------------------- */
+/* ---------------- B2 — pipeline stages across the top ---------------- */
 
-function statusLineC(s: TtsState): string {
-  if (s.phase === "idle")
-    return `// ${MODEL_LABEL} · ${MODEL_SIZE_MB} MB · downloads on first play`;
-  if (s.phase === "loading") return `// downloading model … ${Math.round(s.progress)}%`;
-  if (s.phase === "synthesizing") return "// synthesizing on your device …";
-  if (s.tier === "web-speech")
-    return "// fallback: your browser's voice (the model couldn't load)";
-  if (s.timing)
-    return `// ${s.timing.audioSecs}s of audio in ${s.timing.genSecs}s · ${s.tier} · on-device`;
-  return `// ready · ${s.tier} · on-device`;
+const STAGES = ["text", "phonemes", "kokoro-82M", "waveform", "audio out"];
+
+function stageState(s: TtsState, i: number): "idle" | "active" | "done" {
+  if (s.phase === "loading") return i === 2 ? "active" : "idle";
+  if (s.phase === "synthesizing")
+    return i <= 1 ? "done" : i <= 3 ? "active" : "idle";
+  if (s.phase === "speaking") return i === 4 ? "active" : "done";
+  if (s.phase === "ready" && s.timing) return "done";
+  return "idle";
 }
 
-function VariantC({ state, speak, stop, setVoice }: Driver) {
+function VariantB2({ state, speak, stop, setVoice }: Driver) {
   const [text, setText] = useState(SAMPLE_TEXT);
-  const voiceIdx = VOICES.findIndex((v) => v.id === state.voice);
+  return (
+    <section className="scroll-mt-24 py-20">
+      <SectionHeading {...HEADING} />
+      {/* Pipeline strip */}
+      <div
+        aria-live="polite"
+        className="mb-6 flex flex-wrap items-center gap-2 rounded-lg border border-outline-variant bg-surface-container p-4"
+      >
+        {STAGES.map((stage, i) => {
+          const st = stageState(state, i);
+          return (
+            <span key={stage} className="flex items-center gap-2">
+              {i > 0 && (
+                <span
+                  className={`text-code-sm ${st === "idle" ? "text-outline" : "text-primary"}`}
+                  aria-hidden
+                >
+                  →
+                </span>
+              )}
+              <span
+                className={`text-code-sm rounded-md border px-2.5 py-1.5 transition-colors ${
+                  st === "active"
+                    ? "animate-pulse border-primary bg-primary/5 text-primary"
+                    : st === "done"
+                      ? "border-outline text-on-surface"
+                      : "border-outline-variant text-on-surface-variant"
+                }`}
+              >
+                {stage}
+              </span>
+            </span>
+          );
+        })}
+        <span className="text-code-sm ml-auto text-on-surface-variant">
+          {state.phase === "loading"
+            ? `downloading weights ${Math.round(state.progress)}%`
+            : state.timing
+              ? `✓ ${state.timing.audioSecs}s audio in ${state.timing.genSecs}s`
+              : state.tier === "web-speech"
+                ? "fallback: browser voice"
+                : `${MODEL_SIZE_MB} MB · ${backendLabel(state)}`}
+        </span>
+      </div>
+      {state.phase === "loading" && (
+        <div className="mb-6 h-1 overflow-hidden rounded-full bg-surface-container-high">
+          <div
+            className="h-full rounded-full bg-primary transition-[width] duration-150"
+            style={{ width: `${state.progress}%` }}
+          />
+        </div>
+      )}
+      {/* Input row */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <input
+          value={text}
+          maxLength={MAX_TEXT_LENGTH}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && !busy(state.phase) && speak(text)}
+          aria-label="Text to speak"
+          className="text-body-md min-w-0 flex-1 rounded-md border border-outline-variant bg-surface-container-lowest px-4 py-3 text-on-surface outline-none focus:border-primary"
+        />
+        <select
+          value={state.voice}
+          onChange={(e) => setVoice(e.target.value as VoiceId)}
+          aria-label="Voice"
+          className="text-code-sm rounded-md border border-outline-variant bg-surface-container-lowest px-3 py-3 text-on-surface outline-none focus:border-primary"
+        >
+          {VOICES.map((v) => (
+            <option key={v.id} value={v.id}>
+              {v.label}
+            </option>
+          ))}
+        </select>
+        {state.phase === "speaking" ? (
+          <Button variant="secondary" onClick={stop}>
+            Stop
+          </Button>
+        ) : (
+          <Button
+            variant="primary"
+            onClick={() => speak(text)}
+            disabled={busy(state.phase)}
+          >
+            {busy(state.phase) && (
+              <Loader2 className="size-4 animate-spin" aria-hidden />
+            )}
+            Run pipeline
+          </Button>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* --------------- B3 — editor with an IDE status bar --------------- */
+
+function VariantB3({ state, speak, stop, setVoice }: Driver) {
+  const [text, setText] = useState(SAMPLE_TEXT);
+  return (
+    <section className="scroll-mt-24 py-20">
+      <SectionHeading {...HEADING} />
+      <div className="overflow-hidden rounded-lg border border-outline">
+        {/* Editor tab bar */}
+        <div className="flex items-center justify-between border-b border-outline bg-surface-container-high px-4 py-2">
+          <span className="text-code-sm rounded-t border-b-2 border-primary px-2 py-1 text-on-surface">
+            say-it.txt
+          </span>
+          <div className="flex items-center gap-2">
+            <select
+              value={state.voice}
+              onChange={(e) => setVoice(e.target.value as VoiceId)}
+              aria-label="Voice"
+              className="text-code-sm rounded border border-outline-variant bg-surface-container-lowest px-2 py-1 text-on-surface outline-none focus:border-primary"
+            >
+              {VOICES.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.label}
+                </option>
+              ))}
+            </select>
+            {state.phase === "speaking" ? (
+              <button
+                type="button"
+                onClick={stop}
+                className="text-code-sm flex items-center gap-1.5 rounded bg-error px-3 py-1 text-on-error"
+              >
+                <Square className="size-3 fill-current" aria-hidden /> stop
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => speak(text)}
+                disabled={busy(state.phase)}
+                className="text-code-sm flex items-center gap-1.5 rounded bg-primary px-3 py-1 text-on-primary transition-opacity disabled:opacity-50"
+              >
+                {busy(state.phase) ? (
+                  <Loader2 className="size-3 animate-spin" aria-hidden />
+                ) : (
+                  <Play className="size-3 fill-current" aria-hidden />
+                )}
+                run
+              </button>
+            )}
+          </div>
+        </div>
+        {/* Editor body with line-number gutter */}
+        <div className="flex bg-surface-container-lowest">
+          <div
+            className="text-code-sm select-none border-r border-outline-variant px-3 py-4 text-right text-on-surface-variant/60"
+            aria-hidden
+          >
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="leading-7">
+                {n}
+              </div>
+            ))}
+          </div>
+          <textarea
+            value={text}
+            maxLength={MAX_TEXT_LENGTH}
+            onChange={(e) => setText(e.target.value)}
+            rows={3}
+            aria-label="Text to speak"
+            className="text-body-md w-full resize-none bg-transparent px-4 py-4 leading-7 text-on-surface outline-none"
+          />
+        </div>
+        {/* Status bar */}
+        <div
+          aria-live="polite"
+          className="text-code-sm flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-outline bg-inverse-surface px-4 py-2 text-inverse-on-surface/80"
+        >
+          <span className="text-inverse-primary">
+            ⚡ {MODEL_LABEL} · q8 · {MODEL_SIZE_MB} MB
+          </span>
+          <span>{backendLabel(state)}</span>
+          <span className="capitalize">
+            {state.phase === "loading"
+              ? `downloading ${Math.round(state.progress)}%`
+              : state.phase}
+          </span>
+          <span className="ml-auto">
+            {state.timing
+              ? `${state.timing.audioSecs}s audio in ${state.timing.genSecs}s`
+              : `${text.length}/${MAX_TEXT_LENGTH}`}
+          </span>
+        </div>
+        {state.phase === "loading" && (
+          <div className="h-0.5 bg-inverse-surface">
+            <div
+              className="h-full bg-inverse-primary transition-[width] duration-150"
+              style={{ width: `${state.progress}%` }}
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ----------------- B4 — waveform deck, audio-first ----------------- */
+
+// Deterministic bar heights (no Math.random → no hydration mismatch).
+const BARS = Array.from({ length: 48 }, (_, i) =>
+  Math.round(24 + 70 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.6))),
+);
+
+function VariantB4({ state, speak, stop, setVoice }: Driver) {
+  const [text, setText] = useState(SAMPLE_TEXT);
   const speaking = state.phase === "speaking";
   return (
     <section className="scroll-mt-24 py-20">
-      <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
-        <p className="text-code-sm text-on-surface-variant">
-          <span className="text-primary">0x07</span>{" "}
-          <span aria-hidden>{"//"}</span> voice-lab
+      <SectionHeading {...HEADING} />
+      <div className="bracket-corners rounded-lg border border-outline bg-surface-container-lowest p-6">
+        {/* Waveform stage */}
+        <div className="flex h-24 items-center gap-[3px]" aria-hidden>
+          {BARS.map((h, i) => (
+            <span
+              key={i}
+              className={`w-1 flex-1 rounded-full transition-colors duration-300 ${
+                speaking
+                  ? "animate-pulse bg-primary"
+                  : state.phase === "loading" &&
+                      i / BARS.length < state.progress / 100
+                    ? "bg-primary/50"
+                    : "bg-outline-variant"
+              }`}
+              style={{
+                height: `${speaking ? h : state.phase === "loading" ? 30 : h * 0.45}%`,
+                animationDelay: `${(i % 8) * 90}ms`,
+              }}
+            />
+          ))}
+        </div>
+        <p
+          aria-live="polite"
+          className="text-code-sm mt-3 text-center text-on-surface-variant"
+        >
+          {state.phase === "idle" &&
+            `${MODEL_LABEL} · ${MODEL_SIZE_MB} MB · downloads on first play`}
+          {state.phase === "loading" &&
+            `downloading weights … ${Math.round(state.progress)}%`}
+          {state.phase === "synthesizing" && "synthesizing on your device …"}
+          {speaking &&
+            (state.timing
+              ? `${state.timing.audioSecs}s of audio in ${state.timing.genSecs}s · ${backendLabel(state)}`
+              : "playing — your browser's voice (fallback)")}
+          {state.phase === "ready" &&
+            (state.timing
+              ? `done · ${state.timing.audioSecs}s in ${state.timing.genSecs}s · again?`
+              : `ready · ${backendLabel(state)}`)}
+          {state.phase === "error" && "couldn't start — try a reload"}
         </p>
-        <h2 className="text-headline-lg text-on-surface">
-          Type it. My site says it.
-        </h2>
-        <p className="text-body-md max-w-md text-on-surface-variant">
-          A neural voice model runs right here in your browser — your words
-          never leave this tab.
-        </p>
-        <div className="flex w-full items-center gap-2 rounded-full border border-outline bg-surface-container-lowest p-2 shadow-[0_8px_32px_-16px_rgba(0,0,0,0.15)]">
+        {/* Transport row */}
+        <div className="mt-5 flex items-center gap-3 border-t border-outline-variant pt-5">
           <button
             type="button"
             onClick={() => (speaking ? stop() : speak(text))}
@@ -424,33 +561,26 @@ function VariantC({ state, speak, stop, setVoice }: Driver) {
             value={text}
             maxLength={MAX_TEXT_LENGTH}
             onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && !busy(state.phase) && speak(text)}
-            aria-label="Text to speak"
-            className="text-body-md min-w-0 flex-1 bg-transparent text-on-surface outline-none placeholder:text-on-surface-variant"
-            placeholder="Say something…"
-          />
-          <button
-            type="button"
-            onClick={() =>
-              setVoice(VOICES[(voiceIdx + 1) % VOICES.length].id)
+            onKeyDown={(e) =>
+              e.key === "Enter" && !busy(state.phase) && speak(text)
             }
-            title="Change voice"
-            className="text-code-sm shrink-0 rounded-full border border-outline-variant px-3 py-1.5 text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
+            aria-label="Text to speak"
+            className="text-body-md min-w-0 flex-1 rounded-md border border-outline-variant bg-surface-container px-4 py-3 text-on-surface outline-none focus:border-primary"
+            placeholder="Type something for the model to say…"
+          />
+          <select
+            value={state.voice}
+            onChange={(e) => setVoice(e.target.value as VoiceId)}
+            aria-label="Voice"
+            className="text-code-sm shrink-0 rounded-md border border-outline-variant bg-surface-container px-3 py-3 text-on-surface outline-none focus:border-primary"
           >
-            {VOICES[voiceIdx].label.split(" — ")[0]} ↺
-          </button>
+            {VOICES.map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.label.split(" — ")[0]}
+              </option>
+            ))}
+          </select>
         </div>
-        {state.phase === "loading" && (
-          <div className="h-1 w-full max-w-xs overflow-hidden rounded-full bg-surface-container-high">
-            <div
-              className="h-full rounded-full bg-primary transition-[width] duration-150"
-              style={{ width: `${state.progress}%` }}
-            />
-          </div>
-        )}
-        <p aria-live="polite" className="text-code-sm text-on-surface-variant">
-          {statusLineC(state)}
-        </p>
       </div>
     </section>
   );
@@ -459,13 +589,14 @@ function VariantC({ state, speak, stop, setVoice }: Driver) {
 /* --------------------------- switcher bar --------------------------- */
 
 const VARIANTS = [
-  { key: "A", name: "Terminal session" },
-  { key: "B", name: "Console split" },
-  { key: "C", name: "Player pill" },
+  { key: "B1", name: "Console split" },
+  { key: "B2", name: "Pipeline" },
+  { key: "B3", name: "Editor dock" },
+  { key: "B4", name: "Waveform deck" },
 ] as const;
 
 export function VoiceLabPrototype() {
-  const [variant, setVariant] = useState("A");
+  const [variant, setVariant] = useState("B1");
   const [failLoad, setFailLoad] = useState(false);
   const driver = useFakeTts(failLoad);
 
@@ -511,9 +642,10 @@ export function VoiceLabPrototype() {
   const current = VARIANTS.find((v) => v.key === variant)!;
   return (
     <>
-      {variant === "A" && <VariantA {...driver} />}
-      {variant === "B" && <VariantB {...driver} />}
-      {variant === "C" && <VariantC {...driver} />}
+      {variant === "B1" && <VariantB1 {...driver} />}
+      {variant === "B2" && <VariantB2 {...driver} />}
+      {variant === "B3" && <VariantB3 {...driver} />}
+      {variant === "B4" && <VariantB4 {...driver} />}
       <div className="fixed bottom-5 left-1/2 z-[60] flex -translate-x-1/2 items-center gap-1 rounded-full border border-outline bg-inverse-surface px-2 py-1.5 text-inverse-on-surface shadow-lg">
         <button
           type="button"
