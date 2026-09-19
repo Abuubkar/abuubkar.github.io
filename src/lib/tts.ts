@@ -30,15 +30,23 @@ export type TtsState = {
   progress: number;
   tier: TtsTier | null;
   voice: VoiceId;
-  error: string | null;
+  error: TtsError | null;
   /** Last successful neural run, for the "Xs of audio in Ys" readout. */
   timing: { audioSecs: number; genSecs: number } | null;
 };
 
+// Version is pinned as far as the stack allows: kokoro-js is exact-pinned in
+// package.json and the model id names the v1.0 ONNX export. (kokoro-js does
+// not forward a HF `revision`, so a re-upload under the same repo id is the
+// residual risk.)
 export const MODEL_ID = "onnx-community/Kokoro-82M-v1.0-ONNX";
 export const MODEL_LABEL = "kokoro-82M";
+export const MODEL_VERSION = "v1.0";
 export const MODEL_SIZE_MB = 92; // q8 weights — shown in the UI before download
 export const MAX_TEXT_LENGTH = 300; // keep a phone's CPU out of trouble
+
+/** Machine-readable error codes; the UI owns the user-facing copy. */
+export type TtsError = "load-failed" | "synthesis-failed";
 
 /** Curated subset of the model's voices (the full set is mostly low-grade). */
 export const VOICES = [
@@ -113,21 +121,23 @@ async function loadModel(): Promise<Kokoro | null> {
         }
       },
     });
-    setState({ tier: "wasm", progress: 100 });
+    setState({ tier: "wasm", progress: 100, error: null });
     track("tts-load-done");
     return model;
   } catch (err) {
     track("tts-load-error");
+    // Don't cache the failure — the next click retries the download instead
+    // of foreclosing the neural path for the rest of the page's life.
+    modelPromise = null;
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      // Honest fallback: the browser's own voice, clearly labeled in the UI.
-      setState({ tier: "web-speech", error: null });
+      // Honest fallback: the browser's own voice, surfaced in the UI.
+      // getVoices() also primes Chrome's async voice list so the local-voice
+      // preference has something to pick from by the time we speak.
+      window.speechSynthesis.getVoices();
+      setState({ tier: "web-speech", error: "load-failed" });
       return null;
     }
-    setState({
-      phase: "error",
-      tier: null,
-      error: err instanceof Error ? err.message : "Model failed to load",
-    });
+    setState({ phase: "error", tier: null, error: "load-failed" });
     throw err;
   }
 }
@@ -202,7 +212,7 @@ export async function speak(rawText: string) {
     return;
   }
 
-  setState({ phase: "synthesizing" });
+  setState({ phase: "synthesizing", error: null });
   try {
     const t0 = performance.now();
     // First use of a voice also fetches its ~500 KB embedding (Cache API
@@ -226,11 +236,8 @@ export async function speak(rawText: string) {
     });
     track(`tts-speak-${state.tier}`);
     await currentAudio.play();
-  } catch (err) {
+  } catch {
     if (run !== myRun) return;
-    setState({
-      phase: "ready",
-      error: err instanceof Error ? err.message : "Synthesis failed",
-    });
+    setState({ phase: "ready", error: "synthesis-failed" });
   }
 }

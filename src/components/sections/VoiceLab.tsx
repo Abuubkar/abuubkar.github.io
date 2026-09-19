@@ -10,6 +10,7 @@ import {
   MAX_TEXT_LENGTH,
   MODEL_LABEL,
   MODEL_SIZE_MB,
+  MODEL_VERSION,
   VOICES,
   setVoice,
   speak,
@@ -23,6 +24,8 @@ import { useTts } from "@/lib/useTts";
 const { voicelab } = siteConfig;
 
 const STAGES = ["text", "phonemes", MODEL_LABEL, "waveform", "audio out"];
+// Named positions in STAGES, so the glow logic below reads as intent.
+const STAGE = { text: 0, phonemes: 1, model: 2, waveform: 3, audioOut: 4 };
 
 const busy = (p: TtsPhase) => p === "loading" || p === "synthesizing";
 
@@ -40,16 +43,16 @@ function useActiveStage(state: TtsState): number {
       timers.push(window.setTimeout(() => setActive(value), ms));
     if (tier === "web-speech") {
       // Fallback skips the model pipeline entirely — only the endpoints glow.
-      at(phase === "speaking" ? 4 : -1, 0);
+      at(phase === "speaking" ? STAGE.audioOut : -1, 0);
     } else if (phase === "loading") {
-      at(2, 0); // the weights belong to the model chip
+      at(STAGE.model, 0); // the weights belong to the model chip
     } else if (phase === "synthesizing") {
-      at(0, 0);
-      at(1, 300);
-      at(2, 750);
+      at(STAGE.text, 0);
+      at(STAGE.phonemes, 300);
+      at(STAGE.model, 750);
     } else if (phase === "speaking") {
-      at(3, 0);
-      at(4, 450);
+      at(STAGE.waveform, 0);
+      at(STAGE.audioOut, 450);
     } else {
       at(-1, 0);
     }
@@ -58,21 +61,20 @@ function useActiveStage(state: TtsState): number {
   return active;
 }
 
-function chipClass(state: TtsState, active: number, i: number): string {
-  const isFallback = state.tier === "web-speech";
-  if (state.phase === "loading")
-    return i === 2 ? "active" : "idle";
+type ChipState = "active" | "done" | "idle";
+
+function chipState(state: TtsState, active: number, i: number): ChipState {
+  // In the fallback, the model's middle stages never ran and never glow.
+  const skipped =
+    state.tier === "web-speech" && i > STAGE.text && i < STAGE.audioOut;
+  if (state.phase === "loading") return i === STAGE.model ? "active" : "idle";
   if (active >= 0)
-    return i === active
-      ? "active"
-      : i < active && !(isFallback && i > 0 && i < 4)
-        ? "done"
-        : "idle";
+    return i === active ? "active" : i < active && !skipped ? "done" : "idle";
   if (state.phase === "ready" && state.timing) return "done";
   return "idle";
 }
 
-const CHIP_STYLES: Record<string, string> = {
+const CHIP_STYLES: Record<ChipState, string> = {
   active: "animate-pulse border-primary bg-primary/5 text-primary",
   done: "border-outline text-on-surface",
   idle: "border-outline-variant text-on-surface-variant",
@@ -84,7 +86,7 @@ export function VoiceLab() {
   const active = useActiveStage(state);
 
   const rows: [string, string][] = [
-    ["model", `${MODEL_LABEL} · Apache-2.0`],
+    ["model", `${MODEL_LABEL} ${MODEL_VERSION} · Apache-2.0`],
     ["weights", `${MODEL_SIZE_MB} MB · q8 quantized`],
     [
       "backend",
@@ -119,7 +121,7 @@ export function VoiceLab() {
           className="mb-6 flex flex-wrap items-center gap-2 rounded-lg border border-outline-variant bg-surface-container p-4"
         >
           {STAGES.map((stage, i) => {
-            const st = chipClass(state, active, i);
+            const st = chipState(state, active, i);
             return (
               <span key={stage} className="flex items-center gap-2">
                 {i > 0 && (
@@ -189,20 +191,22 @@ export function VoiceLab() {
                   <Loader2 className="size-4 animate-spin" aria-hidden />
                 )}
                 {state.phase === "idle"
-                  ? `Load model + speak (${MODEL_SIZE_MB} MB)`
-                  : "Synthesize speech"}
+                  ? `${voicelab.cta.load} (${MODEL_SIZE_MB} MB)`
+                  : voicelab.cta.speak}
               </Button>
               {state.phase === "speaking" && (
                 <Button variant="ghost" onClick={stop}>
-                  Stop
+                  {voicelab.cta.stop}
                 </Button>
               )}
             </div>
             {state.error && (
               <p className="text-code-sm text-error" role="alert">
                 {state.phase === "error"
-                  ? "The model couldn't start here — and this browser has no speech fallback."
-                  : "That run failed — try again or pick another voice."}
+                  ? voicelab.errors.fatal
+                  : state.error === "load-failed"
+                    ? voicelab.errors.fallback
+                    : voicelab.errors.run}
               </p>
             )}
           </div>

@@ -306,10 +306,22 @@ export const siteConfig = {
     num: "0x07",
     slug: "voice-lab",
     label:
-      "An 82M-parameter speech model, downloaded to this tab on demand and run on your hardware. Type anything — nothing is sent anywhere.",
+      "An 82M-parameter speech model running on your hardware. Your words never leave this page — only the model itself arrives, once, from the Hugging Face CDN.",
     title: "Voice Lab",
     sampleText:
       "Hi, I'm Abubakar's portfolio. Every word you hear is synthesized right now, on your device.",
+    cta: {
+      load: "Load model + speak",
+      speak: "Synthesize speech",
+      stop: "Stop",
+    },
+    errors: {
+      fallback:
+        "The model couldn't load — speaking with your browser's own voice instead. Another try re-attempts the download.",
+      fatal:
+        "The model couldn't start here — and this browser has no speech fallback.",
+      run: "That run failed — try again or pick another voice.",
+    },
   },
 
   /* ---------------- Footer ---------------- */
