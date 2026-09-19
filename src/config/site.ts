@@ -109,6 +109,7 @@ export const siteConfig = {
     { id: "featured", label: "Featured" },
     { id: "personal", label: "Personal" },
     { id: "contact", label: "Contact" },
+    { id: "voice-lab", label: "Voice Lab" },
   ] as NavItem[],
 
   /* ---------------- Technical Arsenal (tiles) ---------------- */
@@ -298,6 +299,17 @@ export const siteConfig = {
       { label: "GitHub", value: "github.com/Abuubkar", icon: "Code2", href: "https://github.com/Abuubkar" },
       { label: "LinkedIn", value: "in/abubakar-khawaja", icon: "Briefcase", href: "https://linkedin.com/in/abubakar-khawaja-008483183" },
     ] as ContactDetail[],
+  },
+
+  /* ---------------- Voice Lab ---------------- */
+  voicelab: {
+    num: "0x07",
+    slug: "voice-lab",
+    label:
+      "An 82M-parameter speech model, downloaded to this tab on demand and run on your hardware. Type anything — nothing is sent anywhere.",
+    title: "Voice Lab",
+    sampleText:
+      "Hi, I'm Abubakar's portfolio. Every word you hear is synthesized right now, on your device.",
   },
 
   /* ---------------- Footer ---------------- */

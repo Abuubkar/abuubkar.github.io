@@ -9,8 +9,7 @@ import { FeaturedProjects } from "@/components/sections/FeaturedProjects";
 import { PersonalProjects } from "@/components/sections/PersonalProjects";
 import { Certifications } from "@/components/sections/Certifications";
 import { InitiateConnection } from "@/components/sections/InitiateConnection";
-// PROTOTYPE — design-picking only; renders nothing in production builds.
-import { VoiceLabPrototype } from "@/components/sections/VoiceLabPrototype";
+import { VoiceLab } from "@/components/sections/VoiceLab";
 import { siteConfig, siteUrl } from "@/config/site";
 
 const { profile, arsenal, trajectory } = siteConfig;
@@ -67,7 +66,7 @@ export default function Home() {
         <PersonalProjects />
         <Certifications />
         <InitiateConnection />
-        <VoiceLabPrototype />
+        <VoiceLab />
         <Footer />
       </main>
       <ScrollToTop />
