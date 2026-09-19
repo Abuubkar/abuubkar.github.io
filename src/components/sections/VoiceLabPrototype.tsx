@@ -586,9 +586,160 @@ function VariantB4({ state, speak, stop, setVoice }: Driver) {
   );
 }
 
+/* ------------- B5 — the mix: console split + pipeline ------------- */
+
+function VariantB5({ state, speak, stop, setVoice }: Driver) {
+  const [text, setText] = useState(SAMPLE_TEXT);
+  const rows: [string, string][] = [
+    ["model", `${MODEL_LABEL} · Apache-2.0`],
+    ["weights", `${MODEL_SIZE_MB} MB · q8 quantized`],
+    ["backend", backendLabel(state)],
+    [
+      "last run",
+      state.timing
+        ? `${state.timing.audioSecs}s audio in ${state.timing.genSecs}s`
+        : "—",
+    ],
+  ];
+  return (
+    <section className="scroll-mt-24 py-20">
+      <SectionHeading {...HEADING} />
+      {/* B2's pipeline strip — stage chips only; numbers live in telemetry */}
+      <div
+        aria-live="polite"
+        className="mb-6 flex flex-wrap items-center gap-2 rounded-lg border border-outline-variant bg-surface-container p-4"
+      >
+        {STAGES.map((stage, i) => {
+          const st = stageState(state, i);
+          return (
+            <span key={stage} className="flex items-center gap-2">
+              {i > 0 && (
+                <span
+                  className={`text-code-sm ${st === "idle" ? "text-outline" : "text-primary"}`}
+                  aria-hidden
+                >
+                  →
+                </span>
+              )}
+              <span
+                className={`text-code-sm rounded-md border px-2.5 py-1.5 transition-colors ${
+                  st === "active"
+                    ? "animate-pulse border-primary bg-primary/5 text-primary"
+                    : st === "done"
+                      ? "border-outline text-on-surface"
+                      : "border-outline-variant text-on-surface-variant"
+                }`}
+              >
+                {stage}
+              </span>
+            </span>
+          );
+        })}
+      </div>
+      {/* B1's console split below */}
+      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+        <div className="flex flex-col gap-4 rounded-lg border border-outline-variant bg-surface-container p-5">
+          <label
+            htmlFor="voicelab-text-b5"
+            className="text-label-caps text-on-surface-variant"
+          >
+            input text
+          </label>
+          <textarea
+            id="voicelab-text-b5"
+            value={text}
+            maxLength={MAX_TEXT_LENGTH}
+            onChange={(e) => setText(e.target.value)}
+            rows={4}
+            className="text-body-md w-full resize-none rounded-md border border-outline-variant bg-surface-container-lowest p-4 text-on-surface outline-none focus:border-primary"
+          />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <select
+              value={state.voice}
+              onChange={(e) => setVoice(e.target.value as VoiceId)}
+              aria-label="Voice"
+              className="text-code-sm rounded-md border border-outline-variant bg-surface-container-lowest px-3 py-2 text-on-surface outline-none focus:border-primary"
+            >
+              {VOICES.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.label}
+                </option>
+              ))}
+            </select>
+            <span className="text-code-sm text-on-surface-variant">
+              {text.length}/{MAX_TEXT_LENGTH}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="primary"
+              onClick={() => speak(text)}
+              disabled={busy(state.phase) || state.phase === "speaking"}
+            >
+              {busy(state.phase) && (
+                <Loader2 className="size-4 animate-spin" aria-hidden />
+              )}
+              {state.phase === "idle"
+                ? `Load model + speak (${MODEL_SIZE_MB} MB)`
+                : "Synthesize speech"}
+            </Button>
+            {state.phase === "speaking" && (
+              <Button variant="ghost" onClick={stop}>
+                Stop
+              </Button>
+            )}
+          </div>
+        </div>
+        <div className="bracket-corners flex flex-col gap-3 rounded-lg border border-outline bg-surface-container-lowest p-5">
+          <p className="text-label-caps text-on-surface-variant">
+            <span className="text-primary">{"//"}</span> telemetry
+          </p>
+          {rows.map(([k, v]) => (
+            <div
+              key={k}
+              className="text-code-sm flex items-baseline justify-between gap-3 border-b border-outline-variant pb-2 last:border-0"
+            >
+              <span className="text-on-surface-variant">{k}</span>
+              <span className="text-right text-on-surface">{v}</span>
+            </div>
+          ))}
+          {state.phase === "loading" && (
+            <div>
+              <div className="h-1 overflow-hidden rounded-full bg-surface-container-high">
+                <div
+                  className="h-full rounded-full bg-primary transition-[width] duration-150"
+                  style={{ width: `${state.progress}%` }}
+                />
+              </div>
+              <p className="text-code-sm mt-2 text-on-surface-variant">
+                downloading {Math.round(state.progress)}%
+              </p>
+            </div>
+          )}
+          {state.phase === "speaking" && (
+            <div className="flex h-6 items-end gap-1" aria-hidden>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <span
+                  key={i}
+                  className="w-1.5 animate-pulse rounded-full bg-primary"
+                  style={{
+                    height: `${[60, 100, 40, 80, 55][i]}%`,
+                    animationDelay: `${i * 120}ms`,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* --------------------------- switcher bar --------------------------- */
 
 const VARIANTS = [
+  { key: "B5", name: "Mix: split + pipeline" },
   { key: "B1", name: "Console split" },
   { key: "B2", name: "Pipeline" },
   { key: "B3", name: "Editor dock" },
@@ -596,7 +747,7 @@ const VARIANTS = [
 ] as const;
 
 export function VoiceLabPrototype() {
-  const [variant, setVariant] = useState("B1");
+  const [variant, setVariant] = useState("B5");
   const [failLoad, setFailLoad] = useState(false);
   const driver = useFakeTts(failLoad);
 
@@ -642,6 +793,7 @@ export function VoiceLabPrototype() {
   const current = VARIANTS.find((v) => v.key === variant)!;
   return (
     <>
+      {variant === "B5" && <VariantB5 {...driver} />}
       {variant === "B1" && <VariantB1 {...driver} />}
       {variant === "B2" && <VariantB2 {...driver} />}
       {variant === "B3" && <VariantB3 {...driver} />}
