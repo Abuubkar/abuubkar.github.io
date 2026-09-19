@@ -31,8 +31,8 @@ export type TtsState = {
   tier: TtsTier | null;
   voice: VoiceId;
   error: TtsError | null;
-  /** Last successful neural run, for the "Xs of audio in Ys" readout. */
-  timing: { audioSecs: number; genSecs: number } | null;
+  /** Last neural run: total audio produced + how fast the first sound came. */
+  timing: { audioSecs: number; firstSoundSecs: number } | null;
 };
 
 // Version is pinned as far as the stack allows: kokoro-js is exact-pinned in
@@ -96,10 +96,18 @@ type Kokoro = Awaited<
 >;
 
 let modelPromise: Promise<Kokoro | null> | null = null;
-let currentAudio: HTMLAudioElement | null = null;
-let currentUrl: string | null = null;
+let audioCtx: AudioContext | null = null;
+let activeSources: AudioBufferSourceNode[] = [];
 /** Bumped on every speak()/stop() so stale async callbacks can bail out. */
 let run = 0;
+
+/** Created in the synchronous part of a click so the autoplay gesture
+ *  still applies; resumed on every speak in case the tab suspended it. */
+function ensureAudioContext(): AudioContext {
+  audioCtx ??= new AudioContext({ sampleRate: 24000 });
+  void audioCtx.resume();
+  return audioCtx;
+}
 
 async function loadModel(): Promise<Kokoro | null> {
   track("tts-load-start");
@@ -165,15 +173,14 @@ function speakWithWebSpeech(text: string, myRun: number) {
 }
 
 function stopPlayback() {
-  if (currentAudio) {
-    currentAudio.onended = null;
-    currentAudio.pause();
-    currentAudio = null;
-  }
-  if (currentUrl) {
-    URL.revokeObjectURL(currentUrl);
-    currentUrl = null;
-  }
+  activeSources.forEach((src) => {
+    try {
+      src.stop();
+    } catch {
+      /* already stopped */
+    }
+  });
+  activeSources = [];
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
@@ -190,6 +197,8 @@ export function stop() {
   setState({ phase: modelPromise ? "ready" : "idle" });
 }
 
+const round1 = (n: number) => Math.round(n * 10) / 10;
+
 export async function speak(rawText: string) {
   const text = rawText.trim().slice(0, MAX_TEXT_LENGTH);
   if (!text) return;
@@ -197,6 +206,8 @@ export async function speak(rawText: string) {
 
   const myRun = ++run;
   stopPlayback();
+  // Must happen before any await, while the click gesture is still live.
+  const ctx = ensureAudioContext();
 
   modelPromise ??= loadModel();
   let model: Kokoro | null;
@@ -215,27 +226,55 @@ export async function speak(rawText: string) {
   setState({ phase: "synthesizing", error: null });
   try {
     const t0 = performance.now();
-    // First use of a voice also fetches its ~500 KB embedding (Cache API
-    // keeps it after that) — folded into the synthesizing phase.
-    const audio = await model.generate(text, { voice: state.voice });
-    const genSecs = (performance.now() - t0) / 1000;
+    // Stream sentence by sentence: on single-threaded WASM, generating the
+    // whole clip up front means many seconds of silence — this way the first
+    // sentence plays while the rest is still synthesizing. First use of a
+    // voice also fetches its ~500 KB embedding (Cache API keeps it after).
+    const { TextSplitterStream } = await import("kokoro-js");
+    const splitter = new TextSplitterStream();
+    splitter.push(text);
+    splitter.close();
+
+    let nextStart = 0;
+    let totalSecs = 0;
+    let firstSoundSecs = 0;
+    for await (const { audio } of model.stream(splitter, {
+      voice: state.voice,
+    })) {
+      if (run !== myRun) return;
+      const buffer = ctx.createBuffer(
+        1,
+        audio.audio.length,
+        audio.sampling_rate,
+      );
+      buffer.copyToChannel(new Float32Array(audio.audio), 0);
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      const startAt = Math.max(nextStart, ctx.currentTime);
+      source.start(startAt);
+      nextStart = startAt + buffer.duration;
+      totalSecs += buffer.duration;
+      activeSources.push(source);
+      if (!firstSoundSecs) {
+        firstSoundSecs = (performance.now() - t0) / 1000;
+        setState({ phase: "speaking" });
+        track(`tts-speak-${state.tier}`);
+      }
+    }
     if (run !== myRun) return;
 
-    const audioSecs = audio.audio.length / audio.sampling_rate;
-    currentUrl = URL.createObjectURL(audio.toBlob());
-    currentAudio = new Audio(currentUrl);
-    currentAudio.onended = () => {
-      if (run === myRun) setState({ phase: "ready" });
-    };
     setState({
-      phase: "speaking",
       timing: {
-        audioSecs: Math.round(audioSecs * 10) / 10,
-        genSecs: Math.round(genSecs * 10) / 10,
+        audioSecs: round1(totalSecs),
+        firstSoundSecs: round1(firstSoundSecs),
       },
     });
-    track(`tts-speak-${state.tier}`);
-    await currentAudio.play();
+    // The stream is done generating; flip to ready once playback drains.
+    const remainingMs = Math.max(0, (nextStart - ctx.currentTime) * 1000);
+    window.setTimeout(() => {
+      if (run === myRun) setState({ phase: "ready" });
+    }, remainingMs + 100);
   } catch {
     if (run !== myRun) return;
     setState({ phase: "ready", error: "synthesis-failed" });

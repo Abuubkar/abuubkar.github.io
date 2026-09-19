@@ -99,7 +99,7 @@ export function VoiceLab() {
     [
       "last run",
       state.timing
-        ? `${state.timing.audioSecs}s audio in ${state.timing.genSecs}s`
+        ? `${state.timing.audioSecs}s audio · sound in ${state.timing.firstSoundSecs}s`
         : "—",
     ],
   ];
