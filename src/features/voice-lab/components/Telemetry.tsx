@@ -7,6 +7,13 @@ import {
   type TtsState,
 } from "../engine";
 
+/** Sentences that arrived too late to play seamlessly. Worth saying out
+ *  loud either way: "no gaps" is the claim the head start is making. */
+function describeGaps(underruns: number): string {
+  if (underruns === 0) return "no gaps";
+  return underruns === 1 ? "1 gap" : `${underruns} gaps`;
+}
+
 function describeBackend(state: TtsState): string {
   if (state.tier === "web-speech") return "browser voice (fallback)";
   if (state.tier) return `${state.tier} · on-device`;
@@ -28,7 +35,7 @@ export function Telemetry({ state }: { state: TtsState }) {
     [
       "last run",
       state.timing
-        ? `${state.timing.audioSecs}s audio · sound in ${state.timing.firstSoundSecs}s`
+        ? `${state.timing.audioSecs}s audio · sound in ${state.timing.firstSoundSecs}s · ${describeGaps(state.timing.underruns)}`
         : "—",
     ],
   ];
@@ -64,6 +71,12 @@ export function Telemetry({ state }: { state: TtsState }) {
             downloading {Math.round(state.progress)}%
           </p>
         </div>
+      )}
+
+      {state.phase === "buffering" && (
+        <p className="text-code-sm text-on-surface-variant">
+          banking a {state.cushionSecs}s head start so it plays without gaps…
+        </p>
       )}
 
       {state.phase === "speaking" && (

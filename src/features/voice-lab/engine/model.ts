@@ -48,10 +48,13 @@ export async function* synthesize(
   splitter.push(text);
   splitter.close();
 
-  for await (const { audio } of model.stream(splitter, { voice })) {
+  for await (const { text: sentence, audio } of model.stream(splitter, {
+    voice,
+  })) {
     yield {
       samples: new Float32Array(audio.audio),
       sampleRate: audio.sampling_rate,
+      chars: sentence.length,
     };
   }
 }

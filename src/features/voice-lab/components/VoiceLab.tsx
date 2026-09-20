@@ -23,8 +23,14 @@ import { Telemetry } from "./Telemetry";
 // Named voiceLab to avoid confusion with state.voice (the selected speaker).
 const { voice: voiceLab } = siteConfig.labs;
 
+/** Working on it: the button spins and stays disabled. Buffering counts —
+ *  audio exists by then, it just hasn't been released yet. */
 const busy = (phase: TtsPhase) =>
-  phase === "loading" || phase === "synthesizing";
+  phase === "loading" || phase === "synthesizing" || phase === "buffering";
+
+/** Sound is either coming out or about to; Stop is the useful action. */
+const playing = (phase: TtsPhase) =>
+  phase === "buffering" || phase === "speaking";
 
 export function VoiceLab() {
   const state = useTts();
@@ -85,7 +91,7 @@ export function VoiceLab() {
                 onClick={() => speak(text)}
                 disabled={
                   busy(state.phase) ||
-                  state.phase === "speaking" ||
+                  playing(state.phase) ||
                   state.phase === "error" ||
                   !text.trim()
                 }
@@ -97,7 +103,7 @@ export function VoiceLab() {
                   ? `${voiceLab.cta.load} (${MODEL_SIZE_MB} MB)`
                   : voiceLab.cta.speak}
               </Button>
-              {state.phase === "speaking" && (
+              {playing(state.phase) && (
                 <Button variant="ghost" onClick={stop}>
                   {voiceLab.cta.stop}
                 </Button>

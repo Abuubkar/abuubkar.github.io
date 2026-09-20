@@ -11,7 +11,11 @@
 import { track } from "@/lib/track";
 import { getState, setState } from "./state/store";
 import { loadModel, synthesize, type KokoroModel } from "./engine/model";
-import { createPlayer, type Player } from "./engine/playback";
+import {
+  createPlayer,
+  ensureAudioContext,
+  type Player,
+} from "./engine/playback";
 import * as webSpeech from "./engine/web-speech";
 import { MAX_TEXT_LENGTH, type VoiceId } from "./data/voices";
 
@@ -85,22 +89,10 @@ export async function speak(rawText: string) {
   const myRun = ++run;
   cancelCurrent();
 
-  // Measured from the start of synthesis, so the number means "how long until
-  // it spoke", not "how long until the model finished downloading".
-  let startedAt = performance.now();
-  let firstSoundSecs = 0;
-
-  // Built synchronously: creating the audio context inside the click is what
-  // satisfies the browser's autoplay policy.
-  const active = createPlayer({
-    onFirstSound: () => {
-      if (run !== myRun) return;
-      firstSoundSecs = (performance.now() - startedAt) / 1000;
-      setState({ phase: "speaking" });
-      track(`tts-speak-${getState().tier}`);
-    },
-  });
-  player = active;
+  // Done synchronously: creating the audio context inside the click is what
+  // satisfies the browser's autoplay policy. The player itself is built
+  // later, so that its clock times synthesis rather than the download.
+  ensureAudioContext();
 
   modelPromise ??= ensureModel();
   let model: KokoroModel | null;
@@ -120,9 +112,25 @@ export async function speak(rawText: string) {
     return;
   }
 
-  setState({ phase: "synthesizing", error: null });
+  setState({ phase: "synthesizing", error: null, cushionSecs: 0 });
+
+  // Created now, not at click time, so the player's clock measures synthesis
+  // rather than the download: "how long until it spoke" is the useful number.
+  const active = createPlayer({
+    totalChars: text.length,
+    onBuffering: (seconds) => {
+      if (run !== myRun) return;
+      setState({ phase: "buffering", cushionSecs: round1(seconds) });
+    },
+    onFirstSound: () => {
+      if (run !== myRun) return;
+      setState({ phase: "speaking" });
+      track(`tts-speak-${getState().tier}`);
+    },
+  });
+  player = active;
+
   try {
-    startedAt = performance.now();
     for await (const chunk of synthesize(model, text, getState().voice)) {
       if (run !== myRun) return;
       active.enqueue(chunk);
@@ -132,7 +140,8 @@ export async function speak(rawText: string) {
     setState({
       timing: {
         audioSecs: round1(active.totalSecs),
-        firstSoundSecs: round1(firstSoundSecs),
+        firstSoundSecs: round1(active.firstSoundSecs),
+        underruns: active.underruns,
       },
     });
     await active.finish();

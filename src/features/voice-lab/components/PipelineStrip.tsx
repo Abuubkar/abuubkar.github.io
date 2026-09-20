@@ -38,6 +38,9 @@ function useActiveStage(state: TtsState): number {
       at(STAGE.text, 0);
       at(STAGE.phonemes, 300);
       at(STAGE.model, 750);
+    } else if (phase === "buffering") {
+      // Audio exists and is scheduled; it just hasn't been let out yet.
+      at(STAGE.waveform, 0);
     } else if (phase === "speaking") {
       at(STAGE.waveform, 0);
       at(STAGE.audioOut, 450);

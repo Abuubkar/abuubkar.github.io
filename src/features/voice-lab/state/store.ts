@@ -17,6 +17,7 @@ export type TtsPhase =
   | "loading" // model downloading/compiling (see `progress`)
   | "ready" // model in memory, waiting for input
   | "synthesizing" // neural inference running
+  | "buffering" // first sentence made, waiting out the head start
   | "speaking" // audio playing
   | "error"; // unrecoverable (not even web-speech available)
 
@@ -32,8 +33,15 @@ export type TtsState = {
   error: TtsError | null;
   /** Threads onnxruntime-web will use; 1 unless the page is isolated. */
   threads: number;
-  /** Last neural run: total audio produced + how fast the first sound came. */
-  timing: { audioSecs: number; firstSoundSecs: number } | null;
+  /** Seconds of head start currently being waited out, while buffering. */
+  cushionSecs: number;
+  /** Last neural run: audio produced, time to first sound, and how many
+   *  sentences still arrived too late to play seamlessly. */
+  timing: {
+    audioSecs: number;
+    firstSoundSecs: number;
+    underruns: number;
+  } | null;
 };
 
 const INITIAL_STATE: TtsState = {
@@ -43,6 +51,7 @@ const INITIAL_STATE: TtsState = {
   voice: VOICES[0].id,
   error: null,
   threads: 1, // server-safe default; corrected on first subscribe
+  cushionSecs: 0,
   timing: null,
 };
 
