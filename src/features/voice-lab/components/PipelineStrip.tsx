@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
 import { MODEL_LABEL, type TtsState } from "../engine";
 
@@ -13,8 +12,6 @@ const STAGES = [
   labels.waveform,
   labels.audioOut,
 ];
-// Named positions in STAGES, so the glow logic below reads as intent.
-const STAGE = { text: 0, phonemes: 1, model: 2, waveform: 3, audioOut: 4 };
 
 type ChipState = "active" | "done" | "idle";
 
@@ -25,83 +22,67 @@ const CHIP_STYLES: Record<ChipState, string> = {
 };
 
 /**
- * Which chip glows. Phonemize, tokenize, infer and vocode all happen inside
- * one generate() call, so the strip time-slices that known internal order
- * rather than pretending to observe it.
+ * Reads the chips straight off engine state, so each one says something true
+ * at the moment it is drawn. An earlier version animated them on a fixed
+ * timeline, which broke twice over: inference blocked the main thread, so
+ * the timers fired late and bunched up, and the early stages were already
+ * past by the time anyone saw them.
+ *
+ * "done" is sticky where the work stays done — text you have typed, a model
+ * already in memory — so the strip shows what is ready, not just what moved.
  */
-function useActiveStage(state: TtsState): number {
-  const [active, setActive] = useState(-1);
-  const { phase, tier } = state;
+function chipStates(state: TtsState, hasText: boolean): ChipState[] {
+  const { phase, tier, timing } = state;
+  const fallback = tier === "web-speech";
+  const playing = phase === "buffering" || phase === "speaking";
+  // `timing` lands exactly when the last chunk is generated, so before it
+  // arrives the model is still working even if audio is already playing.
+  const generating = phase === "synthesizing" || (playing && !timing);
+  const producedAudio = playing || timing !== null;
 
-  useEffect(() => {
-    const timers: number[] = [];
-    const at = (value: number, ms: number) =>
-      timers.push(window.setTimeout(() => setActive(value), ms));
+  const staged = (): ChipState =>
+    fallback ? "idle" : generating ? "active" : producedAudio ? "done" : "idle";
 
-    if (tier === "web-speech") {
-      // The fallback skips the model entirely, so only the ends light up.
-      at(phase === "speaking" ? STAGE.audioOut : -1, 0);
-    } else if (phase === "loading") {
-      at(STAGE.model, 0); // the weights belong to the model chip
-    } else if (phase === "synthesizing") {
-      at(STAGE.text, 0);
-      at(STAGE.phonemes, 300);
-      at(STAGE.model, 750);
-    } else if (phase === "buffering") {
-      // Audio exists and is scheduled; it just hasn't been let out yet.
-      at(STAGE.waveform, 0);
-    } else if (phase === "speaking") {
-      at(STAGE.waveform, 0);
-      at(STAGE.audioOut, 450);
-    } else {
-      at(-1, 0);
-    }
-
-    return () => timers.forEach((t) => window.clearTimeout(t));
-  }, [phase, tier]);
-
-  return active;
-}
-
-function chipState(state: TtsState, active: number, i: number): ChipState {
-  // In the fallback, the model's middle stages never ran and never glow.
-  const skipped =
-    state.tier === "web-speech" && i > STAGE.text && i < STAGE.audioOut;
-  if (state.phase === "loading") return i === STAGE.model ? "active" : "idle";
-  if (active >= 0)
-    return i === active ? "active" : i < active && !skipped ? "done" : "idle";
-  if (state.phase === "ready" && state.timing) return "done";
-  return "idle";
+  return [
+    hasText ? "done" : "idle",
+    staged(),
+    phase === "loading" ? "active" : tier && !fallback ? "done" : "idle",
+    staged(),
+    playing ? "active" : timing ? "done" : "idle",
+  ];
 }
 
 /** Decorative: the telemetry panel carries the same information as text. */
-export function PipelineStrip({ state }: { state: TtsState }) {
-  const active = useActiveStage(state);
+export function PipelineStrip({
+  state,
+  hasText,
+}: {
+  state: TtsState;
+  hasText: boolean;
+}) {
+  const chips = chipStates(state, hasText);
 
   return (
     <div
       aria-hidden
       className="mb-6 flex flex-wrap items-center gap-2 rounded-lg border border-outline-variant bg-surface-container p-4"
     >
-      {STAGES.map((stage, i) => {
-        const chip = chipState(state, active, i);
-        return (
-          <span key={stage} className="flex items-center gap-2">
-            {i > 0 && (
-              <span
-                className={`text-code-sm ${chip === "idle" ? "text-outline" : "text-primary"}`}
-              >
-                →
-              </span>
-            )}
+      {STAGES.map((stage, i) => (
+        <span key={stage} className="flex items-center gap-2">
+          {i > 0 && (
             <span
-              className={`text-code-sm rounded-md border px-2.5 py-1.5 transition-colors ${CHIP_STYLES[chip]}`}
+              className={`text-code-sm ${chips[i] === "idle" ? "text-outline" : "text-primary"}`}
             >
-              {stage}
+              →
             </span>
+          )}
+          <span
+            className={`text-code-sm rounded-md border px-2.5 py-1.5 transition-colors ${CHIP_STYLES[chips[i]]}`}
+          >
+            {stage}
           </span>
-        );
-      })}
+        </span>
+      ))}
     </div>
   );
 }

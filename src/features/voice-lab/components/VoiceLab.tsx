@@ -56,7 +56,7 @@ export function VoiceLab() {
       />
 
       <Reveal>
-        <PipelineStrip state={state} />
+        <PipelineStrip state={state} hasText={text.trim().length > 0} />
 
         <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
           <div className="flex flex-col gap-4 rounded-lg border border-outline-variant bg-surface-container p-5">
