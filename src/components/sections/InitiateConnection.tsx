@@ -98,7 +98,7 @@ export function InitiateConnection() {
           </ul>
 
           <p className="text-code-sm text-on-surface-variant">
-            <span className="text-primary">//</span> open{" "}
+            <span className="text-primary">{"//"}</span> open{" "}
             <ArrowUpRight className="inline size-3.5 align-[-2px]" /> or copy any
             detail
           </p>

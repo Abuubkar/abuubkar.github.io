@@ -39,8 +39,12 @@ export function KeyboardNav() {
   const active = useActiveSection(ids);
 
   // Keep the latest active id in a ref so the key handler can stay attached once.
+  // Synced in an effect rather than during render: the handler only reads it
+  // later, on a keypress, so there is nothing to see during the render pass.
   const activeRef = useRef(active);
-  activeRef.current = active;
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     let gChord = false;
@@ -104,7 +108,7 @@ export function KeyboardNav() {
         onClick={(e) => e.stopPropagation()}
       >
         <p className="text-code-sm mb-4 text-on-surface-variant">
-          <span className="text-primary">//</span> keyboard-shortcuts
+          <span className="text-primary">{"//"}</span> keyboard-shortcuts
         </p>
         <ul className="flex flex-col gap-3">
           <Row keys={["j"]} desc="Next section" />
