@@ -1,13 +1,15 @@
+# Not a monorepo: this file defines no `packages:`. It exists because pnpm
+# reads build-script approvals from here — `pnpm-workspace.yaml` is simply
+# where pnpm 11 keeps project settings, single package or not. Its own error
+# text says so: "Add the package to allowBuilds in your project's
+# pnpm-workspace.yaml".
 allowBuilds:
-  # Bundles the Voice Lab worker; see the build:worker script.
+  # Bundles the Voice Lab worker; its install step provides the platform's
+  # native esbuild binary, so blocking it would break `pnpm build:worker`.
   esbuild: true
-  # Node-only native bindings pulled in by kokoro-js; the site uses the
-  # browser (WASM) runtime, so their build scripts are safely skipped.
-  onnxruntime-node: false
-  protobufjs: false
   sharp: true
   unrs-resolver: true
-onlyBuiltDependencies:
-  - esbuild
-  - sharp
-  - unrs-resolver
+  # Node-only bindings pulled in by kokoro-js. The site runs the browser
+  # (WASM) build, so these never execute and their install steps are skipped.
+  onnxruntime-node: false
+  protobufjs: false
