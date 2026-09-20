@@ -16,7 +16,7 @@ export function Hero() {
         <Reveal>
           {/* System kicker + stat line */}
           <p className="text-code-sm text-on-surface-variant">
-            <span aria-hidden>//</span> hello world
+            <span aria-hidden>{"//"}</span> hello world
           </p>
           {/* <p className="text-code-sm mt-1 mb-7 text-primary">{profile.stats}</p> */}
 

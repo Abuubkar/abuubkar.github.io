@@ -20,7 +20,7 @@ export function SectionHeading({
       {id && <span id={id} className="block -translate-y-20" aria-hidden />}
       <p className="text-code-sm mb-4 text-on-surface-variant">
         <span className="text-primary">{num}</span>{" "}
-        <span aria-hidden>//</span> {slug}
+        <span aria-hidden>{"//"}</span> {slug}
       </p>
       <h2 className="text-headline-lg text-on-surface">{title}</h2>
       {subtitle && (

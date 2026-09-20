@@ -99,7 +99,7 @@ export function TopNav() {
         <div className="fixed inset-0 z-50 flex flex-col bg-background lg:hidden">
           <div className="flex h-[var(--spacing-nav-height)] items-center justify-between gap-4 border-b border-outline-variant px-5 sm:px-6">
             <span className="text-code-sm text-on-surface-variant">
-              <span className="text-primary">//</span> navigation
+              <span className="text-primary">{"//"}</span> navigation
             </span>
             <button
               type="button"

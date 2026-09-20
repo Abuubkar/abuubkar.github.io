@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { siteUrl } from "@/config/site";
+import { siteConfig, siteUrl } from "@/config/site";
 
 // Required under `output: "export"` — the build errors without it.
 export const dynamic = "force-static";
@@ -12,6 +12,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: siteUrl,
       changeFrequency: "monthly",
       priority: 1,
+    },
+    {
+      url: `${siteUrl}${siteConfig.labs.href}`,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
   ];
 }

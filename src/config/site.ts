@@ -109,6 +109,7 @@ export const siteConfig = {
     { id: "featured", label: "Featured" },
     { id: "personal", label: "Personal" },
     { id: "contact", label: "Contact" },
+    { id: "labs", label: "Labs" },
   ] as NavItem[],
 
   /* ---------------- Technical Arsenal (tiles) ---------------- */
@@ -298,6 +299,107 @@ export const siteConfig = {
       { label: "GitHub", value: "github.com/Abuubkar", icon: "Code2", href: "https://github.com/Abuubkar" },
       { label: "LinkedIn", value: "in/abubakar-khawaja", icon: "Briefcase", href: "https://linkedin.com/in/abubakar-khawaja-008483183" },
     ] as ContactDetail[],
+  },
+
+  /* ---------------- Labs ---------------- */
+  // A home for AI experiments, of which Voice Lab is the first. Lives on its
+  // own route so the cross-origin isolation worker it needs can never touch
+  // the rest of the site (see public/labs/coi-serviceworker.js).
+  labs: {
+    num: "0x07",
+    slug: "labs",
+    title: "Labs",
+    label:
+      "AI experiments I can ship without a backend. Each one downloads its model on demand and runs it on your own hardware.",
+    // Trailing slash is load-bearing: it must match the isolation worker's
+    // scope (and the directory-style export). See next.config.ts.
+    href: "/labs/",
+    teaser: {
+      blurb:
+        "First one up is a speech model that loads into the page and reads back whatever you type. Your CPU does the synthesis, so the text stays on your machine.",
+      bullets: [
+        "kokoro-82M · 92 MB · Apache-2.0",
+        "WASM inference, multi-threaded where the browser allows it",
+        "Falls back to your browser's own voice",
+      ],
+      cta: "Open Labs",
+    },
+    page: {
+      title: "Labs — AI experiments that run in your browser",
+      description:
+        "AI experiments that run entirely in the browser. Models download on demand and do their work on your own hardware, with no server behind them.",
+      intro:
+        "Everything here runs client-side. Open an experiment and it fetches its model once, then works offline on your hardware.",
+      back: "Back to portfolio",
+    },
+
+    /* ----- EXP.01 — Voice Lab ----- */
+    voice: {
+      num: "EXP.01",
+      slug: "voice-lab",
+      title: "Voice Lab",
+      label:
+        "An 82M-parameter speech model running on your own hardware. Your text never leaves the page. What does travel: the model weights from Hugging Face, the WASM runtime from jsDelivr, and a half-megabyte voice file the first time you pick each voice.",
+      sampleText:
+        "Hi, I'm Abubakar's portfolio. Every word you hear is synthesized right now, on your device.",
+      cta: {
+        load: "Load model and speak",
+        speak: "Synthesize speech",
+        stop: "Stop",
+      },
+      errors: {
+        fallback:
+          "The model didn't load, so this is your browser's built-in voice. Press the button again to retry the download.",
+        fatal:
+          "The model didn't load, and this browser has no built-in speech to fall back on. Press the button to try again.",
+        run: "That run failed. Try again, or pick a different voice.",
+      },
+      // Every word the experiment puts on screen. `{…}` placeholders are
+      // filled in by the component that renders them.
+      ui: {
+        inputLabel: "input text",
+        voiceLabel: "Voice",
+        // The model's own name is a fact about the model, not copy, so the
+        // pipeline takes it from data/voices.ts and these sit around it.
+        stages: {
+          text: "text",
+          phonemes: "phonemes",
+          waveform: "waveform",
+          audioOut: "audio out",
+        },
+        telemetry: {
+          heading: "telemetry",
+          rows: {
+            model: "model",
+            weights: "weights",
+            backend: "backend",
+            threads: "threads",
+            lastRun: "last run",
+          },
+          none: "—",
+          notLoaded: "— not loaded",
+          browserVoice: "browser voice (fallback)",
+          onDevice: "on-device",
+          isolated: "cross-origin isolated",
+          notIsolated: "not isolated",
+          downloading: "downloading {percent}%",
+          headStart: "banking a {seconds}s head start so it plays without gaps…",
+          lastRun: "{audio}s audio · sound in {firstSound}s · {gaps}",
+          noGaps: "no gaps",
+          oneGap: "1 gap",
+          manyGaps: "{count} gaps",
+        },
+        // Spoken by screen readers only, one short sentence per phase. The
+        // panel itself is not a live region: re-reading five rows on every
+        // download tick is unusable.
+        status: {
+          loading: "Downloading the speech model.",
+          synthesizing: "Synthesizing speech.",
+          speaking: "Playing.",
+          done: "Finished: {summary}",
+        },
+      },
+    },
   },
 
   /* ---------------- Footer ---------------- */

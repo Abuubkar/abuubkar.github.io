@@ -1,4 +1,8 @@
 allowBuilds:
+  # Node-only native bindings pulled in by kokoro-js; the site uses the
+  # browser (WASM) runtime, so their build scripts are safely skipped.
+  onnxruntime-node: false
+  protobufjs: false
   sharp: true
   unrs-resolver: true
 onlyBuiltDependencies:
