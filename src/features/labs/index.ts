@@ -8,5 +8,6 @@
  * experiment must never import the container. That is what lets a new
  * experiment drop in without touching anything here.
  */
+export { LabsPage } from "./lib/LabsPage";
 export { LabsTeaser } from "./lib/LabsTeaser";
 export { prewarmIsolation } from "./lib/isolation";
