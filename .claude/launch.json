@@ -7,6 +7,13 @@
       "runtimeArgs": ["dev"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "portfolio-static",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "serve", "out", "-l", "4000"],
+      "port": 4000,
+      "autoPort": true
     }
   ]
 }

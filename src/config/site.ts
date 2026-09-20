@@ -109,7 +109,7 @@ export const siteConfig = {
     { id: "featured", label: "Featured" },
     { id: "personal", label: "Personal" },
     { id: "contact", label: "Contact" },
-    { id: "voice-lab", label: "Voice Lab" },
+    { id: "labs", label: "Labs" },
   ] as NavItem[],
 
   /* ---------------- Technical Arsenal (tiles) ---------------- */
@@ -301,26 +301,59 @@ export const siteConfig = {
     ] as ContactDetail[],
   },
 
-  /* ---------------- Voice Lab ---------------- */
-  voicelab: {
+  /* ---------------- Labs ---------------- */
+  // A home for AI experiments, of which Voice Lab is the first. Lives on its
+  // own route so the cross-origin isolation worker it needs can never touch
+  // the rest of the site (see public/labs/coi-serviceworker.js).
+  labs: {
     num: "0x07",
-    slug: "voice-lab",
+    slug: "labs",
+    title: "Labs",
     label:
-      "An 82M-parameter speech model running on your hardware. Your words never leave this page — only the model itself arrives, once, from the Hugging Face CDN.",
-    title: "Voice Lab",
-    sampleText:
-      "Hi, I'm Abubakar's portfolio. Every word you hear is synthesized right now, on your device.",
-    cta: {
-      load: "Load model + speak",
-      speak: "Synthesize speech",
-      stop: "Stop",
+      "AI experiments I can ship without a backend. Each one downloads its model on demand and runs it on your own hardware.",
+    // Trailing slash is load-bearing: it must match the isolation worker's
+    // scope (and the directory-style export). See next.config.ts.
+    href: "/labs/",
+    teaser: {
+      blurb:
+        "First one up is a speech model that loads into the page and reads back whatever you type. Your CPU does the synthesis, so the text stays on your machine.",
+      bullets: [
+        "kokoro-82M · 92 MB · Apache-2.0",
+        "WASM inference, multi-threaded where the browser allows it",
+        "Falls back to your browser's own voice",
+      ],
+      cta: "Open Labs",
     },
-    errors: {
-      fallback:
-        "The model couldn't load — speaking with your browser's own voice instead. Another try re-attempts the download.",
-      fatal:
-        "The model couldn't start here — and this browser has no speech fallback.",
-      run: "That run failed — try again or pick another voice.",
+    page: {
+      title: "Labs — AI experiments that run in your browser",
+      description:
+        "AI experiments that run entirely in the browser. Models download on demand and do their work on your own hardware, with no server behind them.",
+      intro:
+        "Everything here runs client-side. Open an experiment and it fetches its model once, then works offline on your hardware.",
+      back: "Back to portfolio",
+    },
+
+    /* ----- EXP.01 — Voice Lab ----- */
+    voice: {
+      num: "EXP.01",
+      slug: "voice-lab",
+      title: "Voice Lab",
+      label:
+        "An 82M-parameter speech model running on your own hardware. Your text never leaves the page. The only network traffic is a one-time download: model weights from Hugging Face, WASM runtime from jsDelivr.",
+      sampleText:
+        "Hi, I'm Abubakar's portfolio. Every word you hear is synthesized right now, on your device.",
+      cta: {
+        load: "Load model and speak",
+        speak: "Synthesize speech",
+        stop: "Stop",
+      },
+      errors: {
+        fallback:
+          "The model didn't load, so this is your browser's built-in voice. Press the button again to retry the download.",
+        fatal:
+          "The model didn't load, and this browser has no built-in speech to fall back on.",
+        run: "That run failed. Try again, or pick a different voice.",
+      },
     },
   },
 

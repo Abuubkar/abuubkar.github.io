@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored third-party scripts served as-is (Umami tracker, the
+    // COOP/COEP service worker) — linting code we don't author is noise.
+    "public/**",
   ]),
 ]);
 

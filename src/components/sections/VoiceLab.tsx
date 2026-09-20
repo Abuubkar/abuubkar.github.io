@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Loader2 } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
@@ -20,8 +20,20 @@ import {
   type VoiceId,
 } from "@/lib/tts";
 import { useTts } from "@/lib/useTts";
+import { wasmThreadCount } from "@/lib/coi";
 
-const { voicelab } = siteConfig;
+/** Client-only read: the server can't know whether this tab is isolated.
+ *  Isolation never changes during a document's life, so the "subscription"
+ *  just nudges React once after hydration to swap in the real value. */
+const notifyAfterHydration = (onChange: () => void) => {
+  const id = window.setTimeout(onChange, 0);
+  return () => window.clearTimeout(id);
+};
+const useWasmThreads = () =>
+  useSyncExternalStore(notifyAfterHydration, wasmThreadCount, () => 1);
+
+// Named voiceLab to avoid confusion with state.voice (the selected speaker).
+const { voice: voiceLab } = siteConfig.labs;
 
 const STAGES = ["text", "phonemes", MODEL_LABEL, "waveform", "audio out"];
 // Named positions in STAGES, so the glow logic below reads as intent.
@@ -82,8 +94,9 @@ const CHIP_STYLES: Record<ChipState, string> = {
 
 export function VoiceLab() {
   const state = useTts();
-  const [text, setText] = useState<string>(voicelab.sampleText);
+  const [text, setText] = useState<string>(voiceLab.sampleText);
   const active = useActiveStage(state);
+  const threads = useWasmThreads();
 
   const rows: [string, string][] = [
     ["model", `${MODEL_LABEL} ${MODEL_VERSION} · Apache-2.0`],
@@ -97,6 +110,12 @@ export function VoiceLab() {
           : "— not loaded",
     ],
     [
+      "threads",
+      threads > 1
+        ? `${threads} · cross-origin isolated`
+        : "1 · not isolated",
+    ],
+    [
       "last run",
       state.timing
         ? `${state.timing.audioSecs}s audio · sound in ${state.timing.firstSoundSecs}s`
@@ -107,11 +126,11 @@ export function VoiceLab() {
   return (
     <section className="scroll-mt-24 py-20">
       <SectionHeading
-        id="voice-lab"
-        num={voicelab.num}
-        slug={voicelab.slug}
-        title={voicelab.title}
-        subtitle={voicelab.label}
+        id={voiceLab.slug}
+        num={voiceLab.num}
+        slug={voiceLab.slug}
+        title={voiceLab.title}
+        subtitle={voiceLab.label}
       />
 
       <Reveal>
@@ -191,22 +210,22 @@ export function VoiceLab() {
                   <Loader2 className="size-4 animate-spin" aria-hidden />
                 )}
                 {state.phase === "idle"
-                  ? `${voicelab.cta.load} (${MODEL_SIZE_MB} MB)`
-                  : voicelab.cta.speak}
+                  ? `${voiceLab.cta.load} (${MODEL_SIZE_MB} MB)`
+                  : voiceLab.cta.speak}
               </Button>
               {state.phase === "speaking" && (
                 <Button variant="ghost" onClick={stop}>
-                  {voicelab.cta.stop}
+                  {voiceLab.cta.stop}
                 </Button>
               )}
             </div>
             {state.error && (
               <p className="text-code-sm text-error" role="alert">
                 {state.phase === "error"
-                  ? voicelab.errors.fatal
+                  ? voiceLab.errors.fatal
                   : state.error === "load-failed"
-                    ? voicelab.errors.fallback
-                    : voicelab.errors.run}
+                    ? voiceLab.errors.fallback
+                    : voiceLab.errors.run}
               </p>
             )}
           </div>

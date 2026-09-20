@@ -9,7 +9,7 @@ import { FeaturedProjects } from "@/components/sections/FeaturedProjects";
 import { PersonalProjects } from "@/components/sections/PersonalProjects";
 import { Certifications } from "@/components/sections/Certifications";
 import { InitiateConnection } from "@/components/sections/InitiateConnection";
-import { VoiceLab } from "@/components/sections/VoiceLab";
+import { LabsTeaser } from "@/components/sections/LabsTeaser";
 import { siteConfig, siteUrl } from "@/config/site";
 
 const { profile, arsenal, trajectory } = siteConfig;
@@ -66,7 +66,7 @@ export default function Home() {
         <PersonalProjects />
         <Certifications />
         <InitiateConnection />
-        <VoiceLab />
+        <LabsTeaser />
         <Footer />
       </main>
       <ScrollToTop />
