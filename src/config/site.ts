@@ -359,14 +359,6 @@ export const siteConfig = {
       ui: {
         inputLabel: "input text",
         voiceLabel: "Voice",
-        // The model's own name is a fact about the model, not copy, so the
-        // pipeline takes it from data/voices.ts and these sit around it.
-        stages: {
-          text: "text",
-          phonemes: "phonemes",
-          waveform: "waveform",
-          audioOut: "audio out",
-        },
         telemetry: {
           heading: "telemetry",
           rows: {
