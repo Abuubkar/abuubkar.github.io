@@ -1,7 +1,7 @@
-import Script from "next/script";
 import { Footer } from "@/components/layout/Footer";
 import { siteConfig } from "@/config/site";
 import { VoiceLab } from "@/features/voice-lab";
+import { IsolationGuard } from "./IsolationGuard";
 import { LabsHeader } from "./LabsHeader";
 
 const { labs } = siteConfig;
@@ -16,10 +16,10 @@ const { labs } = siteConfig;
 export function LabsPage() {
   return (
     <>
-      {/* Adds COOP/COEP to /labs/ responses so WASM can use threads. Scoped
-          to this directory; the home page usually registers it first, in
-          which case this script finds the page isolated and does nothing. */}
-      <Script src="/labs/coi-serviceworker.js" strategy="afterInteractive" />
+      {/* Makes sure COOP/COEP reach this page so WASM can use threads. The
+          home page usually registers the worker first, in which case this
+          finds the page already isolated and does nothing. */}
+      <IsolationGuard />
 
       <LabsHeader />
 

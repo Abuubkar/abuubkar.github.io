@@ -75,10 +75,14 @@ export default function RootLayout({
           our origin avoids the third-party __cf_bm cookie Chrome flags in the
           Issues panel. Events still post to gateway.umami.is (baked into the
           script). Re-download occasionally to pick up tracker updates. */}
+      {/* lazyOnload, not afterInteractive: stats are the lowest-priority
+          thing on the page, and afterInteractive made Next preload the file,
+          which the service worker then served from a different world — a
+          mismatch the browser warns about, for a preload nobody used. */}
       <Script
         src="/stats.js"
         data-website-id="12727c17-8ba3-4052-b694-c0f578e27f45"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
     </html>
   );

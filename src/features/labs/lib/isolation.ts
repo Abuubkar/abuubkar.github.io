@@ -11,6 +11,9 @@
 /** Scoped to /labs/ by the script's own location — see the file's header. */
 const SW_URL = "/labs/coi-serviceworker.js";
 
+/** Set once per tab so a failed reload can never become a loop. */
+const RELOADED_KEY = "labs-isolation-reloaded";
+
 let requested = false;
 
 /**
@@ -26,4 +29,32 @@ export function prewarmIsolation() {
   navigator.serviceWorker.register(SW_URL).catch(() => {
     // Private mode, disabled workers, etc. — /labs/ still works, single-threaded.
   });
+}
+
+/**
+ * Called on /labs/ itself, for someone who arrived without the worker having
+ * been pre-registered — a deep link, or a first visit straight to this URL.
+ *
+ * A worker cannot add headers to the navigation that installed it, so the
+ * page has to be fetched once more before it is isolated. Reloading here
+ * costs a moment; not reloading costs the visitor 4 threads.
+ */
+export function ensureIsolation() {
+  if (typeof window === "undefined" || window.crossOriginIsolated) return;
+  if (!("serviceWorker" in navigator) || !window.isSecureContext) return;
+  if (sessionStorage.getItem(RELOADED_KEY)) return;
+
+  void (async () => {
+    try {
+      await navigator.serviceWorker.register(SW_URL);
+      // Resolves once a worker for this scope is active, which may be after
+      // it finishes installing.
+      await navigator.serviceWorker.ready;
+      if (navigator.serviceWorker.controller) return; // already ours
+      sessionStorage.setItem(RELOADED_KEY, "1");
+      window.location.reload();
+    } catch {
+      // No worker, no isolation, one thread. The lab still works.
+    }
+  })();
 }
