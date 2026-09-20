@@ -5,10 +5,11 @@
   "packageManager": "pnpm@11.1.1",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "pnpm run build:worker && next build",
     "start": "next start",
     "lint": "eslint && pnpm lint:boundaries",
-    "lint:boundaries": "depcruise src"
+    "lint:boundaries": "depcruise src",
+    "build:worker": "node scripts/build-worker.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",
@@ -24,6 +25,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dependency-cruiser": "^18.3.1",
+    "esbuild": "^0.28.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
     "tailwindcss": "^4",

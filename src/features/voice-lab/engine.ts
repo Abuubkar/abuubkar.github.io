@@ -20,7 +20,7 @@
 
 import { track } from "@/lib/track";
 import { getState, setState } from "./state/store";
-import { loadModel, synthesize, type KokoroModel } from "./engine/model";
+import { loadModel, synthesize } from "./engine/model";
 import {
   createPlayer,
   ensureAudioContext,
@@ -43,25 +43,25 @@ export {
 export type { VoiceId } from "./data/voices";
 
 /** Resolves to null when the model failed and web-speech took over. */
-let modelPromise: Promise<KokoroModel | null> | null = null;
+let modelPromise: Promise<boolean> | null = null;
 let player: Player | null = null;
 /** Bumped on every speak()/stop() so stale async callbacks can bail out. */
 let run = 0;
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
-async function ensureModel(): Promise<KokoroModel | null> {
+async function ensureModel(): Promise<boolean> {
   track("tts-load-start");
   // Clear any previous failure: this is a fresh attempt, including the retry
   // offered after a fatal error.
   setState({ phase: "loading", progress: 0, error: null });
   try {
-    const model = await loadModel((percent) => {
+    await loadModel((percent) => {
       if (getState().phase === "loading") setState({ progress: percent });
     });
     setState({ tier: "wasm", progress: 100, error: null });
     track("tts-load-done");
-    return model;
+    return true;
   } catch (err) {
     track("tts-load-error");
     // Don't cache the failure — the next click retries the download instead
@@ -70,7 +70,7 @@ async function ensureModel(): Promise<KokoroModel | null> {
     if (webSpeech.isAvailable()) {
       webSpeech.primeVoices();
       setState({ tier: "web-speech", error: "load-failed" });
-      return null;
+      return false;
     }
     setState({ phase: "error", tier: null, error: "load-failed" });
     throw err;
@@ -116,15 +116,15 @@ export async function speak(rawText: string) {
   const settled = modelPromise !== null;
 
   modelPromise ??= ensureModel();
-  let model: KokoroModel | null;
+  let neural: boolean;
   try {
-    model = await modelPromise;
+    neural = await modelPromise;
   } catch {
     return; // phase is already "error"
   }
   if (run !== myRun) return; // stopped, or spoken again, mid-load
 
-  if (model === null) {
+  if (!neural) {
     setState({ phase: "speaking", timing: null });
     track("tts-speak-webspeech");
     webSpeech.speak(text, () => {
@@ -154,7 +154,7 @@ export async function speak(rawText: string) {
   player = active;
 
   try {
-    for await (const chunk of synthesize(model, text, getState().voice)) {
+    for await (const chunk of synthesize(text, getState().voice)) {
       if (run !== myRun) return;
       active.enqueue(chunk);
     }

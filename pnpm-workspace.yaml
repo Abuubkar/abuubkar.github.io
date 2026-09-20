@@ -1,4 +1,6 @@
 allowBuilds:
+  # Bundles the Voice Lab worker; see the build:worker script.
+  esbuild: true
   # Node-only native bindings pulled in by kokoro-js; the site uses the
   # browser (WASM) runtime, so their build scripts are safely skipped.
   onnxruntime-node: false
@@ -6,5 +8,6 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 onlyBuiltDependencies:
+  - esbuild
   - sharp
   - unrs-resolver
