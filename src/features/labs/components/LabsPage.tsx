@@ -25,10 +25,8 @@ export function LabsPage() {
 
       <main className="mx-auto w-full max-w-[var(--container-max)] px-5 sm:px-6">
         <div className="flex flex-col gap-4 pb-4 pt-16">
-          <p className="text-code-sm text-on-surface-variant">
-            <span className="text-primary">{labs.num}</span>{" "}
-            <span aria-hidden>{"//"}</span> {labs.slug}
-          </p>
+          {/* No hex index or slug here: those number the sections of the home
+              page. On its own route the page is just Labs. */}
           <h1 className="text-headline-lg text-on-surface">{labs.title}</h1>
           <p className="text-body-lg max-w-(--reading-max) text-on-surface-variant">
             {labs.page.intro}
