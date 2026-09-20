@@ -6,6 +6,16 @@
  * module. Deliberately free of React so it can be exercised without one.
  *
  * Spec: github.com/Abuubkar/abuubkar.github.io/issues/1
+ *
+ * Analytics events, as a funnel:
+ *
+ *   tts-load-start → tts-load-done | tts-load-error
+ *   tts-synthesis-start → tts-speak-wasm | tts-synthesis-error
+ *   tts-speak-webspeech            (fallback; nothing to wait for)
+ *   tts-stop-<phase>               (where someone gave up)
+ *
+ * tts-speak-* means sound was heard, never merely requested, so the drop
+ * between synthesis-start and speak-wasm is the wait people abandon.
  */
 
 import { track } from "@/lib/track";
@@ -78,9 +88,11 @@ export function setVoice(voice: VoiceId) {
 }
 
 export function stop() {
+  // Read before cancelling: which phase was interrupted is the useful part.
+  const { phase } = getState();
   run++;
   cancelCurrent();
-  track("tts-stop");
+  track(`tts-stop-${phase}`);
   setState({ phase: modelPromise ? "ready" : "idle" });
 }
 
@@ -122,6 +134,7 @@ export async function speak(rawText: string) {
   }
 
   setState({ phase: "synthesizing", error: null, headStartSecs: 0 });
+  track("tts-synthesis-start");
 
   // Created now, not at click time, so the player's clock measures synthesis
   // rather than the download: "how long until it spoke" is the useful number.
@@ -158,6 +171,7 @@ export async function speak(rawText: string) {
     if (run === myRun) setState({ phase: "ready" });
   } catch {
     if (run !== myRun) return;
+    track("tts-synthesis-error");
     setState({ phase: "ready", error: "synthesis-failed" });
   }
 }
