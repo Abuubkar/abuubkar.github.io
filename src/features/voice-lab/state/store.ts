@@ -3,7 +3,7 @@
  * here; nothing here knows how speech is produced.
  */
 
-import { VOICES, type VoiceId } from "./voices";
+import { VOICES, type VoiceId } from "../data/voices";
 import { wasmThreadCount } from "./threads";
 
 /** Compute paths, in order of preference. v1 ships "wasm" only: the model's

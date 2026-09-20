@@ -59,3 +59,8 @@ playing. Heard as a gap mid-sentence.
 
 **Entry point** — a file at a package root, and the only thing outside code
 may import. A package may expose several small ones rather than one barrel.
+
+Inside a package, folders are named for the role their files play:
+`components/` and `hooks/` are the React side, `engine/`, `state/` and
+`data/` are the side that must keep working without a DOM. Dependencies run
+one way, from the React side inwards, and that direction is enforced too.

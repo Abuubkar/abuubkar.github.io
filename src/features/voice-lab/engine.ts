@@ -9,22 +9,22 @@
  */
 
 import { track } from "@/lib/track";
-import { getState, setState } from "./lib/store";
-import { loadModel, synthesize, type KokoroModel } from "./lib/model";
-import { createPlayer, type Player } from "./lib/playback";
-import * as webSpeech from "./lib/web-speech";
-import { MAX_TEXT_LENGTH, type VoiceId } from "./lib/voices";
+import { getState, setState } from "./state/store";
+import { loadModel, synthesize, type KokoroModel } from "./engine/model";
+import { createPlayer, type Player } from "./engine/playback";
+import * as webSpeech from "./engine/web-speech";
+import { MAX_TEXT_LENGTH, type VoiceId } from "./data/voices";
 
-export { subscribe, getState, getInitialState } from "./lib/store";
-export type { TtsState, TtsPhase, TtsTier, TtsError } from "./lib/store";
+export { subscribe, getState, getInitialState } from "./state/store";
+export type { TtsState, TtsPhase, TtsTier, TtsError } from "./state/store";
 export {
   VOICES,
   MODEL_LABEL,
   MODEL_VERSION,
   MODEL_SIZE_MB,
   MAX_TEXT_LENGTH,
-} from "./lib/voices";
-export type { VoiceId } from "./lib/voices";
+} from "./data/voices";
+export type { VoiceId } from "./data/voices";
 
 /** Resolves to null when the model failed and web-speech took over. */
 let modelPromise: Promise<KokoroModel | null> | null = null;

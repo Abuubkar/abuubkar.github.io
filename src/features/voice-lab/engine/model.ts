@@ -5,7 +5,7 @@
  */
 
 import type { AudioChunk } from "./playback";
-import { MODEL_ID, type VoiceId } from "./voices";
+import { MODEL_ID, type VoiceId } from "../data/voices";
 
 export type KokoroModel = Awaited<
   ReturnType<(typeof import("kokoro-js"))["KokoroTTS"]["from_pretrained"]>

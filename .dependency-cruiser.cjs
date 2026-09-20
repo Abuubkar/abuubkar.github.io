@@ -77,6 +77,16 @@ module.exports = {
     // Interface-hiding controls HOW you import (through the entry points).
     // Layering controls WHICH packages may depend on which.
     {
+      name: "engine-stays-framework-free",
+      comment:
+        "A package's engine/, state/ and data/ folders (and its engine.ts entry point) must run without a DOM: no React, and nothing from components/ or hooks/. Dependencies point one way, from the React side inwards, which is what keeps the engine exercisable on its own.",
+      severity: "error",
+      from: {
+        path: `^${R}/[^/]+/(engine|state|data)/|^${R}/[^/]+/engine\\.(ts|tsx)$`,
+      },
+      to: { path: `^${R}/[^/]+/(components|hooks)/|[/]react(-dom)?[/@]` },
+    },
+    {
       name: "experiments-may-not-depend-on-labs",
       comment:
         "labs/ is the container: it composes experiments, so it may import them. An experiment must never import the container, or dropping in a new one would mean editing both sides. Anything an experiment needs from the page it sits on (the thread count, say) it works out for itself.",

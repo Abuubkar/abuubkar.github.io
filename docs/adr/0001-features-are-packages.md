@@ -30,6 +30,12 @@ container may import experiments; an experiment may never import the
 container, which is also an enforced rule. A future `EXP.02` is a new package
 and one line in `LabsPage`.
 
+Inside a package, folders are named for the role their files play rather than
+lumped into one `lib/`: `components/` and `hooks/` on the React side,
+`engine/`, `state/` and `data/` on the side that must run without a DOM. A
+second rule enforces that direction, so the engine cannot quietly acquire a
+React dependency and stop being testable on its own.
+
 We do **not** add a `src/utils/` folder. Code one feature needs lives in that
 feature's `lib/`. Code two features need earns its own package with an entry
 point. `src/lib/` keeps only what is genuinely cross-cutting (`track.ts`,

@@ -16,7 +16,7 @@ import {
   type TtsPhase,
   type VoiceId,
 } from "../engine";
-import { useTts } from "./useTts";
+import { useTts } from "../hooks/useTts";
 import { PipelineStrip } from "./PipelineStrip";
 import { Telemetry } from "./Telemetry";
 
