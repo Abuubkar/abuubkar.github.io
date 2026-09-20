@@ -21,7 +21,8 @@ export type TtsPhase =
   | "speaking" // audio playing
   | "error"; // unrecoverable (not even web-speech available)
 
-/** Machine-readable error codes; the UI owns the user-facing copy. */
+/** Machine-readable error codes. The wording a visitor reads lives in
+ *  src/config/site.ts; components only choose which string to show. */
 export type TtsError = "load-failed" | "synthesis-failed";
 
 export type TtsState = {
@@ -34,7 +35,7 @@ export type TtsState = {
   /** Threads onnxruntime-web will use; 1 unless the page is isolated. */
   threads: number;
   /** Seconds of head start currently being waited out, while buffering. */
-  cushionSecs: number;
+  headStartSecs: number;
   /** Last neural run: audio produced, time to first sound, and how many
    *  sentences still arrived too late to play seamlessly. */
   timing: {
@@ -51,7 +52,7 @@ const INITIAL_STATE: TtsState = {
   voice: VOICES[0].id,
   error: null,
   threads: 1, // server-safe default; corrected on first subscribe
-  cushionSecs: 0,
+  headStartSecs: 0,
   timing: null,
 };
 

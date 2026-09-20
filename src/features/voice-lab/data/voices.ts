@@ -7,7 +7,10 @@
 export const MODEL_ID = "onnx-community/Kokoro-82M-v1.0-ONNX";
 export const MODEL_LABEL = "kokoro-82M";
 export const MODEL_VERSION = "v1.0";
-export const MODEL_SIZE_MB = 92; // q8 weights — shown in the UI before download
+export const MODEL_LICENSE = "Apache-2.0";
+export const MODEL_SIZE_MB = 92; // shown in the UI before the download starts
+/** Weight precision; kept here so the UI and engine/model.ts can't disagree. */
+export const MODEL_DTYPE = "q8";
 export const MAX_TEXT_LENGTH = 300; // keep a phone's CPU out of trouble
 
 /** Curated subset of the model's voices (the full set is mostly low-grade). */

@@ -25,6 +25,8 @@ export {
   VOICES,
   MODEL_LABEL,
   MODEL_VERSION,
+  MODEL_LICENSE,
+  MODEL_DTYPE,
   MODEL_SIZE_MB,
   MAX_TEXT_LENGTH,
 } from "./data/voices";
@@ -40,7 +42,9 @@ const round1 = (n: number) => Math.round(n * 10) / 10;
 
 async function ensureModel(): Promise<KokoroModel | null> {
   track("tts-load-start");
-  setState({ phase: "loading", progress: 0 });
+  // Clear any previous failure: this is a fresh attempt, including the retry
+  // offered after a fatal error.
+  setState({ phase: "loading", progress: 0, error: null });
   try {
     const model = await loadModel((percent) => {
       if (getState().phase === "loading") setState({ progress: percent });
@@ -112,7 +116,7 @@ export async function speak(rawText: string) {
     return;
   }
 
-  setState({ phase: "synthesizing", error: null, cushionSecs: 0 });
+  setState({ phase: "synthesizing", error: null, headStartSecs: 0 });
 
   // Created now, not at click time, so the player's clock measures synthesis
   // rather than the download: "how long until it spoke" is the useful number.
@@ -120,7 +124,7 @@ export async function speak(rawText: string) {
     totalChars: text.length,
     onBuffering: (seconds) => {
       if (run !== myRun) return;
-      setState({ phase: "buffering", cushionSecs: round1(seconds) });
+      setState({ phase: "buffering", headStartSecs: round1(seconds) });
     },
     onFirstSound: () => {
       if (run !== myRun) return;

@@ -10,7 +10,7 @@
  * default scope is its own directory, so it can only ever touch /labs/ pages.
  * The rest of the site (and its Lighthouse profile) is untouched.
  *
- * The home page pre-registers it (see src/lib/coi.ts) so that navigating to
+ * The home page pre-registers it (see src/features/labs/lib/isolation.ts) so that navigating to
  * /labs is already isolated and this script's reload path never triggers.
  * Deep-linkers straight to /labs get one automatic reload instead.
  *

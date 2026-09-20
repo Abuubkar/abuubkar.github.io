@@ -1,9 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { siteConfig } from "@/config/site";
 import { MODEL_LABEL, type TtsState } from "../engine";
 
-const STAGES = ["text", "phonemes", MODEL_LABEL, "waveform", "audio out"];
+const labels = siteConfig.labs.voice.ui.stages;
+// The model names itself; the rest are copy. Order is the pipeline's order.
+const STAGES = [
+  labels.text,
+  labels.phonemes,
+  MODEL_LABEL,
+  labels.waveform,
+  labels.audioOut,
+];
 // Named positions in STAGES, so the glow logic below reads as intent.
 const STAGE = { text: 0, phonemes: 1, model: 2, waveform: 3, audioOut: 4 };
 

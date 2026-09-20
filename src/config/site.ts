@@ -339,7 +339,7 @@ export const siteConfig = {
       slug: "voice-lab",
       title: "Voice Lab",
       label:
-        "An 82M-parameter speech model running on your own hardware. Your text never leaves the page. The only network traffic is a one-time download: model weights from Hugging Face, WASM runtime from jsDelivr.",
+        "An 82M-parameter speech model running on your own hardware. Your text never leaves the page. What does travel: the model weights from Hugging Face, the WASM runtime from jsDelivr, and a half-megabyte voice file the first time you pick each voice.",
       sampleText:
         "Hi, I'm Abubakar's portfolio. Every word you hear is synthesized right now, on your device.",
       cta: {
@@ -351,8 +351,44 @@ export const siteConfig = {
         fallback:
           "The model didn't load, so this is your browser's built-in voice. Press the button again to retry the download.",
         fatal:
-          "The model didn't load, and this browser has no built-in speech to fall back on.",
+          "The model didn't load, and this browser has no built-in speech to fall back on. Press the button to try again.",
         run: "That run failed. Try again, or pick a different voice.",
+      },
+      // Every word the experiment puts on screen. `{…}` placeholders are
+      // filled in by the component that renders them.
+      ui: {
+        inputLabel: "input text",
+        voiceLabel: "Voice",
+        // The model's own name is a fact about the model, not copy, so the
+        // pipeline takes it from data/voices.ts and these sit around it.
+        stages: {
+          text: "text",
+          phonemes: "phonemes",
+          waveform: "waveform",
+          audioOut: "audio out",
+        },
+        telemetry: {
+          heading: "telemetry",
+          rows: {
+            model: "model",
+            weights: "weights",
+            backend: "backend",
+            threads: "threads",
+            lastRun: "last run",
+          },
+          none: "—",
+          notLoaded: "— not loaded",
+          browserVoice: "browser voice (fallback)",
+          onDevice: "on-device",
+          isolated: "cross-origin isolated",
+          notIsolated: "not isolated",
+          downloading: "downloading {percent}%",
+          headStart: "banking a {seconds}s head start so it plays without gaps…",
+          lastRun: "{audio}s audio · sound in {firstSound}s · {gaps}",
+          noGaps: "no gaps",
+          oneGap: "1 gap",
+          manyGaps: "{count} gaps",
+        },
       },
     },
   },

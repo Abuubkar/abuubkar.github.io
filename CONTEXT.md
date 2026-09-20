@@ -42,14 +42,20 @@ happens in what order and delegates every *how*. Framework-free.
 `webgpu` (unused for now), or `web-speech` (the browser's own voice, used
 only when the model can't load).
 
-**Player** — the audio queue (`lib/playback.ts`). Owns *when* sound starts,
-so buffering strategy stays private to it.
+**Player** — the audio queue (`engine/playback.ts`). Owns *when* sound starts,
+so the head start stays private to it.
 
 **Chunk** — one sentence of generated audio. The model yields chunks as it
 makes them; the player queues them back to back.
 
+**Head start** — the delay the player puts before the first chunk, sized to
+the generation deficit it expects over the rest of the text. Call it a head
+start everywhere; do not call it a cushion, a buffer or a lead. The engine is
+in the `buffering` phase while it waits one out.
+
 **Underrun** — a chunk not ready by the time the previous one finishes
-playing. Heard as a gap mid-sentence.
+playing. Heard as a gap mid-sentence, and what the head start exists to
+prevent.
 
 ## Architecture
 
@@ -61,6 +67,9 @@ playing. Heard as a gap mid-sentence.
 may import. A package may expose several small ones rather than one barrel.
 
 Inside a package, folders are named for the role their files play:
-`components/` and `hooks/` are the React side, `engine/`, `state/` and
-`data/` are the side that must keep working without a DOM. Dependencies run
-one way, from the React side inwards, and that direction is enforced too.
+`components/` and `hooks/` are the React side; `engine/`, `state/` and
+`data/` hold the parts that carry no React dependency, so they can be
+exercised without rendering anything. `lib/` is the fallback name for a
+package's private code when no sharper role fits, as in `labs/lib/`.
+Dependencies run one way, from the React side inwards, and that direction is
+enforced too.

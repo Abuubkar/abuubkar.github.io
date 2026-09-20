@@ -38,23 +38,23 @@ export type Player = {
   /** Sentences that arrived too late to play seamlessly, heard as gaps. */
   readonly underruns: number;
   /** Seconds from this player's creation to the first sample being heard,
-   *  cushion included. 0 until sound starts. */
+   *  head start included. 0 until sound starts. */
   readonly firstSoundSecs: number;
 };
 
 export type PlayerOptions = {
-  /** Length of the whole text, so the cushion can be sized to what remains. */
+  /** Length of the whole text, so the head start can be sized to what remains. */
   totalChars?: number;
   /** Fires once, when the first sample actually reaches the speakers. */
   onFirstSound?: () => void;
-  /** Fires when a cushion is being waited out, with its length in seconds. */
+  /** Fires when a head start is being waited out, with its length in seconds. */
   onBuffering?: (seconds: number) => void;
 };
 
 /** Never delay the start by less than this when more audio is still coming. */
-const MIN_CUSHION = 0.25;
-/** A slow device would need an unusable cushion, so it gets gaps instead. */
-const MAX_CUSHION = 2.5;
+const MIN_HEAD_START = 0.25;
+/** A slow device would need an unusable head start, so it gets gaps instead. */
+const MAX_HEAD_START = 2.5;
 /** Sentences vary in how fast they generate; cover the average deficit twice. */
 const SAFETY = 2;
 /**
@@ -127,7 +127,7 @@ export function createPlayer({
   }
 
   /** How far into the future the first sentence should start. */
-  function cushionFor(chunkSecs: number, chunkChars: number): number {
+  function headStartFor(chunkSecs: number, chunkChars: number): number {
     const secsPerChar = chunkChars > 0 ? chunkSecs / chunkChars : 0;
     const remainingSecs =
       Math.max(0, totalChars - chunkChars) * secsPerChar;
@@ -136,7 +136,7 @@ export function createPlayer({
 
     const rate = learnedRate ?? SEED_RATE;
     const deficit = (rate - 1) * remainingSecs * SAFETY * extraSafety;
-    return clamp(MIN_CUSHION, deficit, MAX_CUSHION);
+    return clamp(MIN_HEAD_START, deficit, MAX_HEAD_START);
   }
 
   return {
@@ -161,15 +161,15 @@ export function createPlayer({
       const now = performance.now();
       if (!scheduled) {
         scheduled = true;
-        const cushion = cushionFor(buffer.duration, chunk.chars);
-        nextStart = ctx.currentTime + cushion;
+        const headStart = headStartFor(buffer.duration, chunk.chars);
+        nextStart = ctx.currentTime + headStart;
         // Known the moment it is scheduled: the audio clock will honour it
         // even while the main thread is busy generating the rest.
         playbackStart = nextStart;
         firstSoundSecs = playbackStart - ctxCreatedAt;
-        if (cushion > 0.05) {
-          onBuffering?.(cushion);
-          startTimer = window.setTimeout(announce, cushion * 1000);
+        if (headStart > 0.05) {
+          onBuffering?.(headStart);
+          startTimer = window.setTimeout(announce, headStart * 1000);
         } else {
           announce();
         }
@@ -195,7 +195,7 @@ export function createPlayer({
       if (stopped) return Promise.resolve();
       if (ctx.currentTime >= playbackStart) announce();
       // Teach the session what this device actually manages, so the next run
-      // sizes its cushion from measurement rather than from one sentence.
+      // sizes its head start from measurement rather than from one sentence.
       if (steadyAudio > 0) {
         learnedRate = steadyWork / steadyAudio;
         if (underruns > 0) extraSafety = Math.min(3, extraSafety * 1.5);

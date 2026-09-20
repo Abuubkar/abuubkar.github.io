@@ -5,7 +5,7 @@
  */
 
 import type { AudioChunk } from "./playback";
-import { MODEL_ID, type VoiceId } from "../data/voices";
+import { MODEL_DTYPE, MODEL_ID, type VoiceId } from "../data/voices";
 
 export type KokoroModel = Awaited<
   ReturnType<(typeof import("kokoro-js"))["KokoroTTS"]["from_pretrained"]>
@@ -18,7 +18,7 @@ export async function loadModel(
 ): Promise<KokoroModel> {
   const { KokoroTTS } = await import("kokoro-js");
   return KokoroTTS.from_pretrained(MODEL_ID, {
-    dtype: "q8",
+    dtype: MODEL_DTYPE,
     device: "wasm",
     progress_callback: (info) => {
       // Only the .onnx weights are worth a progress bar; the tokenizer files

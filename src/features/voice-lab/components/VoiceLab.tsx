@@ -28,9 +28,18 @@ const { voice: voiceLab } = siteConfig.labs;
 const busy = (phase: TtsPhase) =>
   phase === "loading" || phase === "synthesizing" || phase === "buffering";
 
-/** Sound is either coming out or about to; Stop is the useful action. */
-const playing = (phase: TtsPhase) =>
-  phase === "buffering" || phase === "speaking";
+/** Everything from the first token to the last sample is worth a Stop:
+ *  synthesis is the longest wait, so leaving it uncancellable strands people.
+ *  The model download is the exception — it carries on and is cached, so a
+ *  Stop there would be a lie. */
+const cancellable = (phase: TtsPhase) =>
+  phase === "synthesizing" || phase === "buffering" || phase === "speaking";
+
+/** Which phases accept a new run. "error" is one of them on purpose: the
+ *  download may have failed for a passing reason, so the button retries
+ *  rather than sitting dead for the life of the page. */
+const canSpeak = (phase: TtsPhase) =>
+  phase === "idle" || phase === "ready" || phase === "error";
 
 export function VoiceLab() {
   const state = useTts();
@@ -55,7 +64,7 @@ export function VoiceLab() {
               htmlFor="voicelab-text"
               className="text-label-caps text-on-surface-variant"
             >
-              input text
+              {voiceLab.ui.inputLabel}
             </label>
             <textarea
               id="voicelab-text"
@@ -71,7 +80,7 @@ export function VoiceLab() {
                 value={state.voice}
                 onChange={(e) => setVoice(e.target.value as VoiceId)}
                 disabled={state.tier === "web-speech"}
-                aria-label="Voice"
+                aria-label={voiceLab.ui.voiceLabel}
                 className="text-code-sm rounded-md border border-outline-variant bg-surface-container-lowest px-3 py-2 text-on-surface outline-none focus:border-primary disabled:opacity-50"
               >
                 {VOICES.map((v) => (
@@ -89,21 +98,16 @@ export function VoiceLab() {
               <Button
                 variant="primary"
                 onClick={() => speak(text)}
-                disabled={
-                  busy(state.phase) ||
-                  playing(state.phase) ||
-                  state.phase === "error" ||
-                  !text.trim()
-                }
+                disabled={!canSpeak(state.phase) || !text.trim()}
               >
                 {busy(state.phase) && (
                   <Loader2 className="size-4 animate-spin" aria-hidden />
                 )}
-                {state.phase === "idle"
+                {state.tier === null
                   ? `${voiceLab.cta.load} (${MODEL_SIZE_MB} MB)`
                   : voiceLab.cta.speak}
               </Button>
-              {playing(state.phase) && (
+              {cancellable(state.phase) && (
                 <Button variant="ghost" onClick={stop}>
                   {voiceLab.cta.stop}
                 </Button>

@@ -12,7 +12,7 @@ const { labs } = siteConfig;
 /**
  * Home-page card pointing at /labs/. Hovering (or focusing) the CTA registers
  * the cross-origin isolation worker, so the experiments are already
- * multi-threaded by the time the click lands — see src/lib/coi.ts.
+ * multi-threaded by the time the click lands — see src/features/labs/lib/isolation.ts.
  */
 export function LabsTeaser() {
   return (

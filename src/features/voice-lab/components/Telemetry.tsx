@@ -1,42 +1,59 @@
 "use client";
 
+import { siteConfig } from "@/config/site";
 import {
+  MODEL_DTYPE,
   MODEL_LABEL,
+  MODEL_LICENSE,
   MODEL_SIZE_MB,
   MODEL_VERSION,
   type TtsState,
 } from "../engine";
 
+const t = siteConfig.labs.voice.ui.telemetry;
+
+/** Fill `{name}` placeholders in a config string. */
+const fill = (template: string, values: Record<string, string | number>) =>
+  Object.entries(values).reduce(
+    (text, [key, value]) => text.replace(`{${key}}`, String(value)),
+    template,
+  );
+
 /** Sentences that arrived too late to play seamlessly. Worth saying out
  *  loud either way: "no gaps" is the claim the head start is making. */
 function describeGaps(underruns: number): string {
-  if (underruns === 0) return "no gaps";
-  return underruns === 1 ? "1 gap" : `${underruns} gaps`;
+  if (underruns === 0) return t.noGaps;
+  return underruns === 1 ? t.oneGap : fill(t.manyGaps, { count: underruns });
 }
 
-function describeBackend(state: TtsState): string {
-  if (state.tier === "web-speech") return "browser voice (fallback)";
-  if (state.tier) return `${state.tier} · on-device`;
-  return "— not loaded";
+function describeTier(state: TtsState): string {
+  if (state.tier === "web-speech") return t.browserVoice;
+  if (state.tier) return `${state.tier} · ${t.onDevice}`;
+  return t.notLoaded;
 }
 
 /** What the model is and how it is doing: the honest half of the showcase. */
 export function Telemetry({ state }: { state: TtsState }) {
   const rows: [string, string][] = [
-    ["model", `${MODEL_LABEL} ${MODEL_VERSION} · Apache-2.0`],
-    ["weights", `${MODEL_SIZE_MB} MB · q8 quantized`],
-    ["backend", describeBackend(state)],
     [
-      "threads",
-      state.threads > 1
-        ? `${state.threads} · cross-origin isolated`
-        : "1 · not isolated",
+      t.rows.model,
+      `${MODEL_LABEL} ${MODEL_VERSION} · ${MODEL_LICENSE}`,
+    ],
+    [t.rows.weights, `${MODEL_SIZE_MB} MB · ${MODEL_DTYPE} quantized`],
+    [t.rows.backend, describeTier(state)],
+    [
+      t.rows.threads,
+      `${state.threads} · ${state.threads > 1 ? t.isolated : t.notIsolated}`,
     ],
     [
-      "last run",
+      t.rows.lastRun,
       state.timing
-        ? `${state.timing.audioSecs}s audio · sound in ${state.timing.firstSoundSecs}s · ${describeGaps(state.timing.underruns)}`
-        : "—",
+        ? fill(t.lastRun, {
+            audio: state.timing.audioSecs,
+            firstSound: state.timing.firstSoundSecs,
+            gaps: describeGaps(state.timing.underruns),
+          })
+        : t.none,
     ],
   ];
 
@@ -46,7 +63,7 @@ export function Telemetry({ state }: { state: TtsState }) {
       className="bracket-corners flex flex-col gap-3 rounded-lg border border-outline bg-surface-container-lowest p-5"
     >
       <p className="text-label-caps text-on-surface-variant">
-        <span className="text-primary">{"//"}</span> telemetry
+        <span className="text-primary">{"//"}</span> {t.heading}
       </p>
 
       {rows.map(([label, value]) => (
@@ -68,14 +85,14 @@ export function Telemetry({ state }: { state: TtsState }) {
             />
           </div>
           <p className="text-code-sm mt-2 text-on-surface-variant">
-            downloading {Math.round(state.progress)}%
+            {fill(t.downloading, { percent: Math.round(state.progress) })}
           </p>
         </div>
       )}
 
       {state.phase === "buffering" && (
         <p className="text-code-sm text-on-surface-variant">
-          banking a {state.cushionSecs}s head start so it plays without gaps…
+          {fill(t.headStart, { seconds: state.headStartSecs })}
         </p>
       )}
 
