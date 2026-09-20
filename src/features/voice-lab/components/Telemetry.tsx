@@ -11,6 +11,7 @@ import {
 } from "../engine";
 
 const t = siteConfig.labs.voice.ui.telemetry;
+const status = siteConfig.labs.voice.ui.status;
 
 /** Fill `{name}` placeholders in a config string. */
 const fill = (template: string, values: Record<string, string | number>) =>
@@ -32,6 +33,39 @@ function describeTier(state: TtsState): string {
   return t.notLoaded;
 }
 
+function describeLastRun(state: TtsState): string {
+  if (!state.timing) return t.none;
+  return fill(t.lastRun, {
+    audio: state.timing.audioSecs,
+    firstSound: state.timing.firstSoundSecs,
+    gaps: describeGaps(state.timing.underruns),
+  });
+}
+
+/**
+ * One sentence for screen readers, changing only when the phase does. The
+ * download's percentage is deliberately left out: it would re-announce
+ * several times a second and drown everything else out.
+ */
+function describeStatus(state: TtsState): string {
+  switch (state.phase) {
+    case "loading":
+      return status.loading;
+    case "synthesizing":
+      return status.synthesizing;
+    case "buffering":
+      return fill(t.headStart, { seconds: state.headStartSecs });
+    case "speaking":
+      return status.speaking;
+    case "ready":
+      return state.timing
+        ? fill(status.done, { summary: describeLastRun(state) })
+        : "";
+    default:
+      return "";
+  }
+}
+
 /** What the model is and how it is doing: the honest half of the showcase. */
 export function Telemetry({ state }: { state: TtsState }) {
   const rows: [string, string][] = [
@@ -45,23 +79,17 @@ export function Telemetry({ state }: { state: TtsState }) {
       t.rows.threads,
       `${state.threads} · ${state.threads > 1 ? t.isolated : t.notIsolated}`,
     ],
-    [
-      t.rows.lastRun,
-      state.timing
-        ? fill(t.lastRun, {
-            audio: state.timing.audioSecs,
-            firstSound: state.timing.firstSoundSecs,
-            gaps: describeGaps(state.timing.underruns),
-          })
-        : t.none,
-    ],
+    [t.rows.lastRun, describeLastRun(state)],
   ];
 
   return (
-    <div
-      aria-live="polite"
-      className="bracket-corners flex flex-col gap-3 rounded-lg border border-outline bg-surface-container-lowest p-5"
-    >
+    <div className="bracket-corners flex flex-col gap-3 rounded-lg border border-outline bg-surface-container-lowest p-5">
+      {/* The only live region here. The table below is read on demand, the
+          way any other table is, rather than re-announced on every change. */}
+      <p className="sr-only" role="status">
+        {describeStatus(state)}
+      </p>
+
       <p className="text-label-caps text-on-surface-variant">
         <span className="text-primary">{"//"}</span> {t.heading}
       </p>

@@ -389,6 +389,15 @@ export const siteConfig = {
           oneGap: "1 gap",
           manyGaps: "{count} gaps",
         },
+        // Spoken by screen readers only, one short sentence per phase. The
+        // panel itself is not a live region: re-reading five rows on every
+        // download tick is unusable.
+        status: {
+          loading: "Downloading the speech model.",
+          synthesizing: "Synthesizing speech.",
+          speaking: "Playing.",
+          done: "Finished: {summary}",
+        },
       },
     },
   },
