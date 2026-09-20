@@ -18,9 +18,9 @@ import {
   type TtsPhase,
   type TtsState,
   type VoiceId,
-} from "@/lib/tts";
-import { useTts } from "@/lib/useTts";
-import { wasmThreadCount } from "@/lib/coi";
+} from "../engine";
+import { useTts } from "./useTts";
+import { wasmThreadCount } from "./threads";
 
 /** Client-only read: the server can't know whether this tab is isolated.
  *  Isolation never changes during a document's life, so the "subscription"

@@ -1,10 +1,10 @@
 /**
- * Cross-origin isolation for /labs — the prerequisite for multi-threaded WASM.
+ * Cross-origin isolation for /labs/ — the prerequisite for multi-threaded WASM.
  *
  * GitHub Pages can't send COOP/COEP headers, so a service worker adds them
  * (public/labs/coi-serviceworker.js). A service worker only controls
  * navigations that happen *after* it activates, which is why the home page
- * pre-registers it: by the time a visitor clicks through to /labs, that
+ * pre-registers it: by the time a visitor clicks through to /labs/, that
  * navigation is already isolated and nothing has to reload.
  */
 
@@ -14,7 +14,7 @@ const SW_URL = "/labs/coi-serviceworker.js";
 let requested = false;
 
 /**
- * Registers the isolation worker ahead of a likely visit to /labs.
+ * Registers the isolation worker ahead of a likely visit to /labs/.
  * Safe to call repeatedly; only the first call does anything.
  */
 export function prewarmIsolation() {
@@ -24,12 +24,6 @@ export function prewarmIsolation() {
   // Deliberately no reload here — this runs on the home page, which must
   // never flicker. The worker simply takes effect on the next navigation.
   navigator.serviceWorker.register(SW_URL).catch(() => {
-    // Private mode, disabled workers, etc. — /labs still works, single-threaded.
+    // Private mode, disabled workers, etc. — /labs/ still works, single-threaded.
   });
-}
-
-/** Threads onnxruntime-web will use: it pins to 1 unless we're isolated. */
-export function wasmThreadCount(): number {
-  if (typeof window === "undefined" || !window.crossOriginIsolated) return 1;
-  return Math.min(4, Math.ceil((navigator.hardwareConcurrency || 1) / 2));
 }

@@ -9,7 +9,7 @@ import { FeaturedProjects } from "@/components/sections/FeaturedProjects";
 import { PersonalProjects } from "@/components/sections/PersonalProjects";
 import { Certifications } from "@/components/sections/Certifications";
 import { InitiateConnection } from "@/components/sections/InitiateConnection";
-import { LabsTeaser } from "@/components/sections/LabsTeaser";
+import { LabsTeaser } from "@/features/labs";
 import { siteConfig, siteUrl } from "@/config/site";
 
 const { profile, arsenal, trajectory } = siteConfig;

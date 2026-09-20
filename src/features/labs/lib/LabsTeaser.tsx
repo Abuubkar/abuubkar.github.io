@@ -5,7 +5,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
-import { prewarmIsolation } from "@/lib/coi";
+import { prewarmIsolation } from "./isolation";
 
 const { labs } = siteConfig;
 

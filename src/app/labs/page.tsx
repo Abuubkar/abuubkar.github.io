@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { ArrowLeft, ChevronRight } from "lucide-react";
-import { VoiceLab } from "@/components/sections/VoiceLab";
+import { VoiceLab } from "@/features/voice-lab";
 import { Footer } from "@/components/layout/Footer";
 import { siteConfig } from "@/config/site";
 
