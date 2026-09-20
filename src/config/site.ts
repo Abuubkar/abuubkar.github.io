@@ -108,8 +108,8 @@ export const siteConfig = {
     { id: "trajectory", label: "Trajectory" },
     { id: "featured", label: "Featured" },
     { id: "personal", label: "Personal" },
-    { id: "contact", label: "Contact" },
     { id: "labs", label: "Labs" },
+    { id: "contact", label: "Contact" },
   ] as NavItem[],
 
   /* ---------------- Technical Arsenal (tiles) ---------------- */
@@ -287,7 +287,7 @@ export const siteConfig = {
 
   /* ---------------- Contact ---------------- */
   contact: {
-    num: "0x06",
+    num: "0x07",
     slug: "initiate-connection",
     label: "Open to senior full-stack roles, consulting, and partnerships",
     title: "Initiate Connection",
@@ -306,7 +306,7 @@ export const siteConfig = {
   // own route so the cross-origin isolation worker it needs can never touch
   // the rest of the site (see public/labs/coi-serviceworker.js).
   labs: {
-    num: "0x07",
+    num: "0x06",
     slug: "labs",
     title: "Labs",
     label:

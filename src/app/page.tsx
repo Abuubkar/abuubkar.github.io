@@ -65,8 +65,8 @@ export default function Home() {
         <FeaturedProjects />
         <PersonalProjects />
         <Certifications />
-        <InitiateConnection />
         <LabsTeaser />
+        <InitiateConnection />
         <Footer />
       </main>
       <ScrollToTop />
