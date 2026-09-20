@@ -45,6 +45,14 @@ export type Player = {
 export type PlayerOptions = {
   /** Length of the whole text, so the head start can be sized to what remains. */
   totalChars?: number;
+  /**
+   * Whether this run may teach the estimator. False for the first run after a
+   * model load: it also pays for session setup, first-inference compilation
+   * and whatever is left of the download, so its timings describe starting
+   * up rather than this device's steady pace. Learning from them once cost a
+   * whole session its latency (PR #2).
+   */
+  learn?: boolean;
   /** Fires once, when the first sample actually reaches the speakers. */
   onFirstSound?: () => void;
   /** Fires when a head start is being waited out, with its length in seconds. */
@@ -61,15 +69,21 @@ const SAFETY = 2;
  * What to assume before anything has been measured. The first sentence is a
  * bad witness: it also pays for session setup and the first inference, so
  * deriving a rate from it swings wildly. This is what Kokoro-82M does on
- * multi-threaded WASM — a hair slower than realtime — and one completed run
- * replaces it with the truth for this device.
+ * multi-threaded WASM — a hair slower than realtime — and measurement from a
+ * settled run replaces it with the truth for this device.
  */
 const SEED_RATE = 1.03;
+/** Weight given to the newest measurement; the rest keeps the old estimate. */
+const RATE_ADAPT = 0.3;
+/** Hedge harder after a run that underran, relax after one that didn't. */
+const HEDGE_UP = 1.5;
+const HEDGE_DOWN = 0.8;
+const MAX_HEDGE = 3;
 
-/** Seconds of work per second of audio, learned from completed runs in this
+/** Seconds of work per second of audio, learned from settled runs in this
  *  session. More trustworthy than anything one chunk can tell us. */
 let learnedRate: number | undefined;
-/** Raised when a run underran anyway, so the next one hedges harder. */
+/** Multiplies SAFETY. Moves both ways, so one bad run cannot mark the session. */
 let extraSafety = 1;
 
 const clamp = (min: number, value: number, max: number) =>
@@ -93,6 +107,7 @@ export function ensureAudioContext(): AudioContext {
  *  not be started while the model is still downloading. */
 export function createPlayer({
   totalChars = 0,
+  learn = false,
   onFirstSound,
   onBuffering,
 }: PlayerOptions = {}): Player {
@@ -194,11 +209,20 @@ export function createPlayer({
     finish() {
       if (stopped) return Promise.resolve();
       if (ctx.currentTime >= playbackStart) announce();
-      // Teach the session what this device actually manages, so the next run
-      // sizes its head start from measurement rather than from one sentence.
-      if (steadyAudio > 0) {
-        learnedRate = steadyWork / steadyAudio;
-        if (underruns > 0) extraSafety = Math.min(3, extraSafety * 1.5);
+      // Teach the session what this device actually manages, but only from a
+      // run that was measuring steady-state work (see `learn`).
+      if (learn && steadyAudio > 0) {
+        const observed = steadyWork / steadyAudio;
+        // Weighted toward the newest run without letting it overwrite
+        // everything, so a one-off stall doesn't redefine the device.
+        learnedRate =
+          learnedRate === undefined
+            ? observed
+            : (1 - RATE_ADAPT) * learnedRate + RATE_ADAPT * observed;
+        extraSafety =
+          underruns > 0
+            ? Math.min(MAX_HEDGE, extraSafety * HEDGE_UP)
+            : Math.max(1, extraSafety * HEDGE_DOWN);
       }
       const remainingMs = Math.max(0, (nextStart - ctx.currentTime) * 1000);
       return new Promise((resolve) =>

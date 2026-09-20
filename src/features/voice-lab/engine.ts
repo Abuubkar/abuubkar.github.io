@@ -98,6 +98,11 @@ export async function speak(rawText: string) {
   // later, so that its clock times synthesis rather than the download.
   ensureAudioContext();
 
+  // A model already in memory means this run measures synthesis alone. The
+  // first run after a load also carries session setup and first-inference
+  // compilation, which say nothing about the device's steady pace.
+  const settled = modelPromise !== null;
+
   modelPromise ??= ensureModel();
   let model: KokoroModel | null;
   try {
@@ -122,6 +127,7 @@ export async function speak(rawText: string) {
   // rather than the download: "how long until it spoke" is the useful number.
   const active = createPlayer({
     totalChars: text.length,
+    learn: settled,
     onBuffering: (seconds) => {
       if (run !== myRun) return;
       setState({ phase: "buffering", headStartSecs: round1(seconds) });
