@@ -40,17 +40,22 @@ export function prewarmIsolation() {
  * costs a moment; not reloading costs the visitor 4 threads.
  */
 export function ensureIsolation() {
-  if (typeof window === "undefined" || window.crossOriginIsolated) return;
+  if (typeof window === "undefined") return;
+  // `undefined` means the browser has no notion of isolation, and no reload
+  // will give it one. Only an explicit `false` is worth acting on.
+  if (window.crossOriginIsolated !== false) return;
   if (!("serviceWorker" in navigator) || !window.isSecureContext) return;
   if (sessionStorage.getItem(RELOADED_KEY)) return;
 
   void (async () => {
     try {
       await navigator.serviceWorker.register(SW_URL);
-      // Resolves once a worker for this scope is active, which may be after
-      // it finishes installing.
+      // An active worker is the whole precondition: it intercepts the
+      // navigation the reload is about to make. Not `controller` — the worker
+      // claims this page on activation, but claiming adds no headers to a
+      // document fetched before it existed, so "controlled" here never means
+      // "isolated".
       await navigator.serviceWorker.ready;
-      if (navigator.serviceWorker.controller) return; // already ours
       sessionStorage.setItem(RELOADED_KEY, "1");
       window.location.reload();
     } catch {
