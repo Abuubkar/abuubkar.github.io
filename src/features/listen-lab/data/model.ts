@@ -1,18 +1,30 @@
 /** The model this experiment runs, and the limits it imposes on input. */
 
-// Pinned to the v1 ONNX export of openai/whisper-base. The onnx-community
-// mirror declares no licence of its own; it is a conversion of a model
-// published under Apache-2.0, which is what the telemetry panel reports.
-export const MODEL_ID = "onnx-community/whisper-base";
-export const MODEL_LABEL = "whisper-base";
+// Moonshine rather than Whisper, on measurement. Both were run against the
+// same four Kokoro-generated clips with exact reference text, four trials
+// each, median of the warm three, one loaded model, tab kept awake:
+//
+//   clip     whisper-base   moonshine-base
+//   6.8s        1.238s          0.333s
+//   12.0s       1.479s          0.611s
+//   17.9s       1.773s          1.084s
+//   8.8s gaps   1.054s          0.336s
+//
+// Whisper's times are flat because its encoder always runs over a 30-second
+// window; Moonshine's scale with the audio, which is the whole point of it.
+// For press-and-talk, where clips are short, that is 2-4x less waiting.
+//
+// Unlike the mirror of Whisper, this repo declares its own licence.
+export const MODEL_ID = "onnx-community/moonshine-base-ONNX";
+export const MODEL_LABEL = "moonshine-base";
 export const MODEL_VERSION = "v1";
-export const MODEL_LICENSE = "Apache-2.0";
+export const MODEL_LICENSE = "MIT";
 
 /** Shown before the download starts. The real figure, read from the Hugging
- *  Face API: encoder_model_quantized (23.2 MB) + decoder_model_merged_quantized
- *  (53.7 MB). Keep it honest if MODEL_DTYPE changes — the suffix changes with
+ *  Face API: encoder_model_quantized (20.5 MB) + decoder_model_merged_quantized
+ *  (42.5 MB). Keep it honest if MODEL_DTYPE changes — the suffix changes with
  *  it and so does the size. */
-export const MODEL_SIZE_MB = 77;
+export const MODEL_SIZE_MB = 63;
 
 /** Weight precision; q8 resolves to the `_quantized` ONNX files. Kept here so
  *  the UI and the worker cannot disagree about what is being downloaded. */
@@ -25,21 +37,10 @@ export const TARGET_SAMPLE_RATE = 16000;
 /**
  * Longest clip we will accept.
  *
- * Whisper's receptive field is 30 seconds: it pads anything shorter and
- * silently drops anything longer. Stopping at the boundary ourselves means
- * the visitor is told why rather than losing the end of a sentence.
- *
- * What the padding does *not* mean is that length is free. The encoder runs
- * over the fixed 30-second window whatever you feed it, but the decoder is
- * autoregressive, so more speech means more tokens and more steps. Measured
- * here, four real-speech clips, median of three warm runs each:
- *
- *   5.45s → 1.16s     10.9s → 1.48s     21.8s → 1.56s     28.0s → 2.21s
- *
- * Five times the audio costs under twice the time. The fixed cost dominates
- * and duration still shows through — an earlier note here claimed length was
- * free, which came from comparing a clip of speech against a clip of tone
- * that decoded to a single word.
+ * Moonshine has no fixed window to pad to — cost grows with the audio, which
+ * is why it is here. The cap stays at 30 seconds anyway: that is the range
+ * it was trained on, and a ceiling the visitor is told about beats one they
+ * discover by losing the end of a sentence.
  */
 export const MAX_CLIP_SECS = 30;
 
