@@ -25,6 +25,10 @@ about its siblings.
 **Voice Lab** — `EXP.01`. Neural text to speech running on the visitor's
 hardware.
 
+**Listen Lab** — `EXP.02`. Speech to text on the same terms: the microphone
+is captured, resampled and transcribed in the page, and the audio is never
+uploaded.
+
 **Isolation** — making a page cross-origin isolated (COOP + COEP) so
 `SharedArrayBuffer`, and therefore multi-threaded WASM, is available. GitHub
 Pages can't send those headers, so a service worker scoped to `/labs/` adds
@@ -73,3 +77,20 @@ exercised without rendering anything. `lib/` is the fallback name for a
 package's private code when no sharper role fits, as in `labs/lib/`.
 Dependencies run one way, from the React side inwards, and that direction is
 enforced too.
+
+## Listen Lab internals
+
+**Recorder** — `features/listen-lab/engine/recorder.ts`. Opens the
+microphone and emits Float32 blocks plus a loudness figure, via an
+AudioWorklet loaded from a blob URL. Knows nothing about models.
+
+**Clip** — one press-and-hold, from the first sample to the release. Capped
+at 30 seconds because that is Whisper's window; past it the model drops
+audio without saying so.
+
+**Sample clip** — `public/labs/sample.wav`, the no-microphone path. It is
+Voice Lab's own output, so the two experiments demonstrate each other.
+
+**Realtime factor** — transcription time divided by clip length. Under 1
+means the model finished sooner than the clip took to say; the panel reports
+it because it is the number that says whether this is usable.

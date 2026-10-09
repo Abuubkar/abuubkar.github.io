@@ -322,11 +322,12 @@ export const siteConfig = {
     href: "/labs/",
     teaser: {
       blurb:
-        "First one up is a speech model that loads into the page and reads back whatever you type. Your CPU does the synthesis, so the text stays on your machine.",
+        "Two speech models that load into the page and run on your CPU. One reads back whatever you type; the other transcribes whatever you say. Neither sends a word anywhere.",
+      // One line per experiment, so adding EXP.03 is a line here.
       bullets: [
-        "kokoro-82M · 92 MB · Apache-2.0",
+        "EXP.01 · Voice Lab — kokoro-82M, 92 MB, text to speech",
+        "EXP.02 · Listen Lab — whisper-base, 77 MB, speech to text",
         "WASM inference, multi-threaded where the browser allows it",
-        "Falls back to your browser's own voice",
       ],
       cta: "Open Labs",
     },
@@ -395,6 +396,66 @@ export const siteConfig = {
           synthesizing: "Synthesizing speech.",
           speaking: "Playing.",
           done: "Finished: {summary}",
+        },
+      },
+    },
+
+    /* ----- EXP.02 — Listen Lab ----- */
+    listen: {
+      num: "EXP.02",
+      slug: "listen-lab",
+      title: "Listen Lab",
+      label:
+        "Whisper, running on your own hardware. Hold the button, say something, let go. Your voice never leaves this page: the only things on the wire are the one-off model download and the anonymous click counter this site already runs.",
+      cta: {
+        load: "Load model and listen",
+        hold: "Hold to talk",
+        release: "Release to transcribe",
+        sample: "Try a sample instead",
+        stop: "Stop",
+      },
+      errors: {
+        load: "The model didn't download. Press the button to try again.",
+        denied:
+          "Your browser blocked the microphone. You can allow it in the site settings for this page, or try the sample clip instead.",
+        unavailable:
+          "No microphone here that the browser can reach. The sample clip works without one.",
+        insecure:
+          "Microphones need a secure connection, and this page isn't on one.",
+        run: "That clip didn't transcribe. Try again, or use the sample.",
+      },
+      // Every word the experiment puts on screen. `{…}` placeholders are
+      // filled in by the component that renders them.
+      ui: {
+        transcriptLabel: "transcript",
+        empty: "Nothing yet. Hold the button and say something.",
+        sampleNote:
+          "The sample is Voice Lab's own output: one model wrote it, the other read it back.",
+        recording: "listening · {seconds}s of {limit}s",
+        limitReached: "Stopped at {limit} seconds — that's as much as the model hears at once.",
+        telemetry: {
+          heading: "telemetry",
+          rows: {
+            model: "model",
+            weights: "weights",
+            backend: "backend",
+            threads: "threads",
+            lastRun: "last run",
+          },
+          none: "—",
+          notLoaded: "— not loaded",
+          onDevice: "on-device",
+          isolated: "cross-origin isolated",
+          notIsolated: "not isolated",
+          downloading: "downloading {percent}%",
+          lastRun: "{clip}s clip · transcribed in {work}s · {speed}x realtime",
+        },
+        // Spoken by screen readers only, one short sentence per phase.
+        status: {
+          loading: "Downloading the speech recognition model.",
+          recording: "Listening.",
+          transcribing: "Transcribing.",
+          done: "Transcript ready: {text}",
         },
       },
     },
