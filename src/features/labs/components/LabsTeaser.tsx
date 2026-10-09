@@ -36,7 +36,7 @@ export function LabsTeaser() {
                 <FlaskConical className="size-5" />
               </span>
               <span className="text-label-caps text-on-surface-variant">
-                {labs.voice.num} · {labs.voice.title}
+                {labs.title}
               </span>
             </div>
             <p className="text-body-lg text-on-surface-variant">

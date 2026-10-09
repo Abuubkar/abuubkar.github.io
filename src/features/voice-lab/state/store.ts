@@ -4,7 +4,7 @@
  */
 
 import { VOICES, type VoiceId } from "../data/voices";
-import { wasmThreadCount } from "./threads";
+import { wasmThreadCount } from "@/lib/wasm-threads";
 
 /** Compute paths, in order of preference. v1 ships "wasm" only: the model's
  *  WebGPU path needs the fp32 weights (325 MB vs q8's 92 MB — hostile to

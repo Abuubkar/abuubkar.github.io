@@ -1,5 +1,6 @@
 import { Footer } from "@/components/layout/Footer";
 import { siteConfig } from "@/config/site";
+import { ListenLab } from "@/features/listen-lab";
 import { VoiceLab } from "@/features/voice-lab";
 import { IsolationGuard } from "./IsolationGuard";
 import { LabsHeader } from "./LabsHeader";
@@ -34,6 +35,8 @@ export function LabsPage() {
         </div>
 
         <VoiceLab />
+
+        <ListenLab />
 
         <Footer />
       </main>

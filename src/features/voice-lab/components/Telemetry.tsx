@@ -1,5 +1,6 @@
 "use client";
 
+import { TelemetryPanel, fill, type TelemetryRow } from "@/features/lab-panel";
 import { siteConfig } from "@/config/site";
 import {
   MODEL_DTYPE,
@@ -12,13 +13,6 @@ import {
 
 const t = siteConfig.labs.voice.ui.telemetry;
 const status = siteConfig.labs.voice.ui.status;
-
-/** Fill `{name}` placeholders in a config string. */
-const fill = (template: string, values: Record<string, string | number>) =>
-  Object.entries(values).reduce(
-    (text, [key, value]) => text.replace(`{${key}}`, String(value)),
-    template,
-  );
 
 /** Sentences that arrived too late to play seamlessly. Worth saying out
  *  loud either way: "no gaps" is the claim the head start is making. */
@@ -42,11 +36,6 @@ function describeLastRun(state: TtsState): string {
   });
 }
 
-/**
- * One sentence for screen readers, changing only when the phase does. The
- * download's percentage is deliberately left out: it would re-announce
- * several times a second and drown everything else out.
- */
 function describeStatus(state: TtsState): string {
   switch (state.phase) {
     case "loading":
@@ -68,11 +57,8 @@ function describeStatus(state: TtsState): string {
 
 /** What the model is and how it is doing: the honest half of the showcase. */
 export function Telemetry({ state }: { state: TtsState }) {
-  const rows: [string, string][] = [
-    [
-      t.rows.model,
-      `${MODEL_LABEL} ${MODEL_VERSION} · ${MODEL_LICENSE}`,
-    ],
+  const rows: TelemetryRow[] = [
+    [t.rows.model, `${MODEL_LABEL} ${MODEL_VERSION} · ${MODEL_LICENSE}`],
     [t.rows.weights, `${MODEL_SIZE_MB} MB · ${MODEL_DTYPE} quantized`],
     [t.rows.backend, describeTier(state)],
     [
@@ -83,41 +69,13 @@ export function Telemetry({ state }: { state: TtsState }) {
   ];
 
   return (
-    <div className="bracket-corners flex flex-col gap-3 rounded-lg border border-outline bg-surface-container-lowest p-5">
-      {/* The only live region here. The table below is read on demand, the
-          way any other table is, rather than re-announced on every change. */}
-      <p className="sr-only" role="status">
-        {describeStatus(state)}
-      </p>
-
-      <p className="text-label-caps text-on-surface-variant">
-        <span className="text-primary">{"//"}</span> {t.heading}
-      </p>
-
-      {rows.map(([label, value]) => (
-        <div
-          key={label}
-          className="text-code-sm flex items-baseline justify-between gap-3 border-b border-outline-variant pb-2 last:border-0"
-        >
-          <span className="text-on-surface-variant">{label}</span>
-          <span className="text-right text-on-surface">{value}</span>
-        </div>
-      ))}
-
-      {state.phase === "loading" && (
-        <div>
-          <div className="h-1 overflow-hidden rounded-full bg-surface-container-high">
-            <div
-              className="h-full rounded-full bg-primary transition-[width] duration-150"
-              style={{ width: `${state.progress}%` }}
-            />
-          </div>
-          <p className="text-code-sm mt-2 text-on-surface-variant">
-            {fill(t.downloading, { percent: Math.round(state.progress) })}
-          </p>
-        </div>
-      )}
-
+    <TelemetryPanel
+      heading={t.heading}
+      rows={rows}
+      status={describeStatus(state)}
+      progress={state.phase === "loading" ? state.progress : undefined}
+      progressLabel={t.downloading}
+    >
       {state.phase === "buffering" && (
         <p className="text-code-sm text-on-surface-variant">
           {fill(t.headStart, { seconds: state.headStartSecs })}
@@ -138,6 +96,6 @@ export function Telemetry({ state }: { state: TtsState }) {
           ))}
         </div>
       )}
-    </div>
+    </TelemetryPanel>
   );
 }

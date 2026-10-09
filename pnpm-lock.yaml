@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@huggingface/transformers':
+        specifier: ^3.8.1
+        version: 3.8.1
       framer-motion:
         specifier: ^12.40.0
         version: 12.40.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -3871,7 +3874,7 @@ snapshots:
       es6-error: 4.1.1
       matcher: 3.0.0
       roarr: 2.15.4
-      semver: 7.8.1
+      semver: 7.8.5
       serialize-error: 7.0.1
 
   global-directory@4.0.1:
