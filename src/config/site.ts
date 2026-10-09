@@ -94,6 +94,12 @@ export const siteConfig = {
     // public/cv/ is written by the resume repo's sync workflow on every
     // resume push — always the freshest build, never edited by hand here.
     resumeUrl: "/cv/resume.pdf",
+    // What the file is called once it lands in someone's Downloads folder.
+    // The URL has to stay stable, but "resume.pdf" in a folder of thirty
+    // others says nothing about which role it answers — so the link renames
+    // it on the way out. Mirrors the full-stack stem from the resume repo's
+    // build.sh; /cv/resume.pdf is a copy of that preset's PDF.
+    resumeDownloadName: "abubakar-khawaja-full-stack-engineer-resume.pdf",
     socials: {
       github: "https://github.com/Abuubkar",
       linkedin: "https://linkedin.com/in/abubakar-khawaja-008483183",

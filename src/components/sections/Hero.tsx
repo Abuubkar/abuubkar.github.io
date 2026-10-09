@@ -59,8 +59,7 @@ export function Hero() {
             <Button
               href={profile.resumeUrl}
               variant="ghost"
-              target="_blank"
-              rel="noopener noreferrer"
+              download={profile.resumeDownloadName}
               data-umami-event="cv-download"
             >
               <Download className="size-4" /> {profile.resumeLabel}
