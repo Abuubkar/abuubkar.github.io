@@ -9,14 +9,15 @@
  * finished. Here the page stays alive while the model works.
  */
 
-import { KokoroTTS, TextSplitterStream } from "kokoro-js";
-import { MODEL_DTYPE, MODEL_ID, type VoiceId } from "../data/voices";
+import { TextSplitterStream } from "kokoro-js";
+import { loadBackend, type Backend } from "./backends";
+import type { TtsModelId } from "../data/models";
 
 const ctx = self as unknown as DedicatedWorkerGlobalScope;
 
 export type ToWorker =
-  | { type: "load" }
-  | { type: "speak"; text: string; voice: VoiceId }
+  | { type: "load"; model: TtsModelId }
+  | { type: "speak"; text: string; voice: string }
   | { type: "cancel" };
 
 export type FromWorker =
@@ -32,7 +33,7 @@ export type FromWorker =
   | { type: "done" }
   | { type: "error"; message: string };
 
-let model: KokoroTTS | null = null;
+let backend: Backend | null = null;
 let cancelled = false;
 
 const post = (message: FromWorker, transfer?: Transferable[]) =>
@@ -41,46 +42,34 @@ const post = (message: FromWorker, transfer?: Transferable[]) =>
 const describe = (err: unknown) =>
   err instanceof Error ? err.message : String(err);
 
-async function load() {
+async function load(which: TtsModelId) {
   try {
-    model = await KokoroTTS.from_pretrained(MODEL_ID, {
-      dtype: MODEL_DTYPE,
-      device: "wasm",
-      progress_callback: (info) => {
-        // Only the .onnx weights are worth a progress bar; the tokenizer
-        // files are a few KB and would make the bar jump around.
-        if (info.status === "progress" && info.file.endsWith(".onnx")) {
-          post({ type: "progress", percent: Math.round(info.progress) });
-        }
-      },
-    });
+    backend = await loadBackend(which, (percent) =>
+      post({ type: "progress", percent }),
+    );
     post({ type: "loaded" });
   } catch (err) {
     post({ type: "load-error", message: describe(err) });
   }
 }
 
-async function speak(text: string, voice: VoiceId) {
-  if (!model) return post({ type: "error", message: "model not loaded" });
+async function speak(text: string, voice: string) {
+  if (!backend) return post({ type: "error", message: "model not loaded" });
   cancelled = false;
   try {
+    // Split here rather than inside a model-specific stream helper: both
+    // backends take one sentence at a time, so the sentence boundary is the
+    // worker's business now, not kokoro-js's.
     const splitter = new TextSplitterStream();
     splitter.push(text);
-    splitter.close();
+    const sentences = [...splitter];
 
-    for await (const { text: sentence, audio } of model.stream(splitter, {
-      voice,
-    })) {
+    for (const sentence of sentences) {
       if (cancelled) break;
-      // Transferred, not copied: the samples leave this thread for good.
-      const samples = new Float32Array(audio.audio);
+      const { samples, sampleRate } = await backend.generate(sentence, voice);
       post(
-        {
-          type: "chunk",
-          samples,
-          sampleRate: audio.sampling_rate,
-          chars: sentence.length,
-        },
+        // Transferred, not copied: the samples leave this thread for good.
+        { type: "chunk", samples, sampleRate, chars: sentence.length },
         [samples.buffer],
       );
     }
@@ -92,7 +81,7 @@ async function speak(text: string, voice: VoiceId) {
 
 ctx.addEventListener("message", (event: MessageEvent<ToWorker>) => {
   const message = event.data;
-  if (message.type === "load") void load();
+  if (message.type === "load") void load(message.model);
   else if (message.type === "speak") void speak(message.text, message.voice);
   else if (message.type === "cancel") cancelled = true;
 });

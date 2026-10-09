@@ -12,10 +12,12 @@
     "build:worker": "node scripts/build-worker.mjs"
   },
   "dependencies": {
+    "@huggingface/transformers": "^3.8.1",
     "framer-motion": "^12.40.0",
     "kokoro-js": "1.2.1",
     "lucide-react": "^1.17.0",
     "next": "16.2.7",
+    "phonemizer": "^1.2.1",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },

@@ -3,7 +3,7 @@
  * here; nothing here knows how speech is produced.
  */
 
-import { VOICES, type VoiceId } from "../data/voices";
+import { DEFAULT_MODEL, MODELS, type TtsModelId, type VoiceId } from "../data/models";
 import { wasmThreadCount } from "./threads";
 
 /** Compute paths, in order of preference. v1 ships "wasm" only: the model's
@@ -30,6 +30,8 @@ export type TtsState = {
   /** 0–100, meaningful while phase === "loading". */
   progress: number;
   tier: TtsTier | null;
+  /** Which model is selected. Changing it unloads the other one. */
+  model: TtsModelId;
   voice: VoiceId;
   error: TtsError | null;
   /** Threads onnxruntime-web will use; 1 unless the page is isolated. */
@@ -49,7 +51,8 @@ const INITIAL_STATE: TtsState = {
   phase: "idle",
   progress: 0,
   tier: null,
-  voice: VOICES[0].id,
+  model: DEFAULT_MODEL,
+  voice: MODELS[DEFAULT_MODEL].voices[0].id,
   error: null,
   threads: 1, // server-safe default; corrected on first subscribe
   headStartSecs: 0,

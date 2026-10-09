@@ -7,7 +7,7 @@
  */
 
 import type { AudioChunk } from "./playback";
-import type { VoiceId } from "../data/voices";
+import type { TtsModelId } from "../data/models";
 import type { FromWorker, ToWorker } from "./synth.worker";
 
 let worker: Worker | null = null;
@@ -25,8 +25,15 @@ let worker: Worker | null = null;
  */
 const WORKER_URL = "/labs/synth-worker.js";
 
+/** Throws the worker away, and the loaded weights with it. The next call
+ *  builds a fresh one — which is how switching models starts clean. */
+export function resetModel() {
+  worker?.terminate();
+  worker = null;
+}
+
 /** Built on first use: constructing it is what fetches the worker bundle,
- *  and with it kokoro-js, so neither touches the page until asked for. */
+ *  and with it the backends, so neither touches the page until asked for. */
 function ensureWorker(): Worker {
   worker ??= new Worker(WORKER_URL, { type: "module" });
   return worker;
@@ -38,6 +45,7 @@ const send = (message: ToWorker) => ensureWorker().postMessage(message);
  *  what to fall back to. `onProgress` reports 0–100 for the weights only. */
 export function loadModel(
   onProgress: (percent: number) => void,
+  which: TtsModelId,
 ): Promise<void> {
   const active = ensureWorker();
   return new Promise((resolve, reject) => {
@@ -49,7 +57,7 @@ export function loadModel(
       else reject(new Error(data.message));
     };
     active.addEventListener("message", onMessage);
-    send({ type: "load" });
+    send({ type: "load", model: which });
   });
 }
 
@@ -63,7 +71,7 @@ export function loadModel(
  */
 export async function* synthesize(
   text: string,
-  voice: VoiceId,
+  voice: string,
 ): AsyncGenerator<AudioChunk> {
   const active = ensureWorker();
   const queue: AudioChunk[] = [];

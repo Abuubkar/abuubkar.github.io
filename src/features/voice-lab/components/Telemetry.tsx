@@ -1,14 +1,7 @@
 "use client";
 
 import { siteConfig } from "@/config/site";
-import {
-  MODEL_DTYPE,
-  MODEL_LABEL,
-  MODEL_LICENSE,
-  MODEL_SIZE_MB,
-  MODEL_VERSION,
-  type TtsState,
-} from "../engine";
+import { MODELS, type TtsState } from "../engine";
 
 const t = siteConfig.labs.voice.ui.telemetry;
 const status = siteConfig.labs.voice.ui.status;
@@ -68,12 +61,10 @@ function describeStatus(state: TtsState): string {
 
 /** What the model is and how it is doing: the honest half of the showcase. */
 export function Telemetry({ state }: { state: TtsState }) {
+  const spec = MODELS[state.model];
   const rows: [string, string][] = [
-    [
-      t.rows.model,
-      `${MODEL_LABEL} ${MODEL_VERSION} · ${MODEL_LICENSE}`,
-    ],
-    [t.rows.weights, `${MODEL_SIZE_MB} MB · ${MODEL_DTYPE} quantized`],
+    [t.rows.model, `${spec.label} ${spec.version} · ${spec.license}`],
+    [t.rows.weights, `${spec.sizeMb} MB · ${spec.dtype} quantized`],
     [t.rows.backend, describeTier(state)],
     [
       t.rows.threads,

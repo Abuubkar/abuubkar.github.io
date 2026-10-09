@@ -364,6 +364,7 @@ export const siteConfig = {
       // filled in by the component that renders them.
       ui: {
         inputLabel: "input text",
+        modelLabel: "Model",
         voiceLabel: "Voice",
         telemetry: {
           heading: "telemetry",

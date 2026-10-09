@@ -8,11 +8,12 @@ import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
 import {
   MAX_TEXT_LENGTH,
-  MODEL_SIZE_MB,
-  VOICES,
+  MODELS,
+  setModel,
   setVoice,
   speak,
   stop,
+  type TtsModelId,
   type TtsPhase,
   type VoiceId,
 } from "../engine";
@@ -43,6 +44,7 @@ const canSpeak = (phase: TtsPhase) =>
 export function VoiceLab() {
   const state = useTts();
   const [text, setText] = useState<string>(voiceLab.sampleText);
+  const spec = MODELS[state.model];
 
   return (
     <section className="scroll-mt-24 py-20">
@@ -73,19 +75,38 @@ export function VoiceLab() {
             />
 
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <select
-                value={state.voice}
-                onChange={(e) => setVoice(e.target.value as VoiceId)}
-                disabled={state.tier === "web-speech"}
-                aria-label={voiceLab.ui.voiceLabel}
-                className="text-code-sm rounded-md border border-outline-variant bg-surface-container-lowest px-3 py-2 text-on-surface outline-none focus:border-primary disabled:opacity-50"
-              >
-                {VOICES.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.label}
-                  </option>
-                ))}
-              </select>
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Switching reloads from cold, on purpose: how long a
+                    model takes to arrive is half of what is being
+                    compared. */}
+                <select
+                  value={state.model}
+                  onChange={(e) => setModel(e.target.value as TtsModelId)}
+                  disabled={busy(state.phase)}
+                  aria-label={voiceLab.ui.modelLabel}
+                  className="text-code-sm rounded-md border border-outline-variant bg-surface-container-lowest px-3 py-2 text-on-surface outline-none focus:border-primary disabled:opacity-50"
+                >
+                  {(Object.keys(MODELS) as TtsModelId[]).map((id) => (
+                    <option key={id} value={id}>
+                      {MODELS[id].label} · {MODELS[id].sizeMb} MB
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={state.voice}
+                  onChange={(e) => setVoice(e.target.value as VoiceId)}
+                  disabled={state.tier === "web-speech"}
+                  aria-label={voiceLab.ui.voiceLabel}
+                  className="text-code-sm rounded-md border border-outline-variant bg-surface-container-lowest px-3 py-2 text-on-surface outline-none focus:border-primary disabled:opacity-50"
+                >
+                  {spec.voices.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <span className="text-code-sm text-on-surface-variant">
                 {text.length}/{MAX_TEXT_LENGTH}
               </span>
@@ -101,7 +122,7 @@ export function VoiceLab() {
                   <Loader2 className="size-4 animate-spin" aria-hidden />
                 )}
                 {state.tier === null
-                  ? `${voiceLab.cta.load} (${MODEL_SIZE_MB} MB)`
+                  ? `${voiceLab.cta.load} (${spec.sizeMb} MB)`
                   : voiceLab.cta.speak}
               </Button>
               {cancellable(state.phase) && (

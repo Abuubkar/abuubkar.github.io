@@ -20,27 +20,24 @@
 
 import { track } from "@/lib/track";
 import { getState, setState } from "./state/store";
-import { loadModel, synthesize } from "./engine/model";
+import { loadModel, resetModel, synthesize } from "./engine/model";
 import {
   createPlayer,
   ensureAudioContext,
   type Player,
 } from "./engine/playback";
 import * as webSpeech from "./engine/web-speech";
-import { MAX_TEXT_LENGTH, type VoiceId } from "./data/voices";
+import {
+  MAX_TEXT_LENGTH,
+  MODELS,
+  type TtsModelId,
+  type VoiceId,
+} from "./data/models";
 
 export { subscribe, getState, getInitialState } from "./state/store";
 export type { TtsState, TtsPhase, TtsTier, TtsError } from "./state/store";
-export {
-  VOICES,
-  MODEL_LABEL,
-  MODEL_VERSION,
-  MODEL_LICENSE,
-  MODEL_DTYPE,
-  MODEL_SIZE_MB,
-  MAX_TEXT_LENGTH,
-} from "./data/voices";
-export type { VoiceId } from "./data/voices";
+export { MODELS, DEFAULT_MODEL, MAX_TEXT_LENGTH } from "./data/models";
+export type { TtsModelId, TtsModel, VoiceId } from "./data/models";
 
 /** Resolves to null when the model failed and web-speech took over. */
 let modelPromise: Promise<boolean> | null = null;
@@ -58,7 +55,7 @@ async function ensureModel(): Promise<boolean> {
   try {
     await loadModel((percent) => {
       if (getState().phase === "loading") setState({ progress: percent });
-    });
+    }, getState().model);
     setState({ tier: "wasm", progress: 100, error: null });
     track("tts-load-done");
     return true;
@@ -85,6 +82,33 @@ function cancelCurrent() {
 
 export function setVoice(voice: VoiceId) {
   setState({ voice });
+}
+
+/**
+ * Switch models.
+ *
+ * The worker holds one at a time, so this throws the old one away and
+ * starts over: a fresh worker, a fresh download if that model has not been
+ * fetched before, and the first voice of the new set. Comparing two models
+ * means hearing them both from cold, which is part of what is being
+ * compared.
+ */
+export function setModel(model: TtsModelId) {
+  if (getState().model === model) return;
+  run++;
+  cancelCurrent();
+  resetModel();
+  modelPromise = null;
+  setState({
+    model,
+    voice: MODELS[model].voices[0].id,
+    phase: "idle",
+    tier: null,
+    progress: 0,
+    error: null,
+    timing: null,
+  });
+  track(`tts-model-${model}`);
 }
 
 export function stop() {
