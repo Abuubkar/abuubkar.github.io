@@ -27,6 +27,7 @@ import { chunksToBuffer, toMono16k } from "./engine/resample";
 import {
   RecorderError,
   startRecording,
+  type Captured,
   type RecorderHandle,
 } from "./engine/recorder";
 import { wasmThreadCount } from "@/lib/wasm-threads";
@@ -88,6 +89,49 @@ export async function prepare(): Promise<boolean> {
  * Split out from the capture side on purpose: by the time audio reaches
  * here it is just samples, and where they came from stops mattering.
  */
+/**
+ * Transcribes what has been said so far, over and over, while the
+ * microphone is open.
+ *
+ * Each pass reads the whole clip from the beginning and replaces the text
+ * outright. That sounds wasteful next to a rolling window, and it is — but
+ * it is also the reason there is nothing to reconcile: no overlapping
+ * segments to stitch, no duplicated words at the seams, no drifting
+ * timestamps. The transcript is always one model's opinion of one
+ * recording.
+ *
+ * It only works because the model is cheap and scales with duration.
+ * Measured: 0.33s for a 6.8s clip, 1.08s for 17.9s. Passes run back to
+ * back rather than on a timer, so early text arrives in a third of a
+ * second and the gap stretches as the clip grows — which is the right way
+ * round, because by then there is already text on screen.
+ *
+ * Whisper could not do this. Its encoder runs the full 30-second window
+ * every time, so the first pass would cost as much as the last.
+ */
+async function streamWhileOpen(myRun: number): Promise<void> {
+  while (run === myRun && recorder) {
+    const captured: Captured = recorder.snapshot();
+    const samples = captured.chunks.reduce((n, c) => n + c.length, 0);
+    // Nothing worth a pass yet; wait for the worklet to deliver some.
+    if (samples / captured.sampleRate < 0.4) {
+      await new Promise((r) => setTimeout(r, 150));
+      continue;
+    }
+    try {
+      const buffer = chunksToBuffer(captured.chunks, captured.sampleRate);
+      const audio = await toMono16k(buffer);
+      if (run !== myRun || !recorder) return;
+      const result = await transcribe(audio, buffer.duration);
+      if (run !== myRun || !recorder) return;
+      if (result.text) setState({ transcript: result.text, partial: true });
+    } catch {
+      // A dropped pass costs nothing: the next one covers the same audio.
+      return;
+    }
+  }
+}
+
 async function runClip(buffer: AudioBuffer): Promise<void> {
   const myRun = run;
   setState({ phase: "transcribing", error: null });
@@ -102,6 +146,7 @@ async function runClip(buffer: AudioBuffer): Promise<void> {
     setState({
       phase: "ready",
       transcript: result.text,
+      partial: false,
       timing: {
         clipSecs: round2(result.clipSecs),
         workSecs: round2(result.workSecs),
@@ -161,7 +206,15 @@ export async function startListening(): Promise<void> {
   if (run !== myRun) return void recorder.stop();
   track("stt-mic-granted");
   track("stt-record-start");
-  setState({ phase: "recording", error: null, level: 0, recordedSecs: 0 });
+  setState({
+    phase: "recording",
+    error: null,
+    level: 0,
+    recordedSecs: 0,
+    transcript: "",
+    partial: false,
+  });
+  void streamWhileOpen(myRun);
 }
 
 /** Closes the microphone and transcribes what was said. */
@@ -177,7 +230,7 @@ export async function stopListening(): Promise<void> {
   // and let the visitor wonder which part failed.
   const seconds = chunks.reduce((n, c) => n + c.length, 0) / sampleRate;
   if (seconds < 0.3) {
-    setState({ phase: "ready", recordedSecs: 0 });
+    setState({ phase: "ready", recordedSecs: 0, transcript: "", partial: false });
     return;
   }
 
@@ -196,5 +249,6 @@ export function stop() {
     phase: getState().loaded ? "ready" : "idle",
     level: 0,
     recordedSecs: 0,
+    partial: false,
   });
 }

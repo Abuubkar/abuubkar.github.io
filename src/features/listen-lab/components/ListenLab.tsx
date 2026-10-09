@@ -92,7 +92,21 @@ export function ListenLab() {
             {/* Selectable on purpose: a transcript nobody can copy is a
                 picture of text. */}
             <div className="text-body-md min-h-32 w-full rounded-md border border-outline-variant bg-surface-container-lowest p-4 text-on-surface">
-              {state.transcript || (
+              {state.transcript ? (
+                <>
+                  {state.transcript}
+                  {/* While the microphone is open the text is a guess at
+                      speech still in progress, and the next pass may revise
+                      a word. The caret says so without a label. */}
+                  {state.partial && (
+                    <span
+                      className="ml-0.5 inline-block w-2 animate-pulse bg-primary align-text-bottom"
+                      style={{ height: "1.1em" }}
+                      aria-hidden
+                    />
+                  )}
+                </>
+              ) : (
                 <span className="text-on-surface-variant">{ui.empty}</span>
               )}
             </div>

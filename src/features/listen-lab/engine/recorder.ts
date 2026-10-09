@@ -71,9 +71,14 @@ export type Recording = {
   onLimit?: () => void;
 };
 
+export type Captured = { chunks: Float32Array[]; sampleRate: number };
+
 export type RecorderHandle = {
+  /** Everything captured so far, without interrupting capture. The array is
+   *  a copy, so the caller can resample it while more blocks arrive. */
+  snapshot(): Captured;
   /** Releases the microphone and returns everything captured. */
-  stop(): { chunks: Float32Array[]; sampleRate: number };
+  stop(): Captured;
 };
 
 /**
@@ -145,6 +150,10 @@ export async function startRecording({
   // the speakers is how you get feedback howl.
 
   return {
+    snapshot() {
+      return { chunks: chunks.slice(), sampleRate: ctx.sampleRate };
+    },
+
     stop() {
       stopped = true;
       node.port.onmessage = null;

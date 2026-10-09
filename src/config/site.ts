@@ -406,7 +406,7 @@ export const siteConfig = {
       slug: "listen-lab",
       title: "Listen Lab",
       label:
-        "A speech recognition model running on your own hardware. Hold the button, say something, let go. Your voice never leaves this page: the only things on the wire are the one-off model download and the anonymous click counter this site already runs.",
+        "A speech recognition model running on your own hardware. Hold the button and talk — the words appear while you speak, and settle when you let go. Your voice never leaves this page: the only things on the wire are the one-off model download and the anonymous click counter this site already runs.",
       cta: {
         load: "Load model and listen",
         hold: "Hold to talk",
@@ -427,7 +427,7 @@ export const siteConfig = {
       // filled in by the component that renders them.
       ui: {
         transcriptLabel: "transcript",
-        empty: "Nothing yet. Hold the button and say something.",
+        empty: "Nothing yet. Hold the button and start talking.",
         recording: "listening · {seconds}s of {limit}s",
         limitReached: "Stopped at {limit} seconds — that's as much as the model hears at once.",
         telemetry: {

@@ -38,6 +38,9 @@ export type SttState = {
   /** The last transcript. Kept across a new recording until that one
    *  returns, so the panel never blanks while someone is talking. */
   transcript: string;
+  /** True while the text is a guess at speech still in progress. It will be
+   *  replaced by a pass over the whole clip when the button is released. */
+  partial: boolean;
   error: SttError | null;
   /** Threads onnxruntime-web will use; 1 unless the page is isolated. */
   threads: number;
@@ -55,6 +58,7 @@ const INITIAL_STATE: SttState = {
   progress: 0,
   loaded: false,
   transcript: "",
+  partial: false,
   error: null,
   threads: 1, // server-safe default; corrected on first subscribe
   level: 0,
