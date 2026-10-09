@@ -28,6 +28,18 @@ export const TARGET_SAMPLE_RATE = 16000;
  * Whisper's receptive field is 30 seconds: it pads anything shorter and
  * silently drops anything longer. Stopping at the boundary ourselves means
  * the visitor is told why rather than losing the end of a sentence.
+ *
+ * What the padding does *not* mean is that length is free. The encoder runs
+ * over the fixed 30-second window whatever you feed it, but the decoder is
+ * autoregressive, so more speech means more tokens and more steps. Measured
+ * here, four real-speech clips, median of three warm runs each:
+ *
+ *   5.45s → 1.16s     10.9s → 1.48s     21.8s → 1.56s     28.0s → 2.21s
+ *
+ * Five times the audio costs under twice the time. The fixed cost dominates
+ * and duration still shows through — an earlier note here claimed length was
+ * free, which came from comparing a clip of speech against a clip of tone
+ * that decoded to a single word.
  */
 export const MAX_CLIP_SECS = 30;
 
