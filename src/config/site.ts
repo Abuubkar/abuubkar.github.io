@@ -411,26 +411,23 @@ export const siteConfig = {
         load: "Load model and listen",
         hold: "Hold to talk",
         release: "Release to transcribe",
-        sample: "Try a sample instead",
         stop: "Stop",
       },
       errors: {
         load: "The model didn't download. Press the button to try again.",
         denied:
-          "Your browser blocked the microphone. You can allow it in the site settings for this page, or try the sample clip instead.",
+          "Your browser blocked the microphone. You can allow it again in the site settings for this page.",
         unavailable:
-          "No microphone here that the browser can reach. The sample clip works without one.",
+          "No microphone here that the browser can reach.",
         insecure:
           "Microphones need a secure connection, and this page isn't on one.",
-        run: "That clip didn't transcribe. Try again, or use the sample.",
+        run: "That clip didn't transcribe. Try holding the button again.",
       },
       // Every word the experiment puts on screen. `{…}` placeholders are
       // filled in by the component that renders them.
       ui: {
         transcriptLabel: "transcript",
         empty: "Nothing yet. Hold the button and say something.",
-        sampleNote:
-          "The sample is Voice Lab's own output: one model wrote it, the other read it back.",
         recording: "listening · {seconds}s of {limit}s",
         limitReached: "Stopped at {limit} seconds — that's as much as the model hears at once.",
         telemetry: {

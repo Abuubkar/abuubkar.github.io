@@ -88,9 +88,6 @@ AudioWorklet loaded from a blob URL. Knows nothing about models.
 at 30 seconds because that is Whisper's window; past it the model drops
 audio without saying so.
 
-**Sample clip** — `public/labs/sample.wav`, the no-microphone path. It is
-Voice Lab's own output, so the two experiments demonstrate each other.
-
 **Realtime factor** — transcription time divided by clip length. Under 1
 means the model finished sooner than the clip took to say; the panel reports
 it because it is the number that says whether this is usable.

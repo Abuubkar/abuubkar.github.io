@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
 import {
   MODEL_SIZE_MB,
-  runSample,
   startListening,
   stop,
   stopListening,
@@ -128,24 +127,12 @@ export function ListenLab() {
                     : listen.cta.hold}
               </Button>
 
-              <Button
-                variant="ghost"
-                onClick={() => void runSample()}
-                disabled={busy(state.phase) || recording}
-              >
-                {listen.cta.sample}
-              </Button>
-
               {(recording || busy(state.phase)) && (
-                <Button variant="ghost" onClick={stop}>
+                <Button variant="danger" onClick={stop}>
                   {listen.cta.stop}
                 </Button>
               )}
             </div>
-
-            <p className="text-code-sm text-on-surface-variant">
-              {ui.sampleNote}
-            </p>
 
             {state.error && (
               <p className="text-code-sm text-error" role="alert">

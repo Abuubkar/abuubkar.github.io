@@ -14,7 +14,6 @@
  *   stt-mic-request  → stt-mic-granted | stt-mic-denied
  *   stt-record-start → stt-transcribe-start → stt-transcribe-done
  *                                           | stt-transcribe-error
- *   stt-sample-run                 (the no-microphone path)
  *   stt-stop-<phase>               (where someone gave up)
  *
  * stt-transcribe-done means text reached the screen, never that a request
@@ -42,11 +41,6 @@ export {
   MODEL_SIZE_MB,
   MAX_CLIP_SECS,
 } from "./data/model";
-
-/** Where the no-microphone demo clip lives. Served from /labs/ beside the
- *  worker; it is Voice Lab's own output, which makes the round trip the
- *  page describes an actual round trip. */
-const SAMPLE_URL = "/labs/sample.wav";
 
 /** Resolves once the weights are in memory. Null until the first attempt. */
 let modelPromise: Promise<void> | null = null;
@@ -91,7 +85,7 @@ export async function prepare(): Promise<boolean> {
 /**
  * Runs one clip through the model and publishes the transcript.
  *
- * Shared by the microphone and the sample button: by the time audio reaches
+ * Split out from the capture side on purpose: by the time audio reaches
  * here it is just samples, and where they came from stops mattering.
  */
 async function runClip(buffer: AudioBuffer): Promise<void> {
@@ -114,35 +108,6 @@ async function runClip(buffer: AudioBuffer): Promise<void> {
       },
     });
     track("stt-transcribe-done");
-  } catch {
-    if (run !== myRun) return;
-    track("stt-transcribe-error");
-    setState({ phase: "ready", error: "transcribe-failed" });
-  }
-}
-
-/**
- * The no-microphone path: transcribe a bundled clip.
- *
- * Here for everyone who will not grant a microphone to a stranger's
- * portfolio, which is a reasonable position and should not leave them
- * looking at a dead button.
- */
-export async function runSample(): Promise<void> {
-  const myRun = ++run;
-  if (!(await prepare()) || run !== myRun) return;
-
-  track("stt-sample-run");
-  setState({ phase: "transcribing", error: null });
-  try {
-    const response = await fetch(SAMPLE_URL);
-    const encoded = await response.arrayBuffer();
-    // A short-lived context purely to decode; nothing is played.
-    const decoder = new AudioContext();
-    const buffer = await decoder.decodeAudioData(encoded);
-    void decoder.close();
-    if (run !== myRun) return;
-    await runClip(buffer);
   } catch {
     if (run !== myRun) return;
     track("stt-transcribe-error");
