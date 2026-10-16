@@ -1,0 +1,89 @@
+import type { Metadata, Viewport } from "next";
+import { Hanken_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
+import { siteConfig, siteUrl } from "@/config/site";
+import "./globals.css";
+
+const hanken = Hanken_Grotesk({
+  variable: "--font-hanken",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const { profile } = siteConfig;
+const title = `${profile.name} — ${profile.role}`;
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title,
+  description: profile.metaDescription,
+  alternates: { canonical: "/" },
+  // Google Search Console ownership — the meta-tag method, because the HTML
+  // file method would need public/, which the resume sync wipes.
+  verification: {
+    google: "hBIqxivVE3TUIMIt2N2rNkPhChFsZVUAUUCtsFVFuU8",
+  },
+  authors: [{ name: profile.name, url: siteUrl }],
+  creator: profile.name,
+  openGraph: {
+    type: "profile",
+    firstName: profile.firstName,
+    lastName: profile.lastName,
+    url: "/",
+    siteName: profile.brand,
+    description: profile.socialDescription,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    description: profile.socialDescription,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f1f0ed",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${hanken.variable} ${inter.variable} ${jetbrainsMono.variable} h-full scroll-smooth antialiased`}
+    >
+      <body className="min-h-full">
+        <div className="top-hairline" aria-hidden="true" />
+        {children}
+      </body>
+      {/* Umami analytics — privacy-friendly page stats. Self-hosted copy of
+          https://cloud.umami.is/script.js (public/stats.js): loading it from
+          our origin avoids the third-party __cf_bm cookie Chrome flags in the
+          Issues panel. Events still post to gateway.umami.is (baked into the
+          script). Re-download occasionally to pick up tracker updates. */}
+      {/* lazyOnload, not afterInteractive: stats are the lowest-priority
+          thing on the page, and afterInteractive made Next preload the file,
+          which the service worker then served from a different world — a
+          mismatch the browser warns about, for a preload nobody used. */}
+      <Script
+        src="/stats.js"
+        data-website-id="12727c17-8ba3-4052-b694-c0f578e27f45"
+        strategy="lazyOnload"
+      />
+    </html>
+  );
+}
