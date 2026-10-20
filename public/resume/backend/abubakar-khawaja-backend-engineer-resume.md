@@ -14,12 +14,12 @@ Senior backend engineer with 5+ years building production services in Python and
 ## Core Skills
 **Languages:** Python, SQL, JavaScript, TypeScript
 **Backend:** Python (Django, Django REST Framework, FastAPI, Flask), Node.js (NestJS, Express), REST API design, GraphQL, webhooks, JWT & OAuth2 authentication, Celery & RabbitMQ (async jobs), WebSockets, Scrapy
-**AI/ML:** LLM Application Architecture, AI Agents & Tool Calling (LangChain, LangGraph), RAG & Embeddings, Prompt & Context Engineering, Fine-Tuning, LLM Evals & Observability (Langfuse, LangSmith), NLP, Structured Outputs (Pydantic, Zod), Model Context Protocol (MCP), OpenAI / Anthropic / OpenRouter / Ollama
+**AI/ML:** LLM Application Architecture, AI Agents & Tool Calling (LangChain, LangGraph), RAG & Embeddings, Prompt & Context Engineering, Fine-Tuning, LLM Evals & Observability (Langfuse, LangSmith), Structured Outputs (Pydantic, Zod), Model Context Protocol (MCP), OpenAI / Anthropic / OpenRouter / Ollama
 **Databases:** PostgreSQL, pgvector, MySQL, MongoDB, Redis, Supabase, Drizzle ORM & Django ORM, Database Indexing, Query Optimization, Caching
 **Cloud & DevOps:** AWS (ECS, EKS, Lambda, S3, RDS, Cognito, API Gateway), Docker, Kubernetes, GitHub Actions, GitLab CI/CD, Datadog, Sentry, Nginx, Linux, Git
 **Testing:** Pytest, Django Test Framework, Vitest, Testcontainers, Unit & Integration Testing, API Testing
-**Integrations:** Stripe (payments), SendGrid & Resend (email), Firebase Auth, Google Maps, PostHog & Google Analytics, Google Looker (BI), Grafana, JWT/OAuth2
-**AI Development:** ChatGPT, GitHub Copilot, Cursor, Claude Code, Codex, Prompt Engineering, AI-Assisted Development
+**Integrations:** Stripe (payments), SendGrid & Resend (email), Firebase Auth, Google Maps, PostHog & Google Analytics, Google Looker (BI), Grafana
+**AI Development:** ChatGPT, GitHub Copilot, Cursor, Claude Code, Codex, AI-Assisted Development
 **Software Engineering:** Clean Code (SOLID, KISS, DRY, YAGNI), Design Patterns, Microservices, System Design, Performance Optimization, Code Review, Agile/Scrum, Jira & Confluence
 
 ---
@@ -30,7 +30,7 @@ Senior backend engineer with 5+ years building production services in Python and
 *Sept 2025 – Present*
 
 - Mentored junior engineers through code review and drove Agile feature delivery alongside UX/UI designers and backend teams.
-- Built LLM features into client products, including a chat intake assistant for law firms running on fine-tuned language models, and NLP patient-insight features for a telehealth platform.
+- Built LLM features into client products, including a chat intake assistant for law firms running on fine-tuned language models, and patient-insight features for a telehealth platform.
 - Implemented LLM tool calling in the legal intake assistant so the model could act mid-conversation, booking consultations and pushing case details into the firm's case management system, with every extracted field validated before it was saved.
 - Worked on a microservices system in Python and Django with a React frontend, and cut downtime by 30%.
 - Reworked Python REST API code and cut response times by 40%, which also brought cloud costs down.
@@ -80,4 +80,4 @@ Senior backend engineer with 5+ years building production services in Python and
 **B.S. Software Engineering** Punjab University College of Information & Technology (PUCIT)  ·  GPA: 3.08
 
 ## Certifications
-- The AI Engineer Path & Prompt Engineering for Web Developers — Scrimba (July 2026)
+- The AI Engineer Path & Prompt Engineering for Web Developers - Scrimba (July 2026)

@@ -32,15 +32,15 @@ Software engineer with 5+ years in test automation and full-stack development ac
 - Wrote unit and API tests for Django REST endpoints with pytest and the Django test framework, using fixtures and factories for test data, and ran them in CI before every merge.
 - Reworked Python REST API code and cut response times by 40%, which also brought cloud costs down.
 - Worked on a microservices system in Python and Django with a React frontend, and cut downtime by 30%.
-- Mentored junior engineers through regular code reviews and drove Agile feature delivery in tight collaboration with UX/UI designers and backend teams.
+- Mentored junior engineers through code review and drove Agile feature delivery alongside UX/UI designers and backend teams.
 
-### Senior Full-Stack Engineer | Arbisoft
+### Senior Software Engineer | Arbisoft
 *July 2021 – Apr 2026*
 
 - Raised automated test coverage from 10% to over 60% with Jest, Cypress, and Vitest, added ESLint and Husky as quality gates, and cut production bugs by 25%.
 - Reworked GitLab CI/CD pipelines with parallel jobs and layer caching, reducing deployment times by 40%.
 - Owned Sentry monitoring to cut production error volume: error triage with session replay, release and performance tracking, Slack and GitHub integration, and PII-safe payload encryption that keeps sensitive data out of captured events.
-- Cut API response times by 30-70% across core endpoints by resolving N+1 queries, optimizing ORM access patterns, and implementing strategic PostgreSQL indexing.
+- Cut API response times by 30 to 70% on core endpoints by fixing N+1 queries, reworking ORM access patterns, and adding PostgreSQL indexes.
 - Used AI coding tools such as Cursor, Claude Code, Codex, GitHub Copilot, and ChatGPT for both autonomous multi-step tasks and hands-on pair-programming, applying them to PR review, architecture discussions, and custom internal tooling, while comparing model outputs using structured prompts.
 
 ---

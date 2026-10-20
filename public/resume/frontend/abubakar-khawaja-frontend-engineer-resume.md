@@ -12,11 +12,11 @@ Senior frontend engineer with 5+ years of experience in React, Next.js, and Type
 ---
 
 ## Core Skills
-**Languages:** JavaScript (ES6+), TypeScript, Python, SQL, HTML5, CSS3/SCSS
+**Languages:** JavaScript (ES6+), TypeScript, Python, SQL, HTML5, CSS3
 **Frontend:** React.js, Next.js (App Router, Pages Router, Server Components), React Hook Form, Framer Motion, Tailwind CSS, Material UI, SCSS
 **State & Data:** Redux Toolkit, Zustand, Context API, TanStack Query, WebSockets, RESTful APIs
 **AI/ML:** Streaming Chat UIs (Vercel AI SDK, SSE), Agent & Tool-Call UIs, Human-in-the-Loop Review Flows, RAG & Embeddings (pgvector), Prompt & Context Engineering, Structured Outputs (Zod), LLM Evals, Model Context Protocol (MCP), OpenAI / Anthropic APIs, In-Browser ML (Transformers.js, Whisper)
-**AI Development:** ChatGPT, GitHub Copilot, Cursor, Claude Code, Codex, Prompt Engineering, AI-Assisted Development
+**AI Development:** ChatGPT, GitHub Copilot, Cursor, Claude Code, Codex, AI-Assisted Development
 **Frontend Engineering:** Performance Profiling, Core Web Vitals, Code Splitting, Lazy Loading, Accessibility (WCAG), Responsive Design, Component Architecture, Design Systems, Figma Handoff
 **Testing & Quality:** Jest, React Testing Library, Cypress, Vitest, Storybook, ESLint, Prettier, Husky (pre-commit hooks)
 **Backend:** Python (Django, Django REST Framework, FastAPI), Node.js (NestJS, Express), REST API design, GraphQL, JWT & OAuth2 authentication, Celery (async jobs)
@@ -29,14 +29,14 @@ Senior frontend engineer with 5+ years of experience in React, Next.js, and Type
 ### Senior Software Engineer | Codeupnow
 *Sept 2025 – Present*
 
-- Built LLM features into client products, including a chat intake assistant for law firms running on fine-tuned language models, and NLP patient-insight features for a telehealth platform.
+- Built LLM features into client products, including a chat intake assistant for law firms running on fine-tuned language models, and patient-insight features for a telehealth platform.
 - Implemented LLM tool calling in the legal intake assistant so the model could act mid-conversation, booking consultations and pushing case details into the firm's case management system, with every extracted field validated before it was saved.
 - Built reusable component libraries with Storybook, keeping the UI consistent across several projects.
 - Added WebSockets for real-time updates in live data processing.
 - Optimized frontend performance with lazy loading, code splitting, and image optimization.
 - Mentored junior engineers through code review and drove Agile feature delivery alongside UX/UI designers and backend teams.
 
-### Senior Frontend Engineer | Arbisoft
+### Senior Software Engineer | Arbisoft
 *July 2021 – Apr 2026*
 
 - Led cross-functional framework migrations (Material UI v4 to v5, React Router v4 to v5) and architected reusable Storybook component libraries to ensure design consistency.
@@ -58,7 +58,6 @@ Senior frontend engineer with 5+ years of experience in React, Next.js, and Type
 
 **Telehealth Platform** · *Next.js + Django + PostgreSQL*
 - Built NLP features that surface patient insights for clinicians, and integrated the platform's predictive AI models into the Django APIs and Next.js clinician views.
-- Built the frontend on the Next.js App Router with React Server Components, keeping data fetching on the server.
 
 **FixAlert, Maintenance Platform** · *React + TypeScript*
 - Untangled a filter set where changing any one filter wiped the rest, so a change now only touches the filters that genuinely depend on it, and selections stay put.
@@ -77,4 +76,4 @@ Senior frontend engineer with 5+ years of experience in React, Next.js, and Type
 **B.S. Software Engineering** Punjab University College of Information & Technology (PUCIT)  ·  GPA: 3.08
 
 ## Certifications
-- The AI Engineer Path & Prompt Engineering for Web Developers — Scrimba (July 2026)
+- The AI Engineer Path & Prompt Engineering for Web Developers - Scrimba (July 2026)

@@ -12,14 +12,14 @@ Senior full-stack engineer with 5+ years of experience in React, Next.js, Python
 ---
 
 ## Core Skills
-**Languages:** JavaScript (ES6+), TypeScript, Python, SQL, HTML5, CSS3/SCSS
-**AI/ML:** LLM Application Architecture, AI Agents & Tool Calling (LangChain, LangGraph), RAG & Embeddings, Prompt & Context Engineering, Fine-Tuning, LLM Evals & Observability (Langfuse, LangSmith), NLP, Structured Outputs (Zod, Pydantic), Model Context Protocol (MCP), OpenAI / Anthropic / OpenRouter / Ollama
+**Languages:** JavaScript (ES6+), TypeScript, Python, SQL, HTML5, CSS3
+**AI/ML:** LLM Application Architecture, AI Agents & Tool Calling (LangChain, LangGraph), RAG & Embeddings, Prompt & Context Engineering, Fine-Tuning, LLM Evals & Observability (Langfuse, LangSmith), Structured Outputs (Pydantic, Zod), Model Context Protocol (MCP), OpenAI / Anthropic / OpenRouter / Ollama
 **Frontend:** React.js, Next.js (App Router, Pages Router), Redux Toolkit, TanStack Query, React Hook Form, Streaming Chat UIs (Vercel AI SDK), Tailwind CSS, Material UI, SCSS
 **Backend:** Python (Django, Django REST Framework, FastAPI, Flask), Node.js (NestJS, Express), REST API design, GraphQL, webhooks, JWT & OAuth2 authentication, Celery & RabbitMQ (async jobs), WebSockets, Scrapy
 **Databases:** PostgreSQL, pgvector, MySQL, MongoDB, Redis, Supabase, Drizzle ORM & Django ORM, Database Indexing, Query Optimization, Caching
 **Cloud & DevOps:** AWS (ECS, EKS, Lambda, S3, RDS, Cognito, API Gateway), Docker, Kubernetes, GitHub Actions, GitLab CI/CD, Nginx, Linux, Git
 **Testing:** Jest, Cypress, Vitest, React Testing Library, Pytest, Django Test Framework, Testcontainers, ESLint, Prettier, Husky
-**AI Development:** ChatGPT, GitHub Copilot, Cursor, Claude Code, Codex, Prompt Engineering, AI-Assisted Development
+**AI Development:** ChatGPT, GitHub Copilot, Cursor, Claude Code, Codex, AI-Assisted Development
 **Software Engineering:** Object-Oriented Programming (OOP), Design Patterns, Microservices, System Design, Performance Optimization, Code Review, Agile/Scrum
 
 ---
@@ -30,7 +30,7 @@ Senior full-stack engineer with 5+ years of experience in React, Next.js, Python
 *Sept 2025 – Present*
 
 - Mentored junior engineers through code review and drove Agile feature delivery alongside UX/UI designers and backend teams.
-- Built LLM features into client products, including a chat intake assistant for law firms running on fine-tuned language models, and NLP patient-insight features for a telehealth platform.
+- Built LLM features into client products, including a chat intake assistant for law firms running on fine-tuned language models, and patient-insight features for a telehealth platform.
 - Implemented LLM tool calling in the legal intake assistant so the model could act mid-conversation, booking consultations and pushing case details into the firm's case management system, with every extracted field validated before it was saved.
 - Worked on a microservices system in Python and Django with a React frontend, and cut downtime by 30%.
 - Reworked Python REST API code and cut response times by 40%, which also brought cloud costs down.
@@ -81,4 +81,4 @@ Senior full-stack engineer with 5+ years of experience in React, Next.js, Python
 **B.S. Software Engineering** Punjab University College of Information & Technology (PUCIT)  ·  GPA: 3.08
 
 ## Certifications
-- The AI Engineer Path & Prompt Engineering for Web Developers — Scrimba (July 2026)
+- The AI Engineer Path & Prompt Engineering for Web Developers - Scrimba (July 2026)
