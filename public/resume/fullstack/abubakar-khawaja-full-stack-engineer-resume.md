@@ -1,5 +1,5 @@
 # Abubakar Khawaja
-## Senior Full-Stack Engineer | React | Next.js | Python | Django | LLM Agents & RAG
+## Senior Full-Stack Engineer
 
 abubakarrkhawaj@gmail.com  ·  [LinkedIn](https://www.linkedin.com/in/abubakar-khawaja-008483183/)  ·  [GitHub](https://github.com/Abuubkar)  ·  [Portfolio](https://abuubkar.github.io/)
 

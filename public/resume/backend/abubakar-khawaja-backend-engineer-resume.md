@@ -1,5 +1,5 @@
 # Abubakar Khawaja
-## Senior Backend Engineer | Python | Django | DRF | PostgreSQL | AWS | LLM Integrations
+## Senior Backend Engineer
 
 abubakarrkhawaj@gmail.com  ·  [LinkedIn](https://www.linkedin.com/in/abubakar-khawaja-008483183/)  ·  [GitHub](https://github.com/Abuubkar)  ·  [Portfolio](https://abuubkar.github.io/)
 

@@ -1,5 +1,5 @@
 # Abubakar Khawaja
-## SDET | QA Automation Engineer | Cypress | Playwright | Pytest | Locust | CI/CD
+## QA Automation Engineer
 
 abubakarrkhawaj@gmail.com  ·  [LinkedIn](https://www.linkedin.com/in/abubakar-khawaja-008483183/)  ·  [GitHub](https://github.com/Abuubkar)  ·  [Portfolio](https://abuubkar.github.io/)
 

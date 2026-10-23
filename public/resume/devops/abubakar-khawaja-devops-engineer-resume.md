@@ -1,5 +1,5 @@
 # Abubakar Khawaja
-## DevOps Engineer | AWS | Kubernetes | Docker | Terraform | CI/CD | Linux
+## DevOps Engineer
 
 abubakarrkhawaj@gmail.com  ·  [LinkedIn](https://www.linkedin.com/in/abubakar-khawaja-008483183/)  ·  [GitHub](https://github.com/Abuubkar)  ·  [Portfolio](https://abuubkar.github.io/)
 
