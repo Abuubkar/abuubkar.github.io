@@ -1,8 +1,7 @@
 # Abubakar Khawaja
 ## Senior Backend Engineer | Python | Django | DRF | PostgreSQL | AWS | LLM Integrations
 
-abubakar-dev@hotmail.com  ·  +92-334-9858841
-linkedin.com/in/abubakar-khawaja-008483183  ·  github.com/Abuubkar  ·  abuubkar.github.io
+abubakarrkhawaj@gmail.com  ·  [LinkedIn](https://www.linkedin.com/in/abubakar-khawaja-008483183/)  ·  [GitHub](https://github.com/Abuubkar)  ·  [Portfolio](https://abuubkar.github.io/)
 
 ---
 
@@ -27,7 +26,7 @@ Senior backend engineer with 5+ years building production services in Python and
 ## Experience
 
 ### Senior Software Engineer | Codeupnow
-*Sept 2025 – Present*
+*Sept 2025 - Present*
 
 - Mentored junior engineers through code review and drove Agile feature delivery alongside UX/UI designers and backend teams.
 - Built LLM features into client products, including a chat intake assistant for law firms running on fine-tuned language models, and patient-insight features for a telehealth platform.
@@ -39,7 +38,7 @@ Senior backend engineer with 5+ years building production services in Python and
 - Added WebSockets for real-time updates in live data processing.
 
 ### Senior Software Engineer | Arbisoft
-*July 2021 – Apr 2026*
+*July 2021 - Apr 2026*
 
 - Architected asynchronous processing pipelines on Celery and Redis for bulk document generation, scheduled jobs, and reporting systems that handle 1,000+ assets.
 - Designed secure REST APIs with Django REST Framework, implementing JWT authentication, authorization, and third-party integrations.
@@ -49,7 +48,7 @@ Senior backend engineer with 5+ years building production services in Python and
 - Used AI coding tools such as Cursor, Claude Code, Codex, GitHub Copilot, and ChatGPT for both autonomous multi-step tasks and hands-on pair-programming, applying them to PR review, architecture discussions, and custom internal tooling, while comparing model outputs using structured prompts.
 - Raised automated test coverage from 10% to over 60% with Jest, Cypress, and Vitest, added ESLint and Husky as quality gates, and cut production bugs by 25%.
 - Reworked GitLab CI/CD pipelines with parallel jobs and layer caching, reducing deployment times by 40%.
-- Owned Sentry monitoring to cut production error volume: error triage with session replay, release and performance tracking, Slack and GitHub integration, and PII-safe payload encryption that keeps sensitive data out of captured events.
+- Owned Sentry monitoring to cut production error volume, with error triage through session replay, release and performance tracking, Slack and GitHub integration, and PII-safe payload encryption that keeps sensitive data out of captured events.
 
 ---
 

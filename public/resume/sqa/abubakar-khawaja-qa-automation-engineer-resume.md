@@ -1,13 +1,12 @@
 # Abubakar Khawaja
 ## SDET | QA Automation Engineer | Cypress | Playwright | Pytest | Locust | CI/CD
 
-abubakar-dev@hotmail.com  ·  +92-334-9858841
-linkedin.com/in/abubakar-khawaja-008483183  ·  github.com/Abuubkar  ·  abuubkar.github.io
+abubakarrkhawaj@gmail.com  ·  [LinkedIn](https://www.linkedin.com/in/abubakar-khawaja-008483183/)  ·  [GitHub](https://github.com/Abuubkar)  ·  [Portfolio](https://abuubkar.github.io/)
 
 ---
 
 ## Professional Summary
-Software engineer with 5+ years in test automation and full-stack development across Python, Django, React and TypeScript. I raised automated test coverage on a production codebase from 10% to over 60% with Jest, Cypress and Vitest, and production bugs dropped by 25%. I write pytest and Django API suites, Cypress end-to-end tests and Locust load tests, and run them as CI gates on GitHub Actions and GitLab CI so a failure stops the merge. I have built the systems I test, so I know where they tend to break: payments, background jobs, access control and data migrations.
+Software engineer with 5+ years in test automation and full-stack development across Python, Django, React and TypeScript. I raised automated test coverage on a production codebase from 10% to over 60% with Jest, Cypress and Vitest, and production bugs dropped by 25%. I write pytest and Django API suites, Cypress end-to-end tests and Locust load tests, and run them as CI gates on GitHub Actions and GitLab CI so a failure stops the merge. I have built the systems I test, so I know they tend to break in payments, background jobs, access control and data migrations.
 
 ---
 
@@ -27,7 +26,7 @@ Software engineer with 5+ years in test automation and full-stack development ac
 ## Experience
 
 ### Senior Software Engineer | Codeupnow
-*Sept 2025 – Present*
+*Sept 2025 - Present*
 
 - Wrote unit and API tests for Django REST endpoints with pytest and the Django test framework, using fixtures and factories for test data, and ran them in CI before every merge.
 - Reworked Python REST API code and cut response times by 40%, which also brought cloud costs down.
@@ -35,11 +34,11 @@ Software engineer with 5+ years in test automation and full-stack development ac
 - Mentored junior engineers through code review and drove Agile feature delivery alongside UX/UI designers and backend teams.
 
 ### Senior Software Engineer | Arbisoft
-*July 2021 – Apr 2026*
+*July 2021 - Apr 2026*
 
 - Raised automated test coverage from 10% to over 60% with Jest, Cypress, and Vitest, added ESLint and Husky as quality gates, and cut production bugs by 25%.
 - Reworked GitLab CI/CD pipelines with parallel jobs and layer caching, reducing deployment times by 40%.
-- Owned Sentry monitoring to cut production error volume: error triage with session replay, release and performance tracking, Slack and GitHub integration, and PII-safe payload encryption that keeps sensitive data out of captured events.
+- Owned Sentry monitoring to cut production error volume, with error triage through session replay, release and performance tracking, Slack and GitHub integration, and PII-safe payload encryption that keeps sensitive data out of captured events.
 - Cut API response times by 30 to 70% on core endpoints by fixing N+1 queries, reworking ORM access patterns, and adding PostgreSQL indexes.
 - Used AI coding tools such as Cursor, Claude Code, Codex, GitHub Copilot, and ChatGPT for both autonomous multi-step tasks and hands-on pair-programming, applying them to PR review, architecture discussions, and custom internal tooling, while comparing model outputs using structured prompts.
 
