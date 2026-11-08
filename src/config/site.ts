@@ -1,0 +1,648 @@
+/**
+ * ============================================================
+ *  SITE CONFIG — single source of truth for all content.
+ *  Edit values here to update the whole site. No need to touch
+ *  any component. Icons are referenced by name (strings) from
+ *  the lucide-react set; see the iconMap in each component for
+ *  the available names.
+ * ============================================================
+ */
+
+import avatar from "@/assets/abubakar-theme.webp";
+import askimamShot from "@/assets/projects/askimam.webp";
+import convoShot from "@/assets/projects/convo.webp";
+import fixalertShot from "@/assets/projects/fixalert.webp";
+import foodioShot from "@/assets/projects/foodio.webp";
+import landitShot from "@/assets/projects/landit.webp";
+import ledgerlineShot from "@/assets/projects/ledgerline.webp";
+import pagerwiseShot from "@/assets/projects/pagerwise.webp";
+import shelfsenseShot from "@/assets/projects/shelfsense.webp";
+import rumiCover from "@/assets/projects/rumi.webp";
+import taigaShot from "@/assets/projects/taiga.webp";
+import telehealthCover from "@/assets/projects/telehealth.webp";
+import meetgabbiCover from "@/assets/projects/meetgabbi.webp";
+import mafiaShot from "@/assets/projects/no-more-mafia.webp";
+
+export type NavItem = { id: string; label: string };
+export type Tech = {
+  name: string;
+  /** lucide icon name, used when there is no brand mark. */
+  icon: string;
+  /** Simple Icons slug; see components/ui/TechIcons. Wins over `icon`. */
+  brand?: string;
+};
+/** One labelled run of the arsenal. The section is long enough that a flat
+ *  grid reads as a wall, so the eye gets a heading to land on instead. */
+export type TechGroup = { label: string; items: Tech[] };
+export type Experience = {
+  title: string;
+  company: string;
+  location?: string;
+  period: string;
+  current?: boolean;
+  summary: string;
+  highlights: string[];
+  tags: string[];
+};
+export type Education = {
+  degree: string;
+  school: string;
+  period: string;
+  detail: string;
+  tags: string[];
+};
+export type Project = {
+  title: string;
+  meta: string;
+  blurb: string;
+  tags: string[];
+  featured?: boolean;
+  /** Deployed and reachable — shows a "Live" badge + a "Visit" link. */
+  live?: boolean;
+  href: string;
+  /** Public source repo — adds a "Source" link. */
+  repo?: string;
+  /** Screenshot URL (bundled from src/assets/projects); falls back to an initial. */
+  image?: string;
+  /** Which edge of the screenshot survives the crop. The card's image box is
+   *  a fixed 208px tall and a fluid width, so its aspect runs from 1.60 on a
+   *  phone to 2.41 at full width, and object-cover trims whatever does not
+   *  fit. Centred is right for a product shot; anchor it when a particular
+   *  corner or edge of the screenshot is the part worth seeing, such as a
+   *  page header. */
+  imageAnchor?: "center" | "top" | "left-top";
+};
+export type ContactDetail = {
+  label: string;
+  value: string;
+  /** lucide icon name, used when there is no brand mark. */
+  icon: string;
+  /** Official mark; see components/ui/BrandIcons. Wins over `icon`. */
+  brand?: "github" | "linkedin";
+  href: string;
+};
+export type Certification = { name: string; issuer: string; date: string };
+/** Footer profile link. Same brand-over-icon rule as ContactDetail. */
+export type SocialLink = {
+  label: string;
+  icon: string;
+  brand?: "github" | "linkedin";
+  href: string;
+};
+
+/** Canonical production origin — used for metadataBase, sitemap, robots, and JSON-LD. */
+export const siteUrl = "https://abuubkar.github.io";
+
+export const siteConfig = {
+  /* ---------------- Profile / hero ---------------- */
+  profile: {
+    name: "Abubakar Khawaja",
+    firstName: "Abubakar",
+    lastName: "Khawaja",
+    brand: "Abubakar.dev",
+    role: "Senior Software Engineer",
+    location: "Lahore, Pakistan",
+    // Structured variant of `location`, for JSON-LD.
+    addressLocality: "Lahore",
+    addressCountry: "PK",
+    availability: "Available for work",
+    // Bundled from src/assets. The resume repo's sync workflow owns
+    // public/cv/ (and wipes it on every resume push); the rest of public/
+    // belongs to this repo.
+    avatar: avatar.src,
+    greeting: "Hi, I'm",
+    experience: "5+ years",
+    // Mono stat line shown under the greeting in the hero.
+    stats: "5+ years · 5 products shipped",
+    // Hero pitch — problem first, then the resolution (rendered in the accent gradient).
+    pitch:
+      "Codebases rarely fail all at once. They get slower, collect edge cases, and releases turn into guesswork.",
+    pitchHighlight:
+      "I find where the time goes and fix it there, so releases get boring again.",
+    // Meta description — search engines truncate around 160 characters.
+    metaDescription:
+      "Senior Software Engineer with 5+ years shipping production software: React and Next.js frontends, Django/PostgreSQL backends, fast APIs and reliable CI/CD.",
+    // OG/Twitter description — social previews truncate around 125 characters.
+    socialDescription:
+      "Senior Software Engineer with 5+ years shipping React/Next.js and Django/PostgreSQL products end to end.",
+    // Long-form summary shown on the page itself.
+    intro:
+      "Full-Stack Engineer with 5+ years building and shipping production software across React and Next.js frontends and Django/PostgreSQL backends. I take features from idea to deployment and focus on fast queries, clean APIs, and reliable CI/CD. I cut API response times 30–70% through query tuning and indexing, scaled Celery pipelines for heavy workloads, raised automated test coverage 10%→60%+, and reduced deployment time by ~40% through CI optimization.",
+    email: "abuubkar.dev@gmail.com",
+    phone: "+92-334-9858841",
+    resumeLabel: "CV",
+    // public/resume/ is written by the resume repo's sync workflow on every
+    // resume push — always the freshest build, never edited by hand here.
+    // Linking the named file rather than a resume.pdf alias means the name
+    // survives every route to it: a click, a right-click save, a copied
+    // link. The download attribute only ever covered the first of those.
+    resumeUrl: "/resume/abubakar-khawaja-full-stack-engineer-resume.pdf",
+    socials: {
+      github: "https://github.com/Abuubkar",
+      linkedin: "https://linkedin.com/in/abubakar-khawaja-008483183",
+      website: siteUrl,
+    },
+  },
+
+  /* ---------------- Navigation ---------------- */
+  nav: [
+    { id: "home", label: "Home" },
+    { id: "arsenal", label: "Arsenal" },
+    { id: "trajectory", label: "Trajectory" },
+    { id: "featured", label: "Featured" },
+    { id: "personal", label: "Personal" },
+    { id: "labs", label: "Labs" },
+    { id: "contact", label: "Contact" },
+  ] as NavItem[],
+
+  /* ---------------- Technical Arsenal (tiles) ---------------- */
+  arsenal: {
+    slug: "technical-arsenal",
+    label: "Core technologies I reach for across the stack",
+    title: "Technical Arsenal",
+    groups: [
+      {
+        label: "Languages & frontend",
+        items: [
+          { name: "TypeScript", icon: "FileCode2", brand: "typescript" },
+          { name: "JavaScript", icon: "Braces", brand: "javascript" },
+          { name: "React", icon: "Atom", brand: "react" },
+          { name: "Next.js", icon: "Triangle", brand: "nextdotjs" },
+          { name: "Tailwind CSS", icon: "Hash", brand: "tailwindcss" },
+          { name: "Redux Toolkit", icon: "Layers", brand: "redux" },
+          { name: "React Query", icon: "Loader", brand: "reactquery" },
+          { name: "React Hook Form", icon: "List", brand: "reacthookform" },
+          { name: "Storybook", icon: "BookOpen", brand: "storybook" },
+        ],
+      },
+      {
+        label: "Backend & data",
+        items: [
+          { name: "Python", icon: "Code2", brand: "python" },
+          { name: "Django / DRF", icon: "Server", brand: "django" },
+          { name: "FastAPI", icon: "Zap", brand: "fastapi" },
+          { name: "Node.js", icon: "Hexagon", brand: "nodedotjs" },
+          { name: "PostgreSQL", icon: "Database", brand: "postgresql" },
+          { name: "Redis", icon: "Database", brand: "redis" },
+          { name: "Celery", icon: "Workflow", brand: "celery" },
+          { name: "Kafka", icon: "Radio", brand: "apachekafka" },
+          { name: "OpenSearch", icon: "Search", brand: "opensearch" },
+          { name: "Stripe", icon: "CreditCard", brand: "stripe" },
+        ],
+      },
+      {
+        label: "AI & machine learning",
+        items: [
+          { name: "LLM Engineering", icon: "Brain" },
+          { name: "AI Agents & Tool Calling", icon: "Bot" },
+          { name: "RAG", icon: "Sparkles" },
+          { name: "Embeddings & pgvector", icon: "Binary" },
+          { name: "LangChain / LangGraph", icon: "Link2", brand: "langchain" },
+          { name: "LlamaIndex", icon: "Waypoints" },
+          { name: "Vercel AI SDK", icon: "Wand2", brand: "vercel" },
+          { name: "Model Context Protocol", icon: "Plug", brand: "modelcontextprotocol" },
+          { name: "Prompt & Context Engineering", icon: "MessageSquare" },
+          { name: "LLM Evals", icon: "Gauge" },
+          { name: "Langfuse / LangSmith", icon: "ScanSearch" },
+          { name: "Ollama / local models", icon: "Cpu", brand: "ollama" },
+          { name: "Transformers.js", icon: "Network", brand: "huggingface" },
+        ],
+      },
+      {
+        label: "Delivery & ops",
+        items: [
+          { name: "Docker", icon: "Container", brand: "docker" },
+          { name: "GitLab CI/CD", icon: "GitBranch", brand: "gitlab" },
+          { name: "GitHub", icon: "GitBranch", brand: "github" },
+          { name: "AWS", icon: "Cloud", brand: "aws" },
+          { name: "OpenTelemetry", icon: "Activity", brand: "opentelemetry" },
+        ],
+      },
+    ] as TechGroup[],
+  },
+
+  /* ---------------- Professional Trajectory ---------------- */
+  trajectory: {
+    slug: "professional-trajectory",
+    label: "Five years of owning features end to end, with the numbers attached",
+    title: "Professional Trajectory",
+    experience: [
+      {
+        title: "Senior Software Engineer",
+        company: "Codeupnow",
+        location: "Remote",
+        period: "Sept 2025 – Present",
+        current: true,
+        summary:
+          "Production web applications in React, Next.js, Python and Django, including a HIPAA-compliant telehealth platform, owning each feature from the first requirement to deployment.",
+        highlights: [
+          // The LLM work leads, since it is the most recent and the least
+          // visible from the project cards. Wording follows the resume's own
+          // approved phrasings (role.codeupnow.llm-features@2, .tool-calling).
+          "Built LLM features into client products, including a chat intake assistant for law firms running on fine-tuned language models.",
+          "Implemented LLM tool calling in that assistant so the model could act mid-conversation, booking consultations and pushing case details into the firm's case management system, with every extracted field validated before it was saved.",
+          "Worked across a microservices system in Python and Django with a React frontend, making it more reliable and cutting downtime 30%.",
+          "Reworked Python REST API code and tuned database queries, cutting response times 40% and bringing cloud costs down.",
+          "Deployed and tuned services on AWS ECS, EKS, and Lambda to support scaling, build performance, and deployment reliability.",
+          "Built responsive frontends on the Next.js App Router with React Server Components, improving performance with lazy loading, code splitting, and image optimization.",
+          "Built real-time data pipelines and background job processing, and added WebSockets for live updates.",
+          "Built reusable component libraries with Storybook, keeping the UI consistent across several products.",
+          "Mentored junior engineers through regular code reviews and drove Agile feature delivery, working closely with UX/UI designers, backend teams, and product stakeholders.",
+        ],
+        tags: ["React", "Next.js", "Python", "Django", "PostgreSQL", "AWS", "WebSockets", "Storybook"],
+      },
+      {
+        title: "Senior Software Engineer",
+        company: "Arbisoft",
+        location: "Lahore",
+        period: "2021 – 2026",
+        current: false,
+        summary:
+          "Full-stack delivery across multiple production products, owning features from architecture through implementation, testing, and deployment while improving performance and developer workflows.",
+        highlights: [
+          "Cut API response times 30–70% by removing N+1 queries, reworking ORM patterns, and adding targeted DB indexes.",
+          "Built and scaled Celery pipelines for heavy background workloads including bulk PDF generation and scheduled reporting.",
+          "Built reporting and analytics systems managing 1000+ assets and surfaced operational metrics for internal teams and customers.",
+          "Reduced deployment time ~40% by reworking GitLab CI/CD with parallel jobs, caching, and automation.",
+          "Raised automated test coverage from ~10% to 60%+ with Jest, Cypress, and Vitest; enforced ESLint/Prettier/Husky quality gates.",
+          "Refactored frontend architecture to reduce re-renders ~30% and improve load times 20–30% via memoization, code-splitting, and cleaner state management.",
+          "Designed and maintained REST APIs in Django REST Framework with sensible serialization, pagination, and permission layers.",
+          "Owned integrations end-to-end: Stripe, SendGrid, Google Analytics, Looker BI, and real-time WebSockets.",
+          "Mentored engineers through code reviews and pairing; collaborated with product and design in Agile teams to ship reliably.",
+        ],
+        tags: ["React", "Next.js", "Django", "DRF", "PostgreSQL", "Celery", "GitLab CI/CD", "React Query"],
+      },
+    ] as Experience[],
+    education: [
+      {
+        degree: "B.S. Software Engineering",
+        school: "PUCIT, University of the Punjab",
+        detail:
+          "CGPA 3.08",
+        tags: ["Algorithms", "System Design", "Databases"],
+      },
+    ] as Education[],
+  },
+
+  /* ---------------- Featured Projects ---------------- */
+  projects: {
+    slug: "featured-projects",
+    label: "Selected work across maintenance, productivity, and community platforms",
+    title: "Featured Projects",
+    items: [
+      {
+        title: "Meet Gabbi",
+        meta: "Full-Stack · React + Django",
+        blurb:
+          "An AI intake assistant for law firms. Built the LLM chat flow that collects a caller's case details and extracts them as structured data, validated against a schema in code before it reaches the firm.",
+        tags: ["React", "Django", "Python", "LLM Chat", "Prompt Engineering", "Fine-Tuning", "Structured Outputs", "Docker", "AWS ECS", "CI/CD", "pytest"],
+        href: "#",
+        image: meetgabbiCover.src,
+      },
+      {
+        title: "FixAlert",
+        meta: "Full-Stack · React + Django",
+        blurb:
+          "A maintenance-management platform. Optimized APIs by eliminating N+1 queries, streamlined async workflows with Celery and email, added bulk PDF generation, integrated Stripe payments, and revamped the UI.",
+        tags: ["React", "Django", "Material UI", "Celery", "Stripe", "PostgreSQL", "React Query", "Redux Toolkit"],
+        href: "https://fixalert.io",
+        image: fixalertShot.src,
+      },
+      {
+        title: "Landit",
+        meta: "Frontend · React + Next.js",
+        blurb:
+          "A career-pathing platform. Built responsive UIs, led library migrations (MUI v4→v5, React Router v4→v5), managed Storybook + testing, and built Looker BI visualizations with SendGrid email templates.",
+        tags: ["React", "Next.js", "Material UI", "Jest", "Cypress", "Storybook", "Looker", "SendGrid"],
+        href: "https://landit.com",
+        image: landitShot.src,
+      },
+      {
+        title: "AskImam",
+        meta: "Full-Stack · React + Django",
+        blurb:
+          "Built features across the React frontend and Django backend, enhanced the admin dashboard, integrated Google Analytics, hardened auth security, and led the Django 2.x → 5.1 migration.",
+        tags: ["React", "Django", "Material UI", "Redux", "Vite", "SQL"],
+        href: "https://www.askimam.org/",
+        image: askimamShot.src
+      },
+      {
+        title: "Telehealth Platform",
+        meta: "Full-Stack · Next.js + Django",
+        blurb:
+          "A HIPAA-compliant platform connecting patients with providers. Built the frontend on the Next.js App Router with React Server Components, keeping data fetching on the server, and worked on the Django backend with PostgreSQL on AWS RDS. Tuned SQL and added Redis caching to the patient-provider matching workflows, and built ETL pipelines with the data engineering team for real-time processing.",
+        tags: ["Next.js", "React", "React Server Components", "Python", "Django", "PostgreSQL", "AWS RDS", "Redis", "SQL Optimization", "ETL", "HIPAA"],
+        href: "#",
+        image: telehealthCover.src,
+      },
+      {
+        title: "Rumi",
+        meta: "Full-Stack · React + Django",
+        blurb:
+          "Led frontend architectural refactoring and state optimization to reduce re-renders, authored Vitest tests, enforced ESLint/Prettier/pre-commit standards, and contributed to the GitLab CI pipeline.",
+        tags: ["React", "Vite", "Vitest", "Redux Toolkit", "Django"],
+        href: "#",
+        image: rumiCover.src,
+      },
+      {
+        title: "Taiga (Arbisoft)",
+        meta: "Open-source · AngularJS + Django",
+        blurb:
+          "Built the Requestor and Feedback modules across frontend and backend: new Django models and REST endpoints with role-based access, plus reusable directives in a modular architecture.",
+        tags: ["AngularJS", "Django", "SCSS", "CoffeeScript"],
+        href: "#",
+        image: taigaShot.src,
+      },
+    ] as Project[],
+  },
+
+  /* ---------------- Personal Projects ---------------- */
+  personal: {
+    slug: "personal-projects",
+    label: "Work I started myself and shipped end to end",
+    title: "Personal Projects",
+    items: [
+      {
+        title: "No More Mafia",
+        meta: "Personal · React + SpacetimeDB",
+        blurb:
+          "A browser-based Mafia party game. One host opens a case and friends join with its number. React and TypeScript on the front, SpacetimeDB holding the shared game state, running on Cloudflare Workers.",
+        tags: ["React", "TypeScript", "SpacetimeDB", "Cloudflare Workers"],
+        live: true,
+        href: "https://no-more-mafia.abubakarkhawaja.workers.dev/",
+        image: mafiaShot.src,
+      },
+      {
+        title: "Foodio",
+        meta: "Personal · React Native + NestJS",
+        blurb:
+          "A mobile app for food delivery and food reviews, backed by a restaurant-owned delivery API. React Native on the front, with NestJS and PostGIS behind it.",
+        tags: ["React Native", "NestJS", "PostGIS", "TypeScript"],
+        href: "#",
+        repo: "https://github.com/Abuubkar/foodio-mobile",
+        image: foodioShot.src,
+      },
+      {
+        title: "Convo",
+        meta: "Personal · React + Django",
+        blurb:
+          "A real-time chat platform built end to end. A React + Vite SPA on the front, Django REST Framework on the back, with live messaging over Django Channels + Redis (WebSockets), plus JWT auth, user management, avatar uploads, and a full CI/CD pipeline.",
+        tags: [
+          "React",
+          "Vite",
+          "TypeScript",
+          "Django",
+          "DRF",
+          "Channels",
+          "Redis",
+          "WebSockets",
+          "Tailwind CSS",
+        ],
+        live: true,
+        href: "https://convo-arc.vercel.app/chat",
+        repo: "https://github.com/hedonarc/convo",
+        image: convoShot.src,
+      },
+      {
+        title: "LedgerLine",
+        meta: "Personal · FastAPI + local LLM",
+        blurb:
+          "Accounts-payable automation run by a model on your own hardware. Pulls line items out of vendor invoice PDFs, runs a three-way match against purchase orders and goods receipts, and hands the mismatches to a tool-using agent. The agent only proposes; a human approves every write in the review UI.",
+        tags: ["Python", "FastAPI", "Celery", "RabbitMQ", "PostgreSQL", "Ollama", "Next.js", "OpenTelemetry"],
+        href: "#",
+        repo: "https://github.com/Abuubkar/ledgerline",
+        image: ledgerlineShot.src,
+        // Pinned to the corner the screenshot starts at, so the sidebar, the
+        // invoice number and the Exception badge survive every width.
+        imageAnchor: "left-top",
+      },
+      {
+        title: "Pagerwise",
+        meta: "Personal · FastAPI + Kafka",
+        blurb:
+          "An on-call copilot fed by a live Kafka stream of alerts, deploys and error logs. Clusters them into incidents and writes a triage brief for each one: likely cause, blast radius, the runbook steps to try first, and similar past postmortems. Every claim carries a citation to the runbook chunk or postmortem it came from.",
+        tags: ["Python", "FastAPI", "Kafka", "GraphQL", "PostgreSQL", "pgvector", "Ollama", "Next.js"],
+        href: "#",
+        repo: "https://github.com/Abuubkar/pagerwise",
+        image: pagerwiseShot.src,
+        // Same reasoning as LedgerLine: the severity badge and the incident
+        // title sit at the top-left of the screenshot.
+        imageAnchor: "left-top",
+      },
+      {
+        title: "Shelfsense",
+        meta: "Personal · FastAPI + OpenSearch",
+        blurb:
+          "Marketplace catalog enrichment and search. Supplier feeds arrive as CSV drops or a paged API, and a local model files each product under the Google Product Taxonomy by picking from a shortlist built for it. An attribute is kept only when code finds its value quoted in the listing. Shoppers type plain language, like red rain jacket under $200, and hybrid search reads the filters out of it.",
+        tags: ["Python", "FastAPI", "OpenSearch", "PostgreSQL", "pgvector", "SQS", "Ollama", "Next.js"],
+        href: "#",
+        repo: "https://github.com/Abuubkar/shelfsense",
+        image: shelfsenseShot.src,
+        // The search box, the result count and the chips read out of the query
+        // all sit along the top-left of the storefront.
+        imageAnchor: "left-top",
+      },
+    ] as Project[],
+  },
+
+  /* ---------------- Certifications ---------------- */
+  certifications: {
+    slug: "certifications",
+    label: "Recent coursework on building with AI",
+    title: "Certifications",
+    items: [
+      {
+        // `date` carries the status instead of a month while this one is still
+        // under way; the card prints "<issuer> · <date>" either way.
+        name: "Claude Certified Architect – Foundations",
+        issuer: "Anthropic",
+        date: "In progress",
+      },
+      {
+        name: "The AI Engineer Path",
+        issuer: "Scrimba",
+        date: "July 2026",
+      },
+      {
+        name: "Prompt Engineering for Web Developers",
+        issuer: "Scrimba",
+        date: "July 2026",
+      },
+    ] as Certification[],
+  },
+
+  /* ---------------- Contact ---------------- */
+  contact: {
+    slug: "initiate-connection",
+    label: "Open to senior full-stack roles, consulting, and partnerships",
+    title: "Initiate Connection",
+    blurb:
+      "Have a product to build or a system to scale? Send a note. I read every message.",
+    details: [
+      { label: "Email", value: "abuubkar.dev@gmail.com", icon: "Mail", href: "mailto:abuubkar.dev@gmail.com" },
+      { label: "Phone", value: "+92-334-9858841", icon: "Phone", href: "tel:+923349858841" },
+      { label: "GitHub", value: "github.com/Abuubkar", icon: "Code2", brand: "github", href: "https://github.com/Abuubkar" },
+      { label: "LinkedIn", value: "in/abubakar-khawaja", icon: "Briefcase", brand: "linkedin", href: "https://linkedin.com/in/abubakar-khawaja-008483183" },
+    ] as ContactDetail[],
+  },
+
+  /* ---------------- Labs ---------------- */
+  // A home for AI experiments, of which Voice Lab is the first. Lives on its
+  // own route so the cross-origin isolation worker it needs can never touch
+  // the rest of the site (see public/labs/coi-serviceworker.js).
+  labs: {
+    slug: "labs",
+    title: "Labs",
+    label:
+      "AI experiments I can ship without a backend. Each one downloads its model on demand and runs it on your own hardware.",
+    // Trailing slash is load-bearing: it must match the isolation worker's
+    // scope (and the directory-style export). See next.config.ts.
+    href: "/labs/",
+    teaser: {
+      blurb:
+        "Two speech models that load into the page and run on your CPU. One reads back whatever you type; the other transcribes whatever you say. Neither sends a word anywhere.",
+      // One line per experiment, so adding a third is a line here.
+      bullets: [
+        "Voice Lab: kokoro-82M, 92 MB, text to speech",
+        "Listen Lab: whisper-base, 77 MB, speech to text",
+        "WASM inference, multi-threaded where the browser allows it",
+      ],
+      cta: "Open Labs",
+    },
+    page: {
+      title: "Labs: AI experiments that run in your browser",
+      description:
+        "AI experiments that run entirely in the browser. Models download on demand and do their work on your own hardware, with no server behind them.",
+      intro:
+        "Everything here runs client-side. Open an experiment and it fetches its model once, then works offline on your hardware.",
+      back: "Back to portfolio",
+    },
+
+    /* ----- EXP.01 — Voice Lab ----- */
+    voice: {
+      slug: "voice-lab",
+      title: "Voice Lab",
+      label:
+        "An 82M-parameter speech model running on your own hardware. Your text never leaves the page. What does travel: the model weights from Hugging Face, the WASM runtime from jsDelivr, and a half-megabyte voice file the first time you pick each voice.",
+      sampleText:
+        "Hi, I'm Abubakar's portfolio. Every word you hear is synthesized right now, on your device.",
+      cta: {
+        load: "Load model and speak",
+        speak: "Synthesize speech",
+        stop: "Stop",
+      },
+      errors: {
+        fallback:
+          "The model didn't load, so this is your browser's built-in voice. Press the button again to retry the download.",
+        fatal:
+          "The model didn't load, and this browser has no built-in speech to fall back on. Press the button to try again.",
+        run: "That run failed. Try again, or pick a different voice.",
+      },
+      // Every word the experiment puts on screen. `{…}` placeholders are
+      // filled in by the component that renders them.
+      ui: {
+        inputLabel: "input text",
+        voiceLabel: "Voice",
+        telemetry: {
+          heading: "telemetry",
+          rows: {
+            model: "model",
+            weights: "weights",
+            backend: "backend",
+            threads: "threads",
+            lastRun: "last run",
+          },
+          none: "—",
+          notLoaded: "— not loaded",
+          browserVoice: "browser voice (fallback)",
+          onDevice: "on-device",
+          isolated: "cross-origin isolated",
+          notIsolated: "not isolated",
+          downloading: "downloading {percent}%",
+          headStart: "banking a {seconds}s head start so it plays without gaps…",
+          lastRun: "{audio}s audio · sound in {firstSound}s · {gaps}",
+          noGaps: "no gaps",
+          oneGap: "1 gap",
+          manyGaps: "{count} gaps",
+        },
+        // Spoken by screen readers only, one short sentence per phase. The
+        // panel itself is not a live region: re-reading five rows on every
+        // download tick is unusable.
+        status: {
+          loading: "Downloading the speech model.",
+          synthesizing: "Synthesizing speech.",
+          speaking: "Playing.",
+          done: "Finished: {summary}",
+        },
+      },
+    },
+
+    /* ----- EXP.02 — Listen Lab ----- */
+    listen: {
+      slug: "listen-lab",
+      title: "Listen Lab",
+      label:
+        "Whisper, running on your own hardware. Hold the button, say something, let go. Your voice never leaves this page: the only things on the wire are the one-off model download and the anonymous click counter this site already runs.",
+      cta: {
+        load: "Load model and listen",
+        hold: "Hold to talk",
+        release: "Release to transcribe",
+        stop: "Stop",
+      },
+      errors: {
+        load: "The model didn't download. Press the button to try again.",
+        denied:
+          "Your browser blocked the microphone. You can allow it again in the site settings for this page.",
+        unavailable:
+          "No microphone here that the browser can reach.",
+        insecure:
+          "Microphones need a secure connection, and this page isn't on one.",
+        run: "That clip didn't transcribe. Try holding the button again.",
+      },
+      // Every word the experiment puts on screen. `{…}` placeholders are
+      // filled in by the component that renders them.
+      ui: {
+        transcriptLabel: "transcript",
+        empty: "Nothing yet. Hold the button and say something.",
+        recording: "listening · {seconds}s of {limit}s",
+        limitReached: "Stopped at {limit} seconds. That's as much as the model hears at once.",
+        telemetry: {
+          heading: "telemetry",
+          rows: {
+            model: "model",
+            weights: "weights",
+            backend: "backend",
+            threads: "threads",
+            lastRun: "last run",
+          },
+          none: "—",
+          notLoaded: "— not loaded",
+          onDevice: "on-device",
+          isolated: "cross-origin isolated",
+          notIsolated: "not isolated",
+          downloading: "downloading {percent}%",
+          lastRun: "{clip}s clip · transcribed in {work}s · {speed}x realtime",
+        },
+        // Spoken by screen readers only, one short sentence per phase.
+        status: {
+          loading: "Downloading the speech recognition model.",
+          recording: "Listening.",
+          transcribing: "Transcribing.",
+          done: "Transcript ready: {text}",
+        },
+      },
+    },
+  },
+
+  /* ---------------- Footer ---------------- */
+  footer: {
+    copyright: "© 2026 Abubakar Khawaja. Built with Next.js.",
+    socials: [
+      { label: "GitHub", icon: "Code2", brand: "github", href: "https://github.com/Abuubkar" },
+      { label: "LinkedIn", icon: "Briefcase", brand: "linkedin", href: "https://linkedin.com/in/abubakar-khawaja-008483183" },
+      { label: "Email", icon: "AtSign", href: "mailto:abuubkar.dev@gmail.com" },
+    ] as SocialLink[],
+  },
+} as const;
+
+export type SiteConfig = typeof siteConfig;
