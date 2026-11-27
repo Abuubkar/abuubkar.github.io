@@ -22,16 +22,22 @@ const iconMap: Record<string, LucideIcon> = {
   Briefcase,
 };
 
-/** Derives the "open" action's tooltip + whether it leaves the site. */
-function openMeta(href: string, label: string) {
-  if (href.startsWith("mailto:")) return { title: "Send email", external: false };
-  if (href.startsWith("tel:")) return { title: "Call", external: false };
-  return { title: `Open ${label}`, external: true };
-}
+/**
+ * Email is the one action worth making large, so it reads as the address
+ * itself rather than a row with an icon button beside it. Phone trails it as
+ * a second option; everything else is a profile you open elsewhere, which is
+ * what the chips are. All three come out of `contact.details`, so adding a
+ * profile to the config adds a chip.
+ */
+const email = contact.details.find((d) => d.href.startsWith("mailto:"));
+const phone = contact.details.find((d) => d.href.startsWith("tel:"));
+const profiles = contact.details.filter((d) => d !== email && d !== phone);
 
 export function InitiateConnection() {
   return (
     <section className="min-h-[50dvh] scroll-mt-24 py-20">
+      {/* One run of text for the whole section: the heading's subtitle says
+          what I'm open to and how to reach me, and nothing repeats it below. */}
       <SectionHeading
         id="contact"
         title={contact.title}
@@ -39,67 +45,73 @@ export function InitiateConnection() {
       />
 
       <Reveal>
-        <div className="flex max-w-(--reading-max) flex-col gap-6">
-          <p className="text-body-lg max-w-md text-on-surface-variant">
-            {contact.blurb}
-          </p>
-
-          <ul className="flex flex-col gap-3">
-            {contact.details.map((d) => {
-              const Icon = iconMap[d.icon] ?? Mail;
-              const { title, external } = openMeta(d.href, d.label);
-              const copyText = external ? d.href : d.value;
-              const isMailto = d.href.startsWith("mailto:");
-              return (
-                <li
-                  key={d.label}
-                  className="flex items-center gap-4 rounded-lg border border-outline-variant bg-surface-container p-4"
+        <div className="flex max-w-(--reading-max) flex-col gap-10">
+          {email && (
+            <div className="flex flex-col gap-3">
+              <span className="text-label-caps text-on-surface-variant">
+                Email me
+              </span>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+                {/* Goes through MailtoButton for its dead-click fallback: a
+                    visitor with no mail handler gets Gmail/Outlook/copy. */}
+                <MailtoButton
+                  email={email.value}
+                  title="Send email"
+                  className="text-headline-lg break-all text-on-surface underline decoration-primary/40 decoration-2 underline-offset-8 transition-colors hover:text-primary hover:decoration-primary"
                 >
-                  {/* Info — display only, not interactive */}
-                  <span
-                    className="grid size-10 shrink-0 place-items-center text-on-surface-variant"
-                    aria-hidden
-                  >
-                    {hasSocialMark(d.brand) ? (
-                      <SocialMark name={d.brand} className="size-5" />
-                    ) : (
-                      <Icon className="size-5" />
-                    )}
-                  </span>
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="text-label-caps text-on-surface-variant">
-                      {d.label}
-                    </span>
-                    <span className="text-body-md truncate text-on-surface">
-                      {d.value}
-                    </span>
-                  </div>
+                  {email.value}
+                </MailtoButton>
+                <CopyButton value={email.value} label={email.label} withLabel />
+              </div>
 
-                  {/* Actions — two explicit, labeled buttons */}
-                  <div className="flex shrink-0 items-center gap-2">
-                    {isMailto ? (
-                      <MailtoButton email={d.value} title={title} />
-                    ) : (
+              {phone && (
+                <a
+                  href={phone.href}
+                  title="Call"
+                  data-umami-event="contact-open-phone"
+                  className="text-body-md inline-flex w-fit items-center gap-2 text-on-surface-variant underline-offset-4 transition-colors hover:text-primary hover:underline"
+                >
+                  <Phone className="size-4" /> or call {phone.value}
+                </a>
+              )}
+            </div>
+          )}
+
+          {profiles.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <span className="text-label-caps text-on-surface-variant">
+                Elsewhere
+              </span>
+              <ul className="flex flex-wrap gap-3">
+                {profiles.map((d) => {
+                  const Icon = iconMap[d.icon] ?? Mail;
+                  return (
+                    <li key={d.label}>
                       <a
                         href={d.href}
-                        {...(external
-                          ? { target: "_blank", rel: "noopener noreferrer" }
-                          : {})}
-                        title={title}
-                        aria-label={title}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={`Open ${d.label}`}
                         data-umami-event={`contact-open-${d.label.toLowerCase()}`}
-                        className="grid size-10 place-items-center rounded-md border border-outline-variant text-on-surface-variant transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary"
+                        className="group text-body-md inline-flex h-12 items-center gap-2.5 rounded-full border border-outline-variant bg-surface-container pl-4 pr-5 text-on-surface transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary"
                       >
-                        <ArrowUpRight className="size-4" />
+                        {hasSocialMark(d.brand) ? (
+                          <SocialMark name={d.brand} className="size-5" />
+                        ) : (
+                          <Icon className="size-5" />
+                        )}
+                        {d.label}
+                        <ArrowUpRight
+                          className="size-4 text-on-surface-variant transition-colors group-hover:text-primary"
+                          aria-hidden
+                        />
                       </a>
-                    )}
-                    <CopyButton value={copyText} label={d.label} />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </div>
       </Reveal>
     </section>

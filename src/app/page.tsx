@@ -26,7 +26,11 @@ const personJsonLd = {
   // content-hashed and would 404 in crawled copies after a redesign.
   image: `${siteUrl}/opengraph-image.png`,
   email: `mailto:${profile.email}`,
-  sameAs: [profile.socials.github, profile.socials.linkedin],
+  sameAs: [
+    profile.socials.github,
+    profile.socials.linkedin,
+    profile.socials.toptal,
+  ],
   address: {
     "@type": "PostalAddress",
     addressLocality: profile.addressLocality,

@@ -1,7 +1,8 @@
 import { ArrowRight, Mail, Download } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { GithubMark, LinkedinMark } from "@/components/ui/BrandIcons";
+import { GithubMark, LinkedinMark, ToptalMark } from "@/components/ui/BrandIcons";
 import { Reveal } from "@/components/ui/Reveal";
+import { ToptalBadge } from "@/components/ui/ToptalBadge";
 import { siteConfig } from "@/config/site";
 
 const { profile } = siteConfig;
@@ -23,7 +24,7 @@ export function Hero() {
 
           {/* Role */}
           <p className="text-code-sm mt-4 text-on-surface-variant">
-            {profile.role} · {profile.experience}
+            {profile.role} · {profile.experience} · Toptal network
           </p>
         </Reveal>
 
@@ -92,19 +93,37 @@ export function Hero() {
             >
               <LinkedinMark className="size-6" />
             </a>
+            <a
+              href={profile.socials.toptal}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Toptal profile"
+              title="Toptal"
+              className="grid size-10 place-items-center rounded-md opacity-85 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              data-umami-event="hero-social-toptal"
+            >
+              <ToptalMark className="size-6" />
+            </a>
           </div>
         </Reveal>
       </div>
 
       {/* Portrait column — squared, bracket-cornered frame */}
       <Reveal delay={0.15} slideOnly className="order-1 lg:order-2">
-        <div className="bracket-corners relative mx-auto aspect-4/5 w-56 shrink-0 overflow-hidden rounded-xl border border-outline/60 shadow-xl sm:w-64 lg:w-80">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={profile.avatar}
-            alt={`${profile.name}, ${profile.role}`}
-            fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-cover"
+        <div className="relative mx-auto w-56 shrink-0 sm:w-64 lg:w-80">
+          <div className="bracket-corners relative aspect-4/5 overflow-hidden rounded-xl border border-outline/60 shadow-xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={profile.avatar}
+              alt={`${profile.name}, ${profile.role}`}
+              fetchPriority="high"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+          {/* Overlaps the portrait's bottom-right corner; scaled from its
+              top-left so the layout box stays the embed's native size. */}
+          <ToptalBadge
+            className="absolute -bottom-5 -right-4 origin-bottom-right scale-[0.4] sm:-right-5 sm:scale-[0.45]"
           />
         </div>
       </Reveal>

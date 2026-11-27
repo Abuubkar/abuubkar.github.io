@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight, ExternalLink, Copy, Check } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { track } from "@/lib/track";
 
 const btnCls =
@@ -14,13 +14,22 @@ const itemCls =
  * Email "open" action: fires a normal mailto: (works for anyone with a mail
  * handler), but detects when nothing happened — no app took over the click —
  * and reveals a fallback menu (Gmail / Outlook / copy) so the click is never dead.
+ *
+ * Renders as a square icon button by default. Pass `children` (and usually
+ * `className`) to render the address itself as the link instead — the
+ * fallback behaviour is the point of this component, so any mailto on the
+ * page should go through it rather than a bare <a>.
  */
 export function MailtoButton({
   email,
   title,
+  children,
+  className,
 }: {
   email: string;
   title: string;
+  children?: ReactNode;
+  className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -79,8 +88,12 @@ export function MailtoButton({
     }
   };
 
+  // As a text link the trigger is as wide as the address, so the menu hangs
+  // from its left edge; the icon button keeps its right-aligned menu.
+  const asText = children !== undefined;
+
   return (
-    <div ref={wrapRef} className="relative">
+    <div ref={wrapRef} className={asText ? "relative inline-flex" : "relative"}>
       <a
         href={`mailto:${email}`}
         onClick={handleClick}
@@ -88,15 +101,15 @@ export function MailtoButton({
         aria-label={title}
         aria-haspopup="menu"
         aria-expanded={open}
-        className={btnCls}
+        className={className ?? btnCls}
       >
-        <ArrowUpRight className="size-4" />
+        {children ?? <ArrowUpRight className="size-4" />}
       </a>
 
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-12 z-30 w-60 rounded-md border border-outline bg-surface-container-lowest p-2 shadow-[0_16px_48px_-16px_rgba(0,0,0,0.35)]"
+          className={`absolute top-[calc(100%+0.5rem)] z-30 w-60 rounded-md border border-outline bg-surface-container-lowest p-2 shadow-[0_16px_48px_-16px_rgba(0,0,0,0.35)] ${asText ? "left-0" : "right-0"}`}
         >
           <p className="text-code-sm px-2.5 py-1.5 text-on-surface-variant">
             No mail app opened. Try:

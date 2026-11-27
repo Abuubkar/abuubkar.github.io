@@ -78,7 +78,7 @@ export type ContactDetail = {
   /** lucide icon name, used when there is no brand mark. */
   icon: string;
   /** Official mark; see components/ui/BrandIcons. Wins over `icon`. */
-  brand?: "github" | "linkedin";
+  brand?: "github" | "linkedin" | "toptal";
   href: string;
 };
 export type Certification = { name: string; issuer: string; date: string };
@@ -86,12 +86,18 @@ export type Certification = { name: string; issuer: string; date: string };
 export type SocialLink = {
   label: string;
   icon: string;
-  brand?: "github" | "linkedin";
+  brand?: "github" | "linkedin" | "toptal";
   href: string;
 };
 
 /** Canonical production origin — used for metadataBase, sitemap, robots, and JSON-LD. */
 export const siteUrl = "https://abuubkar.github.io";
+
+/** Toptal profile link. The #fragment is the referral code, so every link to
+ *  Toptal (hero, contact, footer, badge, JSON-LD) must use this constant and
+ *  never a hand-typed URL. */
+export const toptalUrl =
+  "https://www.toptal.com/developers/resume/abubakar-khawaja1#xnGDYV";
 
 export const siteConfig = {
   /* ---------------- Profile / hero ---------------- */
@@ -121,14 +127,14 @@ export const siteConfig = {
       "I find where the time goes and fix it there, so releases get boring again.",
     // Meta description — search engines truncate around 160 characters.
     metaDescription:
-      "Senior Software Engineer with 5+ years shipping production software: React and Next.js frontends, Django/PostgreSQL backends, fast APIs and reliable CI/CD.",
+      "Senior Software Engineer (Toptal network) with 5+ years shipping React and Next.js frontends, Django/PostgreSQL backends, fast APIs and reliable CI/CD.",
     // OG/Twitter description — social previews truncate around 125 characters.
     socialDescription:
-      "Senior Software Engineer with 5+ years shipping React/Next.js and Django/PostgreSQL products end to end.",
+      "Senior Software Engineer (Toptal network) with 5+ years shipping React/Next.js and Django/PostgreSQL products end to end.",
     // Long-form summary shown on the page itself.
     intro:
       "Full-Stack Engineer with 5+ years building and shipping production software across React and Next.js frontends and Django/PostgreSQL backends. I take features from idea to deployment and focus on fast queries, clean APIs, and reliable CI/CD. I cut API response times 30–70% through query tuning and indexing, scaled Celery pipelines for heavy workloads, raised automated test coverage 10%→60%+, and reduced deployment time by ~40% through CI optimization.",
-    email: "abuubkar.dev@gmail.com",
+    email: "abubakarkhawaja@hotmail.com",
     phone: "+92-334-9858841",
     resumeLabel: "CV",
     // public/resume/ is written by the resume repo's sync workflow on every
@@ -140,6 +146,7 @@ export const siteConfig = {
     socials: {
       github: "https://github.com/Abuubkar",
       linkedin: "https://linkedin.com/in/abubakar-khawaja-008483183",
+      toptal: toptalUrl,
       website: siteUrl,
     },
   },
@@ -474,15 +481,15 @@ export const siteConfig = {
   /* ---------------- Contact ---------------- */
   contact: {
     slug: "initiate-connection",
-    label: "Open to senior full-stack roles, consulting, and partnerships",
+    label:
+      "Open to senior full-stack roles, consulting, and partnerships. Have a product to build or a system to scale? Send a note. I read every message.",
     title: "Initiate Connection",
-    blurb:
-      "Have a product to build or a system to scale? Send a note. I read every message.",
     details: [
-      { label: "Email", value: "abuubkar.dev@gmail.com", icon: "Mail", href: "mailto:abuubkar.dev@gmail.com" },
+      { label: "Email", value: "abubakarkhawaja@hotmail.com", icon: "Mail", href: "mailto:abubakarkhawaja@hotmail.com" },
       { label: "Phone", value: "+92-334-9858841", icon: "Phone", href: "tel:+923349858841" },
       { label: "GitHub", value: "github.com/Abuubkar", icon: "Code2", brand: "github", href: "https://github.com/Abuubkar" },
       { label: "LinkedIn", value: "in/abubakar-khawaja", icon: "Briefcase", brand: "linkedin", href: "https://linkedin.com/in/abubakar-khawaja-008483183" },
+      { label: "Toptal", value: "toptal.com/developers/resume/abubakar-khawaja1", icon: "Briefcase", brand: "toptal", href: toptalUrl },
     ] as ContactDetail[],
   },
 
@@ -640,7 +647,8 @@ export const siteConfig = {
     socials: [
       { label: "GitHub", icon: "Code2", brand: "github", href: "https://github.com/Abuubkar" },
       { label: "LinkedIn", icon: "Briefcase", brand: "linkedin", href: "https://linkedin.com/in/abubakar-khawaja-008483183" },
-      { label: "Email", icon: "AtSign", href: "mailto:abuubkar.dev@gmail.com" },
+      { label: "Toptal", icon: "Briefcase", brand: "toptal", href: toptalUrl },
+      { label: "Email", icon: "AtSign", href: "mailto:abubakarkhawaja@hotmail.com" },
     ] as SocialLink[],
   },
 } as const;

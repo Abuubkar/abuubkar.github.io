@@ -6,6 +6,7 @@
 
 const GITHUB = "#181717";
 const LINKEDIN = "#0A66C2";
+const TOPTAL = "#204ECF";
 
 type Props = { className?: string };
 
@@ -35,7 +36,26 @@ export function LinkedinMark({ className }: Props) {
   );
 }
 
-const SOCIAL_MARKS = { github: GithubMark, linkedin: LinkedinMark } as const;
+/** Toptal's "T" logomark, cut from the logo in their badge embed. */
+export function ToptalMark({ className }: Props) {
+  return (
+    <svg
+      viewBox="0 0 21 30"
+      fill={TOPTAL}
+      fillRule="evenodd"
+      aria-hidden
+      className={className}
+    >
+      <path d="m8.11 0 6.71 6.7c.05.05.09.1.15.15l5.85 5.85-9.51 9.46 4.35 4.36-2.91 2.89-6.66-6.66c-.08-.07-.16-.15-.24-.23l-5.85-5.84 9.48-9.43-4.32-4.31zm4.25 10.5c-.09-.02-.18-.02-.26 0-.09.03-.16.07-.32.22l-5.41 5.39c-.16.16-.2.23-.22.31-.03.09-.03.18 0 .26.02.09.07.17.22.32l1.72 1.72c.15.15.22.19.31.22.09.02.17.02.26 0 .09-.03.16-.07.31-.22l5.41-5.39c.16-.15.2-.23.23-.31.02-.09.02-.17 0-.26s-.07-.16-.22-.31l-1.72-1.72c-.15-.16-.23-.2-.31-.23z" />
+    </svg>
+  );
+}
+
+const SOCIAL_MARKS = {
+  github: GithubMark,
+  linkedin: LinkedinMark,
+  toptal: ToptalMark,
+} as const;
 
 export type SocialBrand = keyof typeof SOCIAL_MARKS;
 
